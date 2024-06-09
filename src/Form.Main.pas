@@ -146,7 +146,7 @@ begin
         IDEImage.Height := ScaleValue(25);
         IDEImage.Margins.Top := ScaleValue(4);
         IDEImage.Margins.Bottom := ScaleValue(4);
-        IDECaption.Font.Size := ScaleValue(5);
+        IDECaption.Font.Height := ScaleValue(-14);
         IDECaption.Top := ScaleValue(6);
         IDECaption.Left := ScaleValue(40);
         IDEVersion.Visible := false;
@@ -159,7 +159,7 @@ begin
         IDEImage.Height := ScaleValue(50);
         IDEImage.Margins.Top := ScaleValue(8);
         IDEImage.Margins.Bottom := ScaleValue(8);
-        IDECaption.Font.Size := ScaleValue(7);
+        IDECaption.Font.Height := ScaleValue(19);
         IDECaption.Top := ScaleValue(8);
         IDECaption.Left := ScaleValue(90);
         IDEVersion.Visible := true;
