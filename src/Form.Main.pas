@@ -144,8 +144,8 @@ begin
         IDEList.ItemHeight := ScaleValue(30);
         IDEImage.Width := ScaleValue(25);
         IDEImage.Height := ScaleValue(25);
-        IDEImage.Margins.Top := ScaleValue(0);
-        IDEImage.Margins.Bottom := ScaleValue(0);
+        IDEImage.Margins.Top := ScaleValue(4);
+        IDEImage.Margins.Bottom := ScaleValue(4);
         IDECaption.Font.Size := ScaleValue(5);
         IDECaption.Top := ScaleValue(6);
         IDECaption.Left := ScaleValue(40);
@@ -157,8 +157,8 @@ begin
         IDEList.ItemHeight := ScaleValue(56);
         IDEImage.Width := ScaleValue(50);
         IDEImage.Height := ScaleValue(50);
-        IDEImage.Margins.Top := ScaleValue(0);
-        IDEImage.Margins.Bottom := ScaleValue(0);
+        IDEImage.Margins.Top := ScaleValue(8);
+        IDEImage.Margins.Bottom := ScaleValue(8);
         IDECaption.Font.Size := ScaleValue(7);
         IDECaption.Top := ScaleValue(8);
         IDECaption.Left := ScaleValue(90);
@@ -171,8 +171,8 @@ begin
         IDEList.ItemHeight := ScaleValue(80);
         IDEImage.Width := ScaleValue(64);
         IDEImage.Height := ScaleValue(64);
-        IDEImage.Margins.Top := ScaleValue(8);
-        IDEImage.Margins.Bottom := ScaleValue(8);
+        IDEImage.Margins.Top := ScaleValue(12);
+        IDEImage.Margins.Bottom := ScaleValue(12);
         IDECaption.Font.Height := ScaleValue(-22);
         IDECaption.Top := ScaleValue(13);
         IDECaption.Left := ScaleValue(106);
