@@ -30,6 +30,9 @@ type
     btnBig: TMenuItem;
     N1: TMenuItem;
     GlobalConfigButton: TMenuItem;
+    PopConfig: TPopupMenu;
+    btnConfigurationFor: TMenuItem;
+    btnGlobalConfiguration: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
     procedure ApplicationEventsDeactivate(Sender: TObject);
@@ -54,6 +57,7 @@ type
     procedure btnSmallClick(Sender: TObject);
     procedure btnMediumClick(Sender: TObject);
     procedure btnBigClick(Sender: TObject);
+    procedure btnConfigurationForClick(Sender: TObject);
   private
     Entries: TEntryList;
     InModalDialog: boolean;
@@ -68,12 +72,13 @@ type
     procedure RunSelected;
     function FormConfig: TFormConfig;
     function FormBuild: TFormBuild;
-    procedure ShowConfig(const Card: TConfigCard);
+    procedure ShowLocalConfig(const Card: TConfigCard);
     procedure ShowMessage(const aCaption, aText: string);
     procedure FillVersionsMenu(const Menu: TPopupMenu);
     procedure ShowCaptions;
     procedure DoBuild;
-    procedure DoConfig;
+    procedure DoAllConfig;
+    procedure DoLocalConfig;
     procedure DoGlobalConfig;
     procedure SetItemSize(const ItemSize: TItemSize);
     function ItemIndexWrong: boolean;
@@ -229,7 +234,6 @@ begin
   btnConfig.Caption := '(&C)onfig';
   btnConfig.Width := 160;
   IDECaption.Width := IDECaption.Width - 80;
-  Caption := 'Select IDE  - Press (G) for global configuration.'
 end;
 
 procedure TFormMain.FormKeyDown(Sender: TObject; var Key: Word;
@@ -238,7 +242,7 @@ begin
   if Key = VK_ESCAPE then close;
   ShowCaptions; //if the user is using the keys, we will show them a way to press the buttons.
   if Char(Key) = 'B' then DoBuild;
-  if Char(Key) = 'C' then DoConfig;
+  if Char(Key) = 'C' then DoAllConfig;
   if Char(Key) = 'G' then DoGlobalConfig;
 end;
 
@@ -310,7 +314,7 @@ begin
   Menu.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
 end;
 
-procedure TFormMain.ShowConfig(const Card: TConfigCard);
+procedure TFormMain.ShowLocalConfig(const Card: TConfigCard);
 begin
   if ItemIndexWrong then exit;
 
@@ -337,15 +341,15 @@ begin
   end;
 end;
 
-procedure TFormMain.DoConfig;
+procedure TFormMain.DoLocalConfig;
 begin
-  ShowConfig(TConfigCard.Default);
+  ShowLocalConfig(TConfigCard.Default);
 end;
 
 
 procedure TFormMain.btnConfigClick(Sender: TObject);
 begin
-  DoConfig;
+  DoAllConfig;
 end;
 
 procedure TFormMain.DoGlobalConfig;
@@ -361,6 +365,22 @@ begin
   DoGlobalConfig;
 end;
 
+procedure TFormMain.DoAllConfig;
+begin
+  if ItemIndexWrong then
+  begin
+    btnConfigurationFor.Caption := '-';
+  end
+  else
+  begin
+    //Caption can't start with C because we already pressed C in WmKeyDown, so
+    //This will be selected by default. We could always use "C&onfiguration' so
+    //The key is o instead of C. But C for config, and then C for local config doesn't work.
+    btnConfigurationfor.Caption := 'Local Configuration for ' +  Entries[IDEList.ItemIndex].Id;
+  end;
+  PopConfig.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+end;
+
 procedure TFormMain.DoBuild;
 begin
   if ItemIndexWrong then exit;
@@ -368,7 +388,7 @@ begin
   if (Entries[IDEList.ItemIndex].TmsBuildFiles = nil) or (Entries[IDEList.ItemIndex].SmartSetupLocation.Trim = '') then
   begin
     ShowMessage('Missing configuration', 'Smart Setup is not configured for this IDE. To compile the components, you need to configure it first');
-    ShowConfig(TConfigCard.SmartSetup);
+    ShowLocalConfig(TConfigCard.SmartSetup);
     exit;
   end;
 
@@ -385,6 +405,11 @@ end;
 procedure TFormMain.btnUpdateComponentsClick(Sender: TObject);
 begin
   DoBuild;
+end;
+
+procedure TFormMain.btnConfigurationForClick(Sender: TObject);
+begin
+  DoLocalConfig;
 end;
 
 procedure TFormMain.btnSmallClick(Sender: TObject);
@@ -427,7 +452,7 @@ end;
 
 procedure TFormMain.DelphiVersionsEdit(Sender: TObject);
 begin
-  ShowConfig(TConfigCard.IDEVersions);
+  ShowLocalConfig(TConfigCard.IDEVersions);
 
 end;
 

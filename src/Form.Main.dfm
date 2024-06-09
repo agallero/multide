@@ -5,8 +5,8 @@ object FormMain: TFormMain
   BorderIcons = []
   BorderStyle = bsSizeToolWin
   Caption = 'Select IDE'
-  ClientHeight = 299
-  ClientWidth = 497
+  ClientHeight = 267
+  ClientWidth = 487
   Color = clBtnFace
   CustomTitleBar.Enabled = True
   CustomTitleBar.Height = 58
@@ -45,8 +45,8 @@ object FormMain: TFormMain
   object IDEList: TControlList
     Left = 0
     Top = 0
-    Width = 497
-    Height = 299
+    Width = 487
+    Height = 267
     Align = alClient
     Color = clBtnFace
     ItemCount = 30
@@ -106,7 +106,7 @@ object FormMain: TFormMain
       ExplicitWidth = 286
     end
     object btnUpdateComponents: TControlListButton
-      Left = 379
+      Left = 369
       Top = 0
       Width = 40
       Height = 80
@@ -129,7 +129,7 @@ object FormMain: TFormMain
       ExplicitHeight = 100
     end
     object btnConfig: TControlListButton
-      Left = 419
+      Left = 409
       Top = 0
       Width = 40
       Height = 80
@@ -1306,6 +1306,18 @@ object FormMain: TFormMain
       Caption = '-'
     end
     object GlobalConfigButton: TMenuItem
+      Caption = 'Global Configuration'
+      OnClick = BtnGlobalConfigClick
+    end
+  end
+  object PopConfig: TPopupMenu
+    Left = 288
+    Top = 104
+    object btnConfigurationFor: TMenuItem
+      Caption = 'Configuration for '
+      OnClick = btnConfigurationForClick
+    end
+    object btnGlobalConfiguration: TMenuItem
       Caption = 'Global Configuration'
       OnClick = BtnGlobalConfigClick
     end
