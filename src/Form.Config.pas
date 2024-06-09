@@ -45,12 +45,15 @@ type
     lbIDEs: TListBox;
     Button1: TButton;
     Button2: TButton;
+    edExtraParams: TLabeledEdit;
+    btnBDSInfo: TButton;
     procedure FormCreate(Sender: TObject);
     procedure TabsBeforeDrawItem(AIndex: Integer; ACanvas: TCanvas;
       ARect: TRect; AState: TOwnerDrawState);
     procedure TabsItemClick(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure ImageContainerClick(Sender: TObject);
+    procedure btnBDSInfoClick(Sender: TObject);
   private
     FEntry: TEntry;
     function ValidateConfName(const ConfName: string): string;
@@ -62,7 +65,8 @@ type
   end;
 
 implementation
-uses Theme.Manager, Global.Config, Character, Form.Message, IOUtils, Util.Screen;
+uses Theme.Manager, Global.Config, Character, Form.Message, IOUtils, Util.Screen,
+     ShellAPI;
 
 {$R *.dfm}
 
@@ -89,6 +93,11 @@ begin
   //After this registry entry, there will be subentries that will make it longer.
   if ConfName.Length + RegistryKeys.Embarcadero.Length > 100 then exit('Name is too long.');
   for var c in ConfName do if (ord(c) < 32) or (c='\') then exit('It has invalid characters');
+end;
+
+procedure TFormConfig.btnBDSInfoClick(Sender: TObject);
+begin
+  ShellExecute(0, '', 'https://docwiki.embarcadero.com/RADStudio/en/IDE_Command_Line_Switches_and_Options', 0, '', SW_SHOWNORMAL);
 end;
 
 procedure TFormConfig.btnOkClick(Sender: TObject);
@@ -121,6 +130,7 @@ begin
 
   FEntry.TmsBuildFiles := MemoConfFiles.Lines.ToStringArray;
   FEntry.SmartSetupLocation := edSmartSetupLocation.Text;
+  FEntry.ExtraParamters := edExtraParams.Text;
 end;
 
 procedure TFormConfig.FormCreate(Sender: TObject);
@@ -193,6 +203,7 @@ begin
   edSmartSetupLocation.Text := FEntry.SmartSetupLocation;
   MemoConfFiles.Text := '';
   MemoConfFiles.Lines.AddStrings(FEntry.TmsBuildFiles);
+  edExtraParams.Text := FEntry.ExtraParamters;
 
 end;
 

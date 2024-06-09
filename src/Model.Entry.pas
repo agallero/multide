@@ -13,13 +13,15 @@ TEntry = class
     FOtherVersions: TArray<TDelphiVersion>;
     FTmsBuildFiles: TArray<string>;
     FSmartSetupLocation: string;
+    FExtraParameters: string;
   public
     property Id: string read FId write FId;
-    property DelphiVersion: TDelphiVersion read FDelphiVersion;
     property Icon: string read FIcon write FIcon;
+    property DelphiVersion: TDelphiVersion read FDelphiVersion;
     property OtherVersions: TArray<TDelphiVersion> read FOtherVersions;
     property TmsBuildFiles: TArray<string> read FTmsBuildFiles write FTmsBuildFiles;
     property SmartSetupLocation: string read FSmartSetupLocation write FSmartSetupLocation;
+    property ExtraParamters: string read FExtraParameters write FExtraParameters;
 
     constructor Create(const aId: string; const aIcon: string);
 end;

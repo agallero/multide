@@ -378,7 +378,13 @@ begin
     //The key is o instead of C. But C for config, and then C for local config doesn't work.
     btnConfigurationfor.Caption := 'Local Configuration for ' +  Entries[IDEList.ItemIndex].Id;
   end;
-  PopConfig.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+
+  //Could popup at the wrong place if using the keyboard and the mouse is somewhere else.
+  //PopConfig.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+  var P := IDEList.GetItemRect(IDEList.ItemIndex);
+  P.Offset(-btnConfig.Width, 0);
+  P := ClientToScreen(P);
+  PopConfig.Popup(p.Right, (p.Top + p.Bottom) div 2);
 end;
 
 procedure TFormMain.DoBuild;
