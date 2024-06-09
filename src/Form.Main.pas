@@ -65,6 +65,7 @@ type
     FFormBuild: TFormBuild;
     ControlClicked: boolean;
     ItemSize: TItemSize;
+    ShowingCaptions: boolean;
 
 
     procedure LoadIDEs;
@@ -234,6 +235,7 @@ begin
   btnConfig.Caption := '(&C)onfig';
   btnConfig.Width := 160;
   IDECaption.Width := IDECaption.Width - 80;
+  ShowingCaptions := true;
 end;
 
 procedure TFormMain.FormKeyDown(Sender: TObject; var Key: Word;
@@ -243,14 +245,27 @@ begin
   ShowCaptions; //if the user is using the keys, we will show them a way to press the buttons.
   if Char(Key) = 'B' then DoBuild;
   if Char(Key) = 'C' then DoAllConfig;
+  if Char(Key) = 'L' then DoLocalConfig;
   if Char(Key) = 'G' then DoGlobalConfig;
+  if Char(Key) in ['1'..'9'] then
+  begin
+    var Index := Key - ord('1');
+    if (Index < IDEList.ItemCount) then
+    begin
+      IDEList.ItemIndex := Index;
+      RunSelected;
+    end;
+  end;
 end;
 
 procedure TFormMain.IDEListBeforeDrawItem(AIndex: Integer; ACanvas: TCanvas;
   ARect: TRect; AState: TOwnerDrawState);
 begin
   if (AIndex < 0) or (AIndex >= Entries.Count) then exit;
-  IDECaption.Caption := Entries[AIndex].Id;
+  var Id := Entries[AIndex].Id;
+  if ShowingCaptions and (AIndex < 9) then Id := '(' + IntToStr(AIndex + 1) + ') ' + Id;
+
+  IDECaption.Caption := Id;
   IDEImage.ImageName := TPath.GetFileName(Entries[AIndex].Icon);
   IDEVersion.Caption := 'Delphi 12';//Entries[AIndex].DelphiVersion';
   IDEVersion.Width := ACanvas.TextWidth(IDEVersion.Caption);
