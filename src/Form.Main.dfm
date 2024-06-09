@@ -64,7 +64,6 @@ object FormMain: TFormMain
     OnBeforeDrawItem = IDEListBeforeDrawItem
     OnClick = IDEListItemClick
     OnKeyDown = IDEListKeyDown
-    OnItemClick = IDEListItemClick
     object IDEImage: TVirtualImage
       AlignWithMargins = True
       Left = 8
