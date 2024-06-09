@@ -33,6 +33,7 @@ object FormMain: TFormMain
   GlassFrame.Enabled = True
   GlassFrame.Top = 58
   KeyPreview = True
+  PopupMenu = AppPopupMenu
   Position = poScreenCenter
   StyleElements = [seFont]
   OnCloseQuery = FormCloseQuery
@@ -1285,5 +1286,28 @@ object FormMain: TFormMain
   object PopupVersions: TPopupMenu
     Left = 88
     Top = 144
+  end
+  object AppPopupMenu: TPopupMenu
+    Left = 168
+    Top = 112
+    object btnSmall: TMenuItem
+      Caption = 'Small'
+      OnClick = btnSmallClick
+    end
+    object btnMedium: TMenuItem
+      Caption = 'Medium'
+      OnClick = btnMediumClick
+    end
+    object btnBig: TMenuItem
+      Caption = 'Big'
+      OnClick = btnBigClick
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object GlobalConfigButton: TMenuItem
+      Caption = 'Global Configuration'
+      OnClick = BtnGlobalConfigClick
+    end
   end
 end

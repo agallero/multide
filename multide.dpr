@@ -13,11 +13,28 @@ uses
   Util.AppInstances in 'src\Util.AppInstances.pas',
   ICO.Creator in 'src\ICO.Creator.pas',
   Form.Build in 'src\Form.Build.pas' {FormBuild},
-  Util.Screen in 'src\Util.Screen.pas';
+  Util.Screen in 'src\Util.Screen.pas',
+  Launcher.BDS in 'src\Launcher.BDS.pas',
+  Launcher.Shortcuts in 'src\Launcher.Shortcuts.pas';
 
 {$R *.res}
 
+function ConcatParams(const Start: integer): string;
 begin
+  Result := '';
+  for var i := Start to ParamCount do
+  begin
+    Result := Result + ' "' + ParamStr(i) + '"';
+  end;
+
+end;
+
+begin
+  if ParamCount > 1 then
+  begin
+    TBDSLauncher.Launch(ParamStr(1), ParamStr(2), ConcatParams(3));
+    exit;
+  end;
   if AppIsAlreadyRunning then exit;
 
   Application.Initialize;

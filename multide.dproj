@@ -155,6 +155,8 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="src\Util.Screen.pas"/>
+        <DCCReference Include="src\Launcher.BDS.pas"/>
+        <DCCReference Include="src\Launcher.Shortcuts.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

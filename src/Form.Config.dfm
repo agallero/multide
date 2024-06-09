@@ -98,7 +98,7 @@ object FormConfig: TFormConfig
       Width = 421
       Height = 185
       Align = alClient
-      ActiveCard = CardIDEVersions
+      ActiveCard = CardGeneral
       BevelOuter = bvNone
       Caption = 'CardPanelOptions'
       ParentColor = True
@@ -141,7 +141,7 @@ object FormConfig: TFormConfig
         object edConfigName: TLabeledEdit
           Left = 16
           Top = 32
-          Width = 372
+          Width = 362
           Height = 23
           Anchors = [akLeft, akTop, akRight]
           EditLabel.Width = 109
@@ -153,7 +153,7 @@ object FormConfig: TFormConfig
         object edImageFilename: TLabeledEdit
           Left = 84
           Top = 121
-          Width = 275
+          Width = 265
           Height = 23
           Anchors = [akLeft, akTop, akRight]
           EditLabel.Width = 84
@@ -161,7 +161,6 @@ object FormConfig: TFormConfig
           EditLabel.Caption = '&Image Filename'
           TabOrder = 1
           Text = ''
-          ExplicitWidth = 285
         end
         object AdditionalImageSelect: TButton
           Left = 375
@@ -290,7 +289,7 @@ object FormConfig: TFormConfig
         object edSmartSetupLocation: TLabeledEdit
           Left = 6
           Top = 24
-          Width = 382
+          Width = 372
           Height = 23
           Anchors = [akLeft, akTop, akRight]
           EditLabel.Width = 110
@@ -303,7 +302,7 @@ object FormConfig: TFormConfig
         object MemoConfFiles: TMemo
           Left = 6
           Top = 81
-          Width = 382
+          Width = 372
           Height = 98
           Anchors = [akLeft, akTop, akRight, akBottom]
           ScrollBars = ssVertical
@@ -327,7 +326,7 @@ object FormConfig: TFormConfig
         421
         41)
       object btnOk: TButton
-        Left = 232
+        Left = 222
         Top = 8
         Width = 75
         Height = 25
@@ -337,10 +336,10 @@ object FormConfig: TFormConfig
         ModalResult = 1
         TabOrder = 0
         OnClick = btnOkClick
-        ExplicitLeft = 222
+        ExplicitLeft = 212
       end
       object btnCancel: TButton
-        Left = 313
+        Left = 303
         Top = 8
         Width = 75
         Height = 25
@@ -349,7 +348,7 @@ object FormConfig: TFormConfig
         Caption = 'Cancel'
         ModalResult = 2
         TabOrder = 1
-        ExplicitLeft = 303
+        ExplicitLeft = 293
       end
     end
   end

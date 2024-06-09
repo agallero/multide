@@ -24,6 +24,12 @@ type
     ButtonVirtualImages: TVirtualImageList;
     IDEVersion: TControlListButton;
     PopupVersions: TPopupMenu;
+    AppPopupMenu: TPopupMenu;
+    btnSmall: TMenuItem;
+    btnMedium: TMenuItem;
+    btnBig: TMenuItem;
+    N1: TMenuItem;
+    GlobalConfigButton: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
     procedure ApplicationEventsDeactivate(Sender: TObject);
@@ -45,6 +51,9 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure btnMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure btnSmallClick(Sender: TObject);
+    procedure btnMediumClick(Sender: TObject);
+    procedure btnBigClick(Sender: TObject);
   private
     Entries: TEntryList;
     InModalDialog: boolean;
@@ -67,6 +76,7 @@ type
     procedure DoConfig;
     procedure DoGlobalConfig;
     procedure SetItemSize(const ItemSize: TItemSize);
+    function ItemIndexWrong: boolean;
     { Private declarations }
   public
     { Public declarations }
@@ -77,7 +87,7 @@ var
 
 implementation
 uses Theme.Manager, Model.Reader, IOUtils, Generics.Defaults,
-     Generics.Collections;
+     Generics.Collections, Launcher.Shortcuts;
 
 {$R *.dfm}
 
@@ -219,6 +229,7 @@ begin
   btnConfig.Caption := '(&C)onfig';
   btnConfig.Width := 160;
   IDECaption.Width := IDECaption.Width - 80;
+  Caption := 'Select IDE  - Press (G) for global configuration.'
 end;
 
 procedure TFormMain.FormKeyDown(Sender: TObject; var Key: Word;
@@ -246,12 +257,18 @@ begin
   if not ControlClicked then RunSelected;
 end;
 
+function TFormMain.ItemIndexWrong: boolean;
+begin
+  Result := (IDEList.ItemIndex < 0) or (IDEList.ItemIndex >= Entries.Count);
+end;
+
 procedure TFormMain.RunSelected;
 begin
-  ItemSize := TItemSize(IDEList.ItemIndex);
-  SetItemSize(ItemSize);
-  TScreenUtil.PutInPosition(Self, IDEList.ItemHeight, IDEList.ItemCount);
-//  Close;
+  if ItemIndexWrong then exit;
+
+  var Entry := Entries[IDEList.ItemIndex];
+  TShorcutLauncher.Launch(Entry.Id);
+  Close;
 
 end;
 
@@ -295,7 +312,7 @@ end;
 
 procedure TFormMain.ShowConfig(const Card: TConfigCard);
 begin
-  if (IDEList.ItemIndex < 0) or (IDEList.ItemIndex >= Entries.Count) then exit;
+  if ItemIndexWrong then exit;
 
   InModalDialog := true;
   try
@@ -325,6 +342,7 @@ begin
   ShowConfig(TConfigCard.Default);
 end;
 
+
 procedure TFormMain.btnConfigClick(Sender: TObject);
 begin
   DoConfig;
@@ -345,7 +363,7 @@ end;
 
 procedure TFormMain.DoBuild;
 begin
-  if (IDEList.ItemIndex < 0) or (IDEList.ItemIndex >= Entries.Count) then exit;
+  if ItemIndexWrong then exit;
 
   if (Entries[IDEList.ItemIndex].TmsBuildFiles = nil) or (Entries[IDEList.ItemIndex].SmartSetupLocation.Trim = '') then
   begin
@@ -369,6 +387,26 @@ begin
   DoBuild;
 end;
 
+procedure TFormMain.btnSmallClick(Sender: TObject);
+begin
+  ItemSize := TItemSize.Small;
+  SetItemSize(ItemSize);
+  TScreenUtil.PutInPosition(Self, IDEList.ItemHeight, IDEList.ItemCount);
+end;
+
+procedure TFormMain.btnMediumClick(Sender: TObject);
+begin
+  ItemSize := TItemSize.Medium;
+  SetItemSize(ItemSize);
+  TScreenUtil.PutInPosition(Self, IDEList.ItemHeight, IDEList.ItemCount);
+end;
+
+procedure TFormMain.btnBigClick(Sender: TObject);
+begin
+  ItemSize := TItemSize.Big;
+  SetItemSize(ItemSize);
+  TScreenUtil.PutInPosition(Self, IDEList.ItemHeight, IDEList.ItemCount);
+end;
 
 procedure TFormMain.btnMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
