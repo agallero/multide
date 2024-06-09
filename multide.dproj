@@ -170,8 +170,7 @@
                 <Source>
                     <Source Name="MainSource">multide.dpr</Source>
                 </Source>
-                <Excluded_Packages>
-                </Excluded_Packages>
+                <Excluded_Packages/>
             </Delphi.Personality>
             <Deployment Version="4">
                 <DeployFile LocalName="Win32\Debug\multide.exe" Configuration="Debug" Class="ProjectOutput">

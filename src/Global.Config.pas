@@ -15,7 +15,7 @@ type
 end;
 
 implementation
-uses IOUtils;
+uses IOUtils, SysUtils;
 
 { Config }
 
