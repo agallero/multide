@@ -8,7 +8,7 @@ uses
   Vcl.StdCtrls, System.Win.TaskbarCore, Vcl.Taskbar, Vcl.ComCtrls,
   Vcl.ControlList, Vcl.VirtualImage, Model.Entry, Vcl.BaseImageCollection,
   Vcl.ImageCollection, System.ImageList, Vcl.ImgList, Vcl.VirtualImageList,
-  Form.Config, Form.Message, Vcl.Menus, Vcl.ExtCtrls, Form.Build, Util.Screen;
+  Form.Config, Form.Message, Vcl.Menus, Vcl.ExtCtrls, Form.Build, Util.Screen, Global.Config;
 
 type
   TFormMain = class(TForm)
@@ -51,6 +51,8 @@ type
     FFormConfig: TFormConfig;
     FFormBuild: TFormBuild;
     ControlClicked: boolean;
+    ItemSize: TItemSize;
+
 
     procedure LoadIDEs;
     procedure LoadIDEIcons;
@@ -64,6 +66,7 @@ type
     procedure DoBuild;
     procedure DoConfig;
     procedure DoGlobalConfig;
+    procedure SetItemSize(const ItemSize: TItemSize);
     { Private declarations }
   public
     { Public declarations }
@@ -74,7 +77,7 @@ var
 
 implementation
 uses Theme.Manager, Model.Reader, IOUtils, Generics.Defaults,
-     Generics.Collections, Global.Config;
+     Generics.Collections;
 
 {$R *.dfm}
 
@@ -133,10 +136,62 @@ begin
   Result := FFormConfig;
 end;
 
+procedure TFormMain.SetItemSize(const ItemSize: TItemSize);
+begin
+  case ItemSize of
+    TItemSize.Small:
+      begin
+        IDEList.ItemHeight := ScaleValue(30);
+        IDEImage.Width := ScaleValue(25);
+        IDEImage.Height := ScaleValue(25);
+        IDEImage.Margins.Top := ScaleValue(0);
+        IDEImage.Margins.Bottom := ScaleValue(0);
+        IDECaption.Font.Size := ScaleValue(5);
+        IDECaption.Top := ScaleValue(6);
+        IDECaption.Left := ScaleValue(40);
+        IDEVersion.Visible := false;
+      end;
+
+    TItemSize.Medium:
+      begin
+        IDEList.ItemHeight := ScaleValue(56);
+        IDEImage.Width := ScaleValue(50);
+        IDEImage.Height := ScaleValue(50);
+        IDEImage.Margins.Top := ScaleValue(0);
+        IDEImage.Margins.Bottom := ScaleValue(0);
+        IDECaption.Font.Size := ScaleValue(7);
+        IDECaption.Top := ScaleValue(8);
+        IDECaption.Left := ScaleValue(90);
+        IDEVersion.Visible := true;
+        IDEVersion.Left := ScaleValue(90);
+        IDEVersion.Top := ScaleValue(24);
+      end;
+    TItemSize.Big:
+      begin
+        IDEList.ItemHeight := ScaleValue(80);
+        IDEImage.Width := ScaleValue(64);
+        IDEImage.Height := ScaleValue(64);
+        IDEImage.Margins.Top := ScaleValue(8);
+        IDEImage.Margins.Bottom := ScaleValue(8);
+        IDECaption.Font.Height := ScaleValue(-22);
+        IDECaption.Top := ScaleValue(13);
+        IDECaption.Left := ScaleValue(106);
+        IDEVersion.Visible := true;
+        IDEVersion.Left := ScaleValue(106);
+        IDEVersion.Top := ScaleValue(30);
+      end;
+
+  end;
+
+end;
+
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
   Entries := TEntryList.Create;
   LoadIDEs;
+  ItemSize := TItemSize.Medium;
+  SetItemSize(ItemSize);
+
   TScreenUtil.PutInPosition(Self, IDEList.ItemHeight, IDEList.ItemCount);
   TThemeManager.UpdateControl(Self);
   SetWindowLong(handle, GWL_EXSTYLE,
@@ -193,8 +248,10 @@ end;
 
 procedure TFormMain.RunSelected;
 begin
- // ShowMessage(inttostr(IDEList.ItemIndex));
-  Close;
+  ItemSize := TItemSize(IDEList.ItemIndex);
+  SetItemSize(ItemSize);
+  TScreenUtil.PutInPosition(Self, IDEList.ItemHeight, IDEList.ItemCount);
+//  Close;
 
 end;
 

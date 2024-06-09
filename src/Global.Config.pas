@@ -1,7 +1,9 @@
 unit Global.Config;
-
+{$SCOPEDENUMS ON}
 interface
 type
+  TItemSize = (Small, Medium, Big);
+
   RegistryKeys = record
     public
       const Embarcadero = 'Software\Embarcadero';
@@ -11,7 +13,6 @@ type
   Config = record
   public
     class function IDEImagePath(const FileName: string): string; static;
-
 end;
 
 implementation

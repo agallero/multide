@@ -156,7 +156,7 @@ object FormMain: TFormMain
       Width = 286
       Height = 32
       Cursor = crHandPoint
-      Anchors = [akLeft, akTop, akRight, akBottom]
+      Anchors = [akLeft, akTop, akRight]
       Caption = 'No version'
       PopupMenu = PopupVersions
       Style = clbkLink
