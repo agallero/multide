@@ -11,7 +11,8 @@ uses
   Theme.Manager in 'src\Theme.Manager.pas',
   Form.Message in 'src\Form.Message.pas' {FormMessage},
   Util.AppInstances in 'src\Util.AppInstances.pas',
-  ICO.Creator in 'src\ICO.Creator.pas';
+  ICO.Creator in 'src\ICO.Creator.pas',
+  Form.Build in 'src\Form.Build.pas' {FormBuild};
 
 {$R *.res}
 

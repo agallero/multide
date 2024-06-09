@@ -10,16 +10,16 @@ object FormMain: TFormMain
   Color = clBtnFace
   CustomTitleBar.Enabled = True
   CustomTitleBar.Height = 58
-  CustomTitleBar.BackgroundColor = 6160618
+  CustomTitleBar.BackgroundColor = 8288617
   CustomTitleBar.ForegroundColor = clWhite
   CustomTitleBar.InactiveBackgroundColor = clWhite
   CustomTitleBar.InactiveForegroundColor = 10066329
   CustomTitleBar.ButtonForegroundColor = clWhite
-  CustomTitleBar.ButtonBackgroundColor = 6160618
-  CustomTitleBar.ButtonHoverForegroundColor = clWhite
-  CustomTitleBar.ButtonHoverBackgroundColor = 5046464
-  CustomTitleBar.ButtonPressedForegroundColor = clWhite
-  CustomTitleBar.ButtonPressedBackgroundColor = 3408000
+  CustomTitleBar.ButtonBackgroundColor = 8288617
+  CustomTitleBar.ButtonHoverForegroundColor = 65793
+  CustomTitleBar.ButtonHoverBackgroundColor = 9736063
+  CustomTitleBar.ButtonPressedForegroundColor = 65793
+  CustomTitleBar.ButtonPressedBackgroundColor = 11644578
   CustomTitleBar.ButtonInactiveForegroundColor = 10066329
   CustomTitleBar.ButtonInactiveBackgroundColor = clWhite
   Constraints.MinHeight = 100
@@ -62,10 +62,9 @@ object FormMain: TFormMain
     TabOrder = 0
     SmoothMouseWheelScrolling = True
     OnBeforeDrawItem = IDEListBeforeDrawItem
+    OnClick = IDEListItemClick
     OnKeyDown = IDEListKeyDown
-    OnMouseUp = IDEListMouseUp
-    ExplicitWidth = 507
-    ExplicitHeight = 329
+    OnItemClick = IDEListItemClick
     object IDEImage: TVirtualImage
       AlignWithMargins = True
       Left = 8
@@ -124,6 +123,8 @@ object FormMain: TFormMain
       ImageName = 'update'
       Style = clbkToolButton
       OnClick = btnUpdateComponentsClick
+      OnMouseDown = btnMouseDown
+      OnMouseUp = btnMouseUp
       ExplicitLeft = 367
       ExplicitHeight = 100
     end
@@ -145,6 +146,8 @@ object FormMain: TFormMain
       ImageName = 'config'
       Style = clbkToolButton
       OnClick = btnConfigClick
+      OnMouseDown = btnMouseDown
+      OnMouseUp = btnMouseUp
       ExplicitLeft = 319
       ExplicitHeight = 100
     end
@@ -159,6 +162,8 @@ object FormMain: TFormMain
       PopupMenu = PopupVersions
       Style = clbkLink
       OnClick = IDEVersionClick
+      OnMouseDown = btnMouseDown
+      OnMouseUp = btnMouseUp
     end
   end
   object ApplicationEvents: TApplicationEvents

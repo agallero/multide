@@ -150,6 +150,10 @@
         </DCCReference>
         <DCCReference Include="src\Util.AppInstances.pas"/>
         <DCCReference Include="src\ICO.Creator.pas"/>
+        <DCCReference Include="src\Form.Build.pas">
+            <Form>FormBuild</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

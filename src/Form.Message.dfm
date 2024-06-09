@@ -10,6 +10,7 @@ object FormMessage: TFormMessage
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  Position = poScreenCenter
   ShowInTaskBar = True
   OnCreate = FormCreate
   TextHeight = 15
@@ -28,7 +29,7 @@ object FormMessage: TFormMessage
       481
       41)
     object ButtonOk: TButton
-      Left = 193
+      Left = 189
       Top = 8
       Width = 75
       Height = 25
@@ -38,7 +39,7 @@ object FormMessage: TFormMessage
       Default = True
       ModalResult = 1
       TabOrder = 0
-      ExplicitLeft = 188
+      ExplicitLeft = 184
     end
   end
   object MessagePanel: TPanel
@@ -52,10 +53,8 @@ object FormMessage: TFormMessage
     Color = clWhite
     ParentBackground = False
     TabOrder = 1
-    ExplicitLeft = 160
-    ExplicitTop = 64
-    ExplicitWidth = 185
-    ExplicitHeight = 41
+    ExplicitWidth = 471
+    ExplicitHeight = 62
     object LblMessage: TLabel
       AlignWithMargins = True
       Left = 20

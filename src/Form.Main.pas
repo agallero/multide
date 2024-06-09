@@ -8,7 +8,7 @@ uses
   Vcl.StdCtrls, System.Win.TaskbarCore, Vcl.Taskbar, Vcl.ComCtrls,
   Vcl.ControlList, Vcl.VirtualImage, Model.Entry, Vcl.BaseImageCollection,
   Vcl.ImageCollection, System.ImageList, Vcl.ImgList, Vcl.VirtualImageList,
-  Form.Config, Form.Message, Vcl.Menus, Vcl.ExtCtrls;
+  Form.Config, Form.Message, Vcl.Menus, Vcl.ExtCtrls, Form.Build;
 
 type
   TFormMain = class(TForm)
@@ -34,24 +34,30 @@ type
     procedure IDEListKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure btnConfigClick(Sender: TObject);
-    procedure IDEListMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
     procedure btnUpdateComponentsClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure IDEVersionClick(Sender: TObject);
     procedure DelphiVersionsClick(Sender: TObject);
     procedure DelphiVersionsEdit(Sender: TObject);
     procedure BtnGlobalConfigClick(Sender: TObject);
+    procedure IDEListItemClick(Sender: TObject);
+    procedure btnMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure btnMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   private
     Entries: TEntryList;
     InModalDialog: boolean;
     FFormConfig: TFormConfig;
+    FFormBuild: TFormBuild;
+    ControlClicked: boolean;
 
     procedure PutInPosition;
     procedure LoadIDEs;
     procedure LoadIDEIcons;
     procedure RunSelected;
     function FormConfig: TFormConfig;
+    function FormBuild: TFormBuild;
     procedure ShowConfig(const Card: TConfigCard);
     procedure ShowMessage(const aCaption, aText: string);
     procedure FillVersionsMenu(const Menu: TPopupMenu);
@@ -143,6 +149,12 @@ begin
   CanClose := not InModalDialog;
 end;
 
+function TFormMain.FormBuild: TFormBuild;
+begin
+  if FFormBuild = nil then FFormBuild := TFormBuild.Create(Self);
+  Result := FFormBuild;
+end;
+
 function TFormMain.FormConfig: TFormConfig;
 begin
   if FFormConfig = nil then FFormConfig := TFormConfig.Create(Self);
@@ -202,6 +214,11 @@ begin
   IDEVersion.Width := ACanvas.TextWidth(IDEVersion.Caption);
 end;
 
+procedure TFormMain.IDEListItemClick(Sender: TObject);
+begin
+  if not ControlClicked then RunSelected;
+end;
+
 procedure TFormMain.RunSelected;
 begin
  // ShowMessage(inttostr(IDEList.ItemIndex));
@@ -214,12 +231,6 @@ procedure TFormMain.IDEListKeyDown(Sender: TObject; var Key: Word;
 begin
   if Key = VK_RETURN then RunSelected;
 
-end;
-
-procedure TFormMain.IDEListMouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  // RunSelected;
 end;
 
 procedure TFormMain.FillVersionsMenu(const Menu: TPopupMenu);
@@ -305,8 +316,23 @@ end;
 
 procedure TFormMain.DoBuild;
 begin
-  ShowMessage('Missing configuration', 'Smart Setup is not configured for this IDE. To compile the components, you need to configure it first');
-  ShowConfig(TConfigCard.SmartSetup);
+  if (IDEList.ItemIndex < 0) or (IDEList.ItemIndex >= Entries.Count) then exit;
+
+  if (Entries[IDEList.ItemIndex].TmsBuildFiles = nil) or (Entries[IDEList.ItemIndex].SmartSetupLocation.Trim = '') then
+  begin
+    ShowMessage('Missing configuration', 'Smart Setup is not configured for this IDE. To compile the components, you need to configure it first');
+    ShowConfig(TConfigCard.SmartSetup);
+    exit;
+  end;
+
+  InModalDialog := true;
+  try
+    FormBuild.SetIDE(Entries[IDEList.ItemIndex]);
+    FormBuild.ShowModal;
+  finally
+    InModalDialog := false;
+  end;
+
 end;
 
 procedure TFormMain.btnUpdateComponentsClick(Sender: TObject);
@@ -314,6 +340,18 @@ begin
   DoBuild;
 end;
 
+
+procedure TFormMain.btnMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  ControlClicked := true;
+end;
+
+procedure TFormMain.btnMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  ControlClicked := false;
+end;
 
 procedure TFormMain.DelphiVersionsClick(Sender: TObject);
 begin
