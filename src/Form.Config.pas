@@ -128,6 +128,12 @@ end;
 
 procedure TFormConfig.ImageContainerClick(Sender: TObject);
 begin
+  try
+    OpenPictureDialog.FileName := TPath.GetFullPath(FEntry.Icon);
+    OpenPictureDialog.InitialDir := TPath.GetDirectoryName( TPath.GetFullPath(FEntry.Icon));
+  except
+
+  end;
   if not OpenPictureDialog.Execute then exit;
   if (OpenPictureDialog.FileName = '') or not TFile.Exists(OpenPictureDialog.FileName) then
     raise Exception.Create('Cannot find the file "' + OpenPictureDialog.FileName + '"');
@@ -171,7 +177,14 @@ begin
     IdeImage.Picture := nil;
     ShowMessage('Error loading ' + FEntry.Icon);
   end;
-  edImageFilename.Text := FEntry.Icon;
+
+  var IconFileName := FEntry.Icon;
+  try
+    var RelativeFileName := ExtractRelativePath(TPath.GetFullPath(Application.ExeName), FEntry.Icon);
+    if not RelativeFileName.Contains('..') then IconFileName := RelativeFileName;
+  except
+  end;
+  edImageFilename.Text := IconFileName;
 
   edSmartSetupLocation.Text := FEntry.SmartSetupLocation;
   MemoConfFiles.Text := '';
