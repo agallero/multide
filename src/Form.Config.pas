@@ -62,7 +62,7 @@ type
   end;
 
 implementation
-uses Theme.Manager, Global.Config, Character, Form.Message, IOUtils;
+uses Theme.Manager, Global.Config, Character, Form.Message, IOUtils, Util.Screen;
 
 {$R *.dfm}
 
@@ -110,7 +110,14 @@ begin
     //rename registry key and my docs.
   end;
 
-  FEntry.Icon := edImageFilename.Text;
+  var IconFileName := edImageFilename.Text;
+  try
+    var RelativeFileName := ExtractRelativePath(TPath.GetFullPath(Application.ExeName), edImageFilename.Text);
+    if not RelativeFileName.Contains('..') then IconFileName := RelativeFileName;
+  except
+  end;
+
+  FEntry.Icon := IconFileName;
 
   FEntry.TmsBuildFiles := MemoConfFiles.Lines.ToStringArray;
   FEntry.SmartSetupLocation := edSmartSetupLocation.Text;
@@ -119,6 +126,8 @@ end;
 procedure TFormConfig.FormCreate(Sender: TObject);
 begin
   TThemeManager.UpdateControl(Self);
+  TScreenUtil.PutInPosition(Self);
+
   Tabs.ItemCount := CardPanelOptions.CardCount;
   Tabs.ItemIndex := 0;
   CardPanelOptions.ActiveCardIndex := 0;
@@ -130,17 +139,18 @@ procedure TFormConfig.ImageContainerClick(Sender: TObject);
 begin
   try
     OpenPictureDialog.FileName := TPath.GetFullPath(FEntry.Icon);
-    OpenPictureDialog.InitialDir := TPath.GetDirectoryName( TPath.GetFullPath(FEntry.Icon));
+    OpenPictureDialog.InitialDir := TPath.GetDirectoryName(TPath.GetFullPath(FEntry.Icon));
   except
 
   end;
-  if not OpenPictureDialog.Execute then exit;
+  if not OpenPictureDialog.Execute(Self.Handle) then
+  begin
+    exit;
+  end;
   if (OpenPictureDialog.FileName = '') or not TFile.Exists(OpenPictureDialog.FileName) then
     raise Exception.Create('Cannot find the file "' + OpenPictureDialog.FileName + '"');
   edImageFilename.Text := OpenPictureDialog.FileName;
   IdeImage.Picture.LoadFromFile(edImageFilename.Text);
-  Self.SetFocus;
-
 end;
 
 procedure TFormConfig.SelectCard(const Card: TConfigCard);
@@ -178,13 +188,7 @@ begin
     ShowMessage('Error loading ' + FEntry.Icon);
   end;
 
-  var IconFileName := FEntry.Icon;
-  try
-    var RelativeFileName := ExtractRelativePath(TPath.GetFullPath(Application.ExeName), FEntry.Icon);
-    if not RelativeFileName.Contains('..') then IconFileName := RelativeFileName;
-  except
-  end;
-  edImageFilename.Text := IconFileName;
+  edImageFilename.Text := TPath.GetFullPath(FEntry.Icon);
 
   edSmartSetupLocation.Text := FEntry.SmartSetupLocation;
   MemoConfFiles.Text := '';

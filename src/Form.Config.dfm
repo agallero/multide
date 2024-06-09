@@ -12,6 +12,7 @@ object FormConfig: TFormConfig
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  PopupMode = pmAuto
   Position = poScreenCenter
   ShowInTaskBar = True
   OnCreate = FormCreate
@@ -112,8 +113,6 @@ object FormConfig: TFormConfig
         Caption = 'General'
         CardIndex = 0
         TabOrder = 0
-        ExplicitWidth = 411
-        ExplicitHeight = 153
         DesignSize = (
           421
           185)
@@ -142,7 +141,7 @@ object FormConfig: TFormConfig
         object edConfigName: TLabeledEdit
           Left = 16
           Top = 32
-          Width = 382
+          Width = 372
           Height = 23
           Anchors = [akLeft, akTop, akRight]
           EditLabel.Width = 109
@@ -150,12 +149,11 @@ object FormConfig: TFormConfig
           EditLabel.Caption = '&Configuration Name'
           TabOrder = 0
           Text = ''
-          ExplicitWidth = 372
         end
         object edImageFilename: TLabeledEdit
           Left = 84
           Top = 121
-          Width = 285
+          Width = 275
           Height = 23
           Anchors = [akLeft, akTop, akRight]
           EditLabel.Width = 84
@@ -163,6 +161,7 @@ object FormConfig: TFormConfig
           EditLabel.Caption = '&Image Filename'
           TabOrder = 1
           Text = ''
+          ExplicitWidth = 285
         end
         object AdditionalImageSelect: TButton
           Left = 375
@@ -191,6 +190,8 @@ object FormConfig: TFormConfig
         Caption = 'IDE Versions'
         CardIndex = 1
         TabOrder = 3
+        ExplicitWidth = 411
+        ExplicitHeight = 153
         DesignSize = (
           421
           185)
@@ -234,6 +235,7 @@ object FormConfig: TFormConfig
             'Delphi 1'
             'Delphi 12')
           TabOrder = 1
+          ExplicitHeight = 65
         end
         object Button1: TButton
           Left = 181
@@ -288,7 +290,7 @@ object FormConfig: TFormConfig
         object edSmartSetupLocation: TLabeledEdit
           Left = 6
           Top = 24
-          Width = 392
+          Width = 382
           Height = 23
           Anchors = [akLeft, akTop, akRight]
           EditLabel.Width = 110
@@ -296,15 +298,17 @@ object FormConfig: TFormConfig
           EditLabel.Caption = '&Smart Setup location'
           TabOrder = 0
           Text = ''
+          ExplicitWidth = 392
         end
         object MemoConfFiles: TMemo
           Left = 6
           Top = 81
-          Width = 392
+          Width = 382
           Height = 98
           Anchors = [akLeft, akTop, akRight, akBottom]
           ScrollBars = ssVertical
           TabOrder = 1
+          ExplicitWidth = 392
         end
       end
     end
@@ -323,7 +327,7 @@ object FormConfig: TFormConfig
         421
         41)
       object btnOk: TButton
-        Left = 242
+        Left = 232
         Top = 8
         Width = 75
         Height = 25
@@ -333,10 +337,10 @@ object FormConfig: TFormConfig
         ModalResult = 1
         TabOrder = 0
         OnClick = btnOkClick
-        ExplicitLeft = 232
+        ExplicitLeft = 222
       end
       object btnCancel: TButton
-        Left = 323
+        Left = 313
         Top = 8
         Width = 75
         Height = 25
@@ -345,7 +349,7 @@ object FormConfig: TFormConfig
         Caption = 'Cancel'
         ModalResult = 2
         TabOrder = 1
-        ExplicitLeft = 313
+        ExplicitLeft = 303
       end
     end
   end

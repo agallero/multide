@@ -154,6 +154,7 @@
             <Form>FormBuild</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="src\Util.Screen.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -183,13 +184,13 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win64\Debug\multide.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="multide.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win64">
                         <RemoteName>multide.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win64\Debug\multide.rsm" Configuration="Debug" Class="DebugSymbols">
+                <DeployFile LocalName="multide.rsm" Configuration="Debug" Class="DebugSymbols">
                     <Platform Name="Win64">
                         <RemoteName>multide.rsm</RemoteName>
                         <Overwrite>true</Overwrite>

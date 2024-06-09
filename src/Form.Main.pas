@@ -8,7 +8,7 @@ uses
   Vcl.StdCtrls, System.Win.TaskbarCore, Vcl.Taskbar, Vcl.ComCtrls,
   Vcl.ControlList, Vcl.VirtualImage, Model.Entry, Vcl.BaseImageCollection,
   Vcl.ImageCollection, System.ImageList, Vcl.ImgList, Vcl.VirtualImageList,
-  Form.Config, Form.Message, Vcl.Menus, Vcl.ExtCtrls, Form.Build;
+  Form.Config, Form.Message, Vcl.Menus, Vcl.ExtCtrls, Form.Build, Util.Screen;
 
 type
   TFormMain = class(TForm)
@@ -52,7 +52,6 @@ type
     FFormBuild: TFormBuild;
     ControlClicked: boolean;
 
-    procedure PutInPosition;
     procedure LoadIDEs;
     procedure LoadIDEIcons;
     procedure RunSelected;
@@ -82,33 +81,6 @@ uses Theme.Manager, Model.Reader, IOUtils, Generics.Defaults,
 procedure TFormMain.ApplicationEventsDeactivate(Sender: TObject);
 begin
   Close;
-end;
-
-procedure TFormMain.PutInPosition;
-const
-  Margin = 10;
-begin
-    var p := Mouse.CursorPos;
-    var r := Screen.MonitorFromPoint(p).WorkareaRect;
-    Self.Position := poDesigned;
-
-    var TitleHeight := Height - ClientHeight;
-    var MaxHeight := Round(r.Height * 0.6);
-    var NewHeight := Entries.Count * IDEList.ItemHeight + Margin + TitleHeight;
-    if NewHeight > MaxHeight then
-    begin
-      //We'll cut the last entry in half so it is clear there are more items.
-      NewHeight := (MaxHeight div IDEList.ItemHeight) * IDEList.ItemHeight + IDEList.ItemHeight div 2 + TitleHeight;
-    end;
-
-    var FormLeft := Max(p.X - Width div 2, r.Left + Margin);
-    FormLeft := Min(FormLeft, r.Right - Width - Margin);
-
-    var FormTop: integer;
-    FormTop := Max(r.Top + Margin, p.Y - TitleHeight - IDEList.ItemHeight div 2);
-    FormTop := Min(FormTop, r.Bottom - NewHeight - Margin);
-
-   Self.SetBounds(FormLeft, FormTop, Width, NewHeight);
 end;
 
 procedure TFormMain.LoadIDEs;
@@ -165,7 +137,7 @@ procedure TFormMain.FormCreate(Sender: TObject);
 begin
   Entries := TEntryList.Create;
   LoadIDEs;
-  PutInPosition;
+  TScreenUtil.PutInPosition(Self, IDEList.ItemHeight, IDEList.ItemCount);
   TThemeManager.UpdateControl(Self);
   SetWindowLong(handle, GWL_EXSTYLE,
      GetWindowLong( application.handle, GWL_EXSTYLE )

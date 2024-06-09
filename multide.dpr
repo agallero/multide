@@ -12,7 +12,8 @@ uses
   Form.Message in 'src\Form.Message.pas' {FormMessage},
   Util.AppInstances in 'src\Util.AppInstances.pas',
   ICO.Creator in 'src\ICO.Creator.pas',
-  Form.Build in 'src\Form.Build.pas' {FormBuild};
+  Form.Build in 'src\Form.Build.pas' {FormBuild},
+  Util.Screen in 'src\Util.Screen.pas';
 
 {$R *.res}
 

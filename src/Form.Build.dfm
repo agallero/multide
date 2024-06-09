@@ -10,8 +10,10 @@ object FormBuild: TFormBuild
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  PopupMode = pmAuto
   Position = poScreenCenter
   ShowInTaskBar = True
+  OnActivate = FormActivate
   OnCreate = FormCreate
   TextHeight = 15
   object MemoLog: TMemo
@@ -21,6 +23,8 @@ object FormBuild: TFormBuild
     Height = 209
     Lines.Strings = (
       'MemoLog')
+    ReadOnly = True
+    ScrollBars = ssVertical
     TabOrder = 0
   end
 end

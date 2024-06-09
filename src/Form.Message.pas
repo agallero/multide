@@ -24,7 +24,7 @@ type
 
 
 implementation
-uses Theme.Manager;
+uses Theme.Manager, Util.Screen;
 
 {$R *.dfm}
 
@@ -33,6 +33,7 @@ uses Theme.Manager;
 procedure TFormMessage.FormCreate(Sender: TObject);
 begin
   TThemeManager.UpdateControl(Self);
+  TScreenUtil.PutInPosition(Self);
 end;
 
 class procedure TFormMessage.Show(const aCaption, aText: string; const aShowInTaskbar: boolean);
