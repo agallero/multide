@@ -47,6 +47,8 @@ type
     Button2: TButton;
     edExtraParams: TLabeledEdit;
     btnBDSInfo: TButton;
+    Button3: TButton;
+    Label1: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure TabsBeforeDrawItem(AIndex: Integer; ACanvas: TCanvas;
       ARect: TRect; AState: TOwnerDrawState);
@@ -97,7 +99,7 @@ end;
 
 procedure TFormConfig.btnBDSInfoClick(Sender: TObject);
 begin
-  ShellExecute(0, '', 'https://docwiki.embarcadero.com/RADStudio/en/IDE_Command_Line_Switches_and_Options', 0, '', SW_SHOWNORMAL);
+  ShellExecute(0, '', 'https://docwiki.embarcadero.com/RADStudio/en/IDE_Command_Line_Switches_and_Options', nil, '', SW_SHOWNORMAL);
 end;
 
 procedure TFormConfig.btnOkClick(Sender: TObject);

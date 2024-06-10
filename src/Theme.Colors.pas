@@ -28,8 +28,25 @@ type
   end;
 
 implementation
-uses Windows, Registry;
+uses Windows, Registry, UIConsts;
 const EmptyColor = TColor(-1);
+
+function LightenOrDarken(const Color: TColor; const AddPercent: double): TColor;
+begin
+  var RGB := TColorRec.ColorToRGB(Color);
+  var AlphaColor := TAlphaColors.Alpha;
+  TAlphaColorRec(AlphaColor).B := (RGB shr 16) and $FF;
+  TAlphaColorRec(AlphaColor).G := (RGB shr 8) and $FF;
+  TAlphaColorRec(AlphaColor).R := (RGB shr 0) and $FF;
+  var H, S, L: single;
+  RGBtoHSL(AlphaColor, H, S, L);
+  var NewL := L + AddPercent;
+  if NewL > 1 then NewL := 1;
+  if NewL < 0 then NewL := 0;
+
+  var NewColor := HSLtoRGB(H, S, NewL);
+  Result := AlphaColorToColor(NewColor);
+end;
 
 function ReadInteger(const Key, Value: string): Integer;
 begin
@@ -78,14 +95,15 @@ begin
   Result := TColors.White;
 end;
 
+const LightOffset = 0.1;
 function StartMenuAltBackColor: TColor;
 begin
-  if GlobalSystemUsesLightTheme then Result := $FFFFFF else Result := 0;
-
+  if GlobalSystemUsesLightTheme then Result := LightenOrDarken(StartMenuBackColor, LightOffset) else Result := LightenOrDarken(StartMenuBackColor, -LightOffset);
 end;
+
 function StartMenuAltTextColor: TColor;
 begin
-  if GlobalSystemUsesLightTheme then Result := 0 else Result := $FFFFFF;
+  if GlobalSystemUsesLightTheme then Result := LightenOrDarken(StartMenuTextColor, -LightOffset) else Result := LightenOrDarken(StartMenuTextColor, LightOffset);
 end;
 { TThemeColors }
 

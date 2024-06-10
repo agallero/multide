@@ -5,8 +5,8 @@ object FormMain: TFormMain
   BorderIcons = []
   BorderStyle = bsSizeToolWin
   Caption = 'Select IDE'
-  ClientHeight = 267
-  ClientWidth = 487
+  ClientHeight = 235
+  ClientWidth = 477
   Color = clBtnFace
   CustomTitleBar.Enabled = True
   CustomTitleBar.Height = 58
@@ -45,8 +45,8 @@ object FormMain: TFormMain
   object IDEList: TControlList
     Left = 0
     Top = 0
-    Width = 487
-    Height = 267
+    Width = 477
+    Height = 235
     Align = alClient
     Color = clBtnFace
     ItemCount = 30
@@ -65,6 +65,8 @@ object FormMain: TFormMain
     OnBeforeDrawItem = IDEListBeforeDrawItem
     OnClick = IDEListItemClick
     OnKeyDown = IDEListKeyDown
+    ExplicitWidth = 487
+    ExplicitHeight = 267
     object IDEImage: TVirtualImage
       AlignWithMargins = True
       Left = 8

@@ -247,7 +247,7 @@ begin
   if Char(Key) = 'C' then DoAllConfig;
   if Char(Key) = 'L' then DoLocalConfig;
   if Char(Key) = 'G' then DoGlobalConfig;
-  if Char(Key) in ['1'..'9'] then
+  if CharInSet(Char(Key), ['1'..'9']) then
   begin
     var Index := Key - ord('1');
     if (Index < IDEList.ItemCount) then

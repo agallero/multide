@@ -13,7 +13,7 @@ uses Controls, Math;
 
 class procedure TScreenUtil.PutInPosition(const Form: TForm; const ItemHeight, ItemCount: integer);
 begin
-    var Margin := Form.ScaleValue(5);
+    var Margin := Form.ScaleValue(2);
     var p := Mouse.CursorPos;
     var r := Screen.MonitorFromPoint(p).WorkareaRect;
     Form.Position := poDesigned;
