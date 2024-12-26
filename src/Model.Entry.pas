@@ -3,8 +3,11 @@ unit Model.Entry;
 interface
 uses Classes, SysUtils, Generics.Collections;
 type
-tdelphiversion =(delphi12);
+  tdelphiversion =(delphi11, delphi12);
+const
+  DelphiVersionName: Array[TDelphiVersion] of string = ('Delphi 11', 'Delphi 12');
 
+type
 TEntry = class
   private
     FId: string;
@@ -36,6 +39,7 @@ constructor TEntry.Create(const aId: string; const aIcon: string);
 begin
   FId := aId;
   FIcon := aIcon;
+  FDelphiVersion := tdelphiversion.delphi12;
 end;
 
 end.

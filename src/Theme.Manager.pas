@@ -1,7 +1,7 @@
 unit Theme.Manager;
 
 interface
-uses  Theme.Colors, Vcl.Controls;
+uses  Theme.Colors, Vcl.Controls, Vcl.Buttons;
 type
  TThemeManager = record
  private
@@ -80,7 +80,7 @@ begin
         continue;
       end;
 
-      if Comp is TControlListButton then
+      if (Comp is TControlListButton) or (Comp is TSpeedButton) then
       begin
         TControlListButton(Comp).Font.Color := TextColor;
         continue;

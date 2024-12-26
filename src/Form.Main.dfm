@@ -5,21 +5,21 @@ object FormMain: TFormMain
   BorderIcons = []
   BorderStyle = bsSizeToolWin
   Caption = 'Select IDE'
-  ClientHeight = 235
+  ClientHeight = 221
   ClientWidth = 477
   Color = clBtnFace
   CustomTitleBar.Enabled = True
   CustomTitleBar.Height = 58
-  CustomTitleBar.BackgroundColor = 8288617
-  CustomTitleBar.ForegroundColor = clWhite
+  CustomTitleBar.BackgroundColor = clWhite
+  CustomTitleBar.ForegroundColor = 65793
   CustomTitleBar.InactiveBackgroundColor = clWhite
   CustomTitleBar.InactiveForegroundColor = 10066329
-  CustomTitleBar.ButtonForegroundColor = clWhite
-  CustomTitleBar.ButtonBackgroundColor = 8288617
+  CustomTitleBar.ButtonForegroundColor = 65793
+  CustomTitleBar.ButtonBackgroundColor = clWhite
   CustomTitleBar.ButtonHoverForegroundColor = 65793
-  CustomTitleBar.ButtonHoverBackgroundColor = 9736063
+  CustomTitleBar.ButtonHoverBackgroundColor = 16053492
   CustomTitleBar.ButtonPressedForegroundColor = 65793
-  CustomTitleBar.ButtonPressedBackgroundColor = 11644578
+  CustomTitleBar.ButtonPressedBackgroundColor = 15395562
   CustomTitleBar.ButtonInactiveForegroundColor = 10066329
   CustomTitleBar.ButtonInactiveBackgroundColor = clWhite
   Constraints.MinHeight = 100
@@ -46,7 +46,7 @@ object FormMain: TFormMain
     Left = 0
     Top = 0
     Width = 477
-    Height = 235
+    Height = 180
     Align = alClient
     Color = clBtnFace
     ItemCount = 30
@@ -65,8 +65,6 @@ object FormMain: TFormMain
     OnBeforeDrawItem = IDEListBeforeDrawItem
     OnClick = IDEListItemClick
     OnKeyDown = IDEListKeyDown
-    ExplicitWidth = 487
-    ExplicitHeight = 267
     object IDEImage: TVirtualImage
       AlignWithMargins = True
       Left = 8
@@ -108,7 +106,7 @@ object FormMain: TFormMain
       ExplicitWidth = 286
     end
     object btnUpdateComponents: TControlListButton
-      Left = 369
+      Left = 359
       Top = 0
       Width = 40
       Height = 80
@@ -131,7 +129,7 @@ object FormMain: TFormMain
       ExplicitHeight = 100
     end
     object btnConfig: TControlListButton
-      Left = 409
+      Left = 399
       Top = 0
       Width = 40
       Height = 80
@@ -166,6 +164,32 @@ object FormMain: TFormMain
       OnClick = IDEVersionClick
       OnMouseDown = btnMouseDown
       OnMouseUp = btnMouseUp
+    end
+  end
+  object PanelFooter: TPanel
+    Left = 0
+    Top = 180
+    Width = 477
+    Height = 41
+    Align = alBottom
+    BevelOuter = bvNone
+    Color = clSilver
+    ShowCaption = False
+    TabOrder = 1
+    object btnGlobalConfig: TSpeedButton
+      Left = 437
+      Top = 0
+      Width = 40
+      Height = 41
+      Margins.Left = 10
+      Margins.Top = 10
+      Align = alRight
+      ImageIndex = 3
+      ImageName = 'global_config'
+      Images = ButtonVirtualImages
+      Flat = True
+      OnClick = ButtonGlobalConfigClick
+      ExplicitLeft = 402
     end
   end
   object ApplicationEvents: TApplicationEvents

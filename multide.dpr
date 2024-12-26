@@ -15,7 +15,8 @@ uses
   Form.Build in 'src\Form.Build.pas' {FormBuild},
   Util.Screen in 'src\Util.Screen.pas',
   Launcher.BDS in 'src\Launcher.BDS.pas',
-  Launcher.Shortcuts in 'src\Launcher.Shortcuts.pas';
+  Launcher.Shortcuts in 'src\Launcher.Shortcuts.pas',
+  Form.GlobalConfig in 'src\Form.GlobalConfig.pas' {FormGlobalConfig};
 
 {$R *.res}
 

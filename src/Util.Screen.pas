@@ -1,17 +1,17 @@
 unit Util.Screen;
 
 interface
-uses Forms, Windows;
+uses Forms, Windows, Types;
 
 type TScreenUtil = record
 public
-  class procedure PutInPosition(const Form: TForm; const ItemHeight: integer = 0; const ItemCount: integer = 0); static;
+  class procedure PutInPosition(const Form: TForm; const ExtraHeight: integer = 0; const ItemHeight: integer = 0; const ItemCount: integer = 0); static;
 end;
 
 implementation
 uses Controls, Math;
 
-class procedure TScreenUtil.PutInPosition(const Form: TForm; const ItemHeight, ItemCount: integer);
+class procedure TScreenUtil.PutInPosition(const Form: TForm; const ExtraHeight, ItemHeight, ItemCount: integer);
 begin
     var Margin := Form.ScaleValue(2);
     var p := Mouse.CursorPos;
@@ -19,7 +19,7 @@ begin
     Form.Position := poDesigned;
     var TitleRect := TRect.Empty;
     AdjustWindowRectExForWindow(TitleRect, WS_OVERLAPPEDWINDOW, false, 0, Form.Handle);
-    var TitleHeight := TitleRect.Height; //Form.Height - Form.ClientHeight;
+    var TitleHeight := TitleRect.Height + ExtraHeight; //Form.Height - Form.ClientHeight;
     var NewHeight := Form.Height;
 
     if ItemHeight > 0 then

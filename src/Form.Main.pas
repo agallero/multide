@@ -8,7 +8,8 @@ uses
   Vcl.StdCtrls, System.Win.TaskbarCore, Vcl.Taskbar, Vcl.ComCtrls,
   Vcl.ControlList, Vcl.VirtualImage, Model.Entry, Vcl.BaseImageCollection,
   Vcl.ImageCollection, System.ImageList, Vcl.ImgList, Vcl.VirtualImageList,
-  Form.Config, Form.Message, Vcl.Menus, Vcl.ExtCtrls, Form.Build, Util.Screen, Global.Config;
+  Form.Config, Form.GlobalConfig, Form.Message, Vcl.Menus, Vcl.ExtCtrls, Form.Build, Util.Screen, Global.Config,
+  Vcl.Buttons;
 
 type
   TFormMain = class(TForm)
@@ -33,6 +34,8 @@ type
     PopConfig: TPopupMenu;
     btnConfigurationFor: TMenuItem;
     btnGlobalConfiguration: TMenuItem;
+    PanelFooter: TPanel;
+    btnGlobalConfig: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
     procedure ApplicationEventsDeactivate(Sender: TObject);
@@ -58,10 +61,12 @@ type
     procedure btnMediumClick(Sender: TObject);
     procedure btnBigClick(Sender: TObject);
     procedure btnConfigurationForClick(Sender: TObject);
+    procedure ButtonGlobalConfigClick(Sender: TObject);
   private
     Entries: TEntryList;
     InModalDialog: boolean;
     FFormConfig: TFormConfig;
+    FFormGlobalConfig: TFormGlobalConfig;
     FFormBuild: TFormBuild;
     ControlClicked: boolean;
     ItemSize: TItemSize;
@@ -72,8 +77,10 @@ type
     procedure LoadIDEIcons;
     procedure RunSelected;
     function FormConfig: TFormConfig;
+    function FormGlobalConfig: TFormGlobalConfig;
     function FormBuild: TFormBuild;
     procedure ShowLocalConfig(const Card: TConfigCard);
+    procedure ShowGlobalConfig;
     procedure ShowMessage(const aCaption, aText: string);
     procedure FillVersionsMenu(const Menu: TPopupMenu);
     procedure ShowCaptions;
@@ -152,6 +159,12 @@ begin
   Result := FFormConfig;
 end;
 
+function TFormMain.FormGlobalConfig: TFormGlobalConfig;
+begin
+  if FFormGlobalConfig = nil then FFormGlobalConfig := TFormGlobalConfig.Create(Self);
+  Result := FFormGlobalConfig;
+end;
+
 procedure TFormMain.SetItemSize(const ItemSize: TItemSize);
 begin
   case ItemSize of
@@ -166,6 +179,7 @@ begin
         IDECaption.Top := ScaleValue(6);
         IDECaption.Left := ScaleValue(40);
         IDEVersion.Visible := false;
+        PanelFooter.Height := ScaleValue(20);
       end;
 
     TItemSize.Medium:
@@ -181,6 +195,7 @@ begin
         IDEVersion.Visible := true;
         IDEVersion.Left := ScaleValue(90);
         IDEVersion.Top := ScaleValue(24);
+        PanelFooter.Height := ScaleValue(30);
       end;
     TItemSize.Big:
       begin
@@ -195,6 +210,7 @@ begin
         IDEVersion.Visible := true;
         IDEVersion.Left := ScaleValue(106);
         IDEVersion.Top := ScaleValue(30);
+        PanelFooter.Height := ScaleValue(30);
       end;
 
   end;
@@ -208,7 +224,7 @@ begin
   ItemSize := TItemSize.Medium;
   SetItemSize(ItemSize);
 
-  TScreenUtil.PutInPosition(Self, IDEList.ItemHeight, IDEList.ItemCount);
+  TScreenUtil.PutInPosition(Self, PanelFooter.Height, IDEList.ItemHeight, IDEList.ItemCount);
   TThemeManager.UpdateControl(Self);
   SetWindowLong(handle, GWL_EXSTYLE,
      GetWindowLong( application.handle, GWL_EXSTYLE )
@@ -235,6 +251,8 @@ begin
   btnConfig.Caption := '(&C)onfig';
   btnConfig.Width := 160;
   IDECaption.Width := IDECaption.Width - 80;
+  btnGlobalConfig.Width := 240;
+  btnGlobalConfig.Caption := '(&G)lobal Config';
   ShowingCaptions := true;
 end;
 
@@ -267,7 +285,7 @@ begin
 
   IDECaption.Caption := Id;
   IDEImage.ImageName := TPath.GetFileName(Entries[AIndex].Icon);
-  IDEVersion.Caption := 'Delphi 12';//Entries[AIndex].DelphiVersion';
+  IDEVersion.Caption := DelphiVersionName[Entries[AIndex].DelphiVersion];
   IDEVersion.Width := ACanvas.TextWidth(IDEVersion.Caption);
 end;
 
@@ -332,6 +350,7 @@ end;
 procedure TFormMain.ShowLocalConfig(const Card: TConfigCard);
 begin
   if ItemIndexWrong then exit;
+  if InModalDialog then exit;
 
   InModalDialog := true;
   try
@@ -341,6 +360,18 @@ begin
     FormConfig.ShowModal;
     if OriginalIcon <> Entries[IDEList.ItemIndex].Icon then LoadIDEIcons;
 
+  finally
+    InModalDialog := false;
+  end;
+end;
+
+procedure TFormMain.ShowGlobalConfig;
+begin
+  if InModalDialog then exit;
+
+  InModalDialog := true;
+  try
+    FormGlobalConfig.ShowModal;
   finally
     InModalDialog := false;
   end;
@@ -369,19 +400,21 @@ end;
 
 procedure TFormMain.DoGlobalConfig;
 begin
-  //ShowConfig(TConfigCard.Default);
+  ShowGlobalConfig;
 end;
 
 
 procedure TFormMain.BtnGlobalConfigClick(Sender: TObject);
 begin
   //Globalconfig will be donde from local config, to keep the main UI clean.
-  //it shuold have a dark mode selector, a config selector.(+/- IDE configurations)
+  //it should have a dark mode selector, a config selector.(+/- IDE configurations)
   DoGlobalConfig;
 end;
 
 procedure TFormMain.DoAllConfig;
 begin
+  DoLocalConfig;
+  exit;
   if ItemIndexWrong then
   begin
     btnConfigurationFor.Caption := '-';
@@ -428,6 +461,11 @@ begin
   DoBuild;
 end;
 
+procedure TFormMain.ButtonGlobalConfigClick(Sender: TObject);
+begin
+  DoGlobalConfig;
+end;
+
 procedure TFormMain.btnConfigurationForClick(Sender: TObject);
 begin
   DoLocalConfig;
@@ -437,21 +475,21 @@ procedure TFormMain.btnSmallClick(Sender: TObject);
 begin
   ItemSize := TItemSize.Small;
   SetItemSize(ItemSize);
-  TScreenUtil.PutInPosition(Self, IDEList.ItemHeight, IDEList.ItemCount);
+  TScreenUtil.PutInPosition(Self, PanelFooter.Height, IDEList.ItemHeight, IDEList.ItemCount);
 end;
 
 procedure TFormMain.btnMediumClick(Sender: TObject);
 begin
   ItemSize := TItemSize.Medium;
   SetItemSize(ItemSize);
-  TScreenUtil.PutInPosition(Self, IDEList.ItemHeight, IDEList.ItemCount);
+  TScreenUtil.PutInPosition(Self, PanelFooter.Height, IDEList.ItemHeight, IDEList.ItemCount);
 end;
 
 procedure TFormMain.btnBigClick(Sender: TObject);
 begin
   ItemSize := TItemSize.Big;
   SetItemSize(ItemSize);
-  TScreenUtil.PutInPosition(Self, IDEList.ItemHeight, IDEList.ItemCount);
+  TScreenUtil.PutInPosition(Self, PanelFooter.Height, IDEList.ItemHeight, IDEList.ItemCount);
 end;
 
 procedure TFormMain.btnMouseDown(Sender: TObject;

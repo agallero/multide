@@ -157,6 +157,10 @@
         <DCCReference Include="src\Util.Screen.pas"/>
         <DCCReference Include="src\Launcher.BDS.pas"/>
         <DCCReference Include="src\Launcher.Shortcuts.pas"/>
+        <DCCReference Include="src\Form.GlobalConfig.pas">
+            <Form>FormGlobalConfig</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -850,9 +854,6 @@
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="Win64">
-                        <Operation>1</Operation>
-                    </Platform>
-                    <Platform Name="Win64x">
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>

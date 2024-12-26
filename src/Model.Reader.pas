@@ -19,6 +19,7 @@ const
 
 class procedure TModelReader.Load(const Entries: TEntryList);
 begin
+ RandSeed := 7;
   var Reg := TRegistry.Create;
   try
     Reg.RootKey := HKEY_CURRENT_USER;
@@ -36,7 +37,7 @@ begin
         var f := Random(5);
         if f = 1 then ImageName := 'helmet-bw.png';
         if f = 3 then ImageName := 'helmet.png';
-        //if f = 2 then ImageName := 'columns.png';
+        if f = 2 then ImageName := 'columns.png';
         if f = 4 then ImageName := 'bank.png';
 
 
