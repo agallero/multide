@@ -165,6 +165,8 @@
         <DCCReference Include="src\Model.Persistence.pas"/>
         <DCCReference Include="src\Model.DelphiVersions.pas"/>
         <DCCReference Include="src\Model.DelphiVersionsReader.pas"/>
+        <DCCReference Include="src\Shortcut.Creator.pas"/>
+        <DCCReference Include="src\Shortcut.Manager.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

@@ -840,10 +840,10 @@ object FormConfig: TFormConfig
     Top = 56
   end
   object OpenPictureDialog: TOpenPictureDialog
+    DefaultExt = '.png'
     Filter = 
-      'All (*.ico;*.jpg;*.jpeg;*.png)|*.ico;*.jpg;*.jpeg;*.png|ICO Imag' +
-      'e File (*.ico)|*.ico|JPEG Image File (*.jpg)|*.jpg|JPEG Image Fi' +
-      'le (*.jpeg)|*.jpeg|Portable Network Graphics (*.png)|*.png'
+      'All (*.ico;*.png)|*.ico;*.png|ICO Image File (*.ico)|*.ico|Porta' +
+      'ble Network Graphics (*.png)|*.png'
     Options = [ofReadOnly, ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing]
     Title = 'Select image for icon'
     Left = 56

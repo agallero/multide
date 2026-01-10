@@ -67,7 +67,7 @@ type
 
 implementation
 uses Theme.Manager, Global.Config, Character, Form.Message, IOUtils, Util.Screen,
-     ShellAPI, Model.Persistence, Model.EntryWriter, Model.EntryReader;
+     ShellAPI, Model.Persistence, Model.EntryWriter, Model.EntryReader, Shortcut.Manager;
 
 {$R *.dfm}
 
@@ -152,6 +152,7 @@ begin
   FEntry.ExtraParamters := edExtraParams.Text;
   if (cbIDEToLaunch.ItemIndex >= 0) and (cbIDEToLaunch.ItemIndex < Length(FDelphiVersions)) then FEntry.DelphiVersion := FDelphiVersions[cbIDEToLaunch.ItemIndex];
   TModelEntryWriter.Save(FEntry);
+  TShortcutManager.Create(FEntry);
 end;
 
 procedure TFormConfig.FormCreate(Sender: TObject);

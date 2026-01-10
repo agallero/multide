@@ -41,7 +41,6 @@ type
       ARect: TRect; AState: TOwnerDrawState);
     procedure IDEListKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure btnConfigClick(Sender: TObject);
     procedure btnUpdateComponentsClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure BtnGlobalConfigClick(Sender: TObject);
@@ -56,6 +55,7 @@ type
     procedure btnConfigurationForClick(Sender: TObject);
     procedure ButtonGlobalConfigClick(Sender: TObject);
     procedure IDEVersionClick(Sender: TObject);
+    procedure btnConfigClick(Sender: TObject);
   private
     Entries: TEntryList;
     InModalDialog: boolean;
@@ -78,7 +78,6 @@ type
     procedure ShowMessage(const aCaption, aText: string);
     procedure ShowCaptions;
     procedure DoBuild;
-    procedure DoAllConfig;
     procedure DoLocalConfig;
     procedure DoGlobalConfig;
     procedure SetItemSize(const ItemSize: TItemSize);
@@ -255,8 +254,7 @@ begin
   if Key = VK_ESCAPE then close;
   ShowCaptions; //if the user is using the keys, we will show them a way to press the buttons.
   if Char(Key) = 'B' then DoBuild;
-  if Char(Key) = 'C' then DoAllConfig;
-  if Char(Key) = 'L' then DoLocalConfig;
+  if Char(Key) = 'C' then DoLocalConfig;
   if Char(Key) = 'G' then DoGlobalConfig;
   if CharInSet(Char(Key), ['1'..'9']) then
   begin
@@ -297,7 +295,7 @@ begin
   if ItemIndexWrong then exit;
 
   var Entry := Entries[IDEList.ItemIndex];
-  TShorcutLauncher.Launch(Entry.Id);
+  TShorcutLauncher.Launch(Entry);
   Close;
 
 end;
@@ -360,11 +358,6 @@ begin
 end;
 
 
-procedure TFormMain.btnConfigClick(Sender: TObject);
-begin
-  DoAllConfig;
-end;
-
 procedure TFormMain.DoGlobalConfig;
 begin
   ShowGlobalConfig;
@@ -376,30 +369,6 @@ begin
   //Globalconfig will be donde from local config, to keep the main UI clean.
   //it should have a dark mode selector, a config selector.(+/- IDE configurations)
   DoGlobalConfig;
-end;
-
-procedure TFormMain.DoAllConfig;
-begin
-  DoLocalConfig;
-  exit;
-  if ItemIndexWrong then
-  begin
-    btnConfigurationFor.Caption := '-';
-  end
-  else
-  begin
-    //Caption can't start with C because we already pressed C in WmKeyDown, so
-    //This will be selected by default. We could always use "C&onfiguration' so
-    //The key is o instead of C. But C for config, and then C for local config doesn't work.
-    btnConfigurationfor.Caption := 'Local Configuration for ' +  Entries[IDEList.ItemIndex].Id;
-  end;
-
-  //Could popup at the wrong place if using the keyboard and the mouse is somewhere else.
-  //PopConfig.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
-  var P := IDEList.GetItemRect(IDEList.ItemIndex);
-  P.Offset(-btnConfig.Width, 0);
-  P := ClientToScreen(P);
-  PopConfig.Popup(p.Right, (p.Top + p.Bottom) div 2);
 end;
 
 procedure TFormMain.DoBuild;
@@ -431,6 +400,11 @@ end;
 procedure TFormMain.ButtonGlobalConfigClick(Sender: TObject);
 begin
   DoGlobalConfig;
+end;
+
+procedure TFormMain.btnConfigClick(Sender: TObject);
+begin
+  DoLocalConfig;
 end;
 
 procedure TFormMain.btnConfigurationForClick(Sender: TObject);

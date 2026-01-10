@@ -53,8 +53,11 @@ begin
   end;
 
 
-  var BDSParams := '"/r' + RegistryKeys.IDEEntry(ProductId) + '" ' + ExtraBDSParams;
+  var BDSParams := '';
+  if ProductId <> DefaultIDEName then BDSParams := BDSParams + '"/r' + RegistryKeys.IDEEntry(ProductId) + '" ';
+  BDSParams := BDSParams + ExtraBDSParams;
 
+  //todo: change path
   //SetEnvironment to change path. see https://stackoverflow.com/questions/17100920/whether-shellexecute-will-share-environment-variable-with-launching-process
   //or use shellexecuteex.
   ShellExecute(0, nil, PCHAR(BDS), PCHAR(BDSParams), '', SW_SHOWNORMAL);

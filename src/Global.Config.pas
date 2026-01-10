@@ -8,6 +8,7 @@ type
   Config = record
   public
     class function IDEImagePath(const FileName: string): string; static;
+    class function IDEIconPath(const FileName: string): string; static;
     class function ShortcutsImagePath(const FileName: string): string; static;
 end;
 
@@ -24,8 +25,13 @@ end;
 
 class function Config.IDEImagePath(const FileName: string): string;
 begin
-  Result := TPath.Combine('ide-icons', FileName);
+  Result := TPath.Combine('ide-images', FileName);
   if not TFile.Exists(Result) then Result := '';
+end;
+
+class function Config.IDEIconPath(const FileName: string): string;
+begin
+  Result := TPath.GetFullPath(TPath.Combine('ide-icons', FileName));
 end;
 
 end.

@@ -1,14 +1,14 @@
 unit Launcher.Shortcuts;
 
 interface
-uses Global.Config;
+uses Global.Config, Model.Entry;
 
 type
   TShorcutLauncher = record
   private
     //class procedure ShowError(const msg: string); static;
   public
-    class procedure Launch(const Id: string); static;
+    class procedure Launch(const Entry: TEntry); static;
   end;
 
 implementation
@@ -16,9 +16,10 @@ uses Windows, ShellApi, IOUtils;
 
 { TShorcutLauncher }
 
-class procedure TShorcutLauncher.Launch(const Id: string);
+class procedure TShorcutLauncher.Launch(const Entry: TEntry);
 begin
-  ShellExecute(0, nil, PCHAR(TPath.GetFullPath(Config.ShortcutsImagePath(Id + '.lnk'))), '', '', SW_SHOWNORMAL);
+
+  ShellExecute(0, nil, PCHAR(TPath.GetFullPath(Config.ShortcutsImagePath(Entry.Id + '.lnk'))), '', '', SW_SHOWNORMAL);
 end;
 
 end.

@@ -20,7 +20,9 @@ uses
   Model.EntryWriter in 'src\Model.EntryWriter.pas',
   Model.Persistence in 'src\Model.Persistence.pas',
   Model.DelphiVersions in 'src\Model.DelphiVersions.pas',
-  Model.DelphiVersionsReader in 'src\Model.DelphiVersionsReader.pas';
+  Model.DelphiVersionsReader in 'src\Model.DelphiVersionsReader.pas',
+  Shortcut.Creator in 'src\Shortcut.Creator.pas',
+  Shortcut.Manager in 'src\Shortcut.Manager.pas';
 
 {$R *.res}
 

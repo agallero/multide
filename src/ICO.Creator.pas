@@ -99,7 +99,17 @@ end;
 
 class procedure TIcoCreator.Convert(const InFileName, OutFileName: string);
 begin
- // SavePngStreamToIcoStream(PngStream, IcoStream, 512, 512);
+  var PngStream := TFileStream.Create(InFileName, fmOpenRead);
+  try
+    var IcoStream := TFileStream.Create(OutFileName, fmCreate);
+    try
+      SavePngStreamToIcoStream(PngStream, IcoStream, 512, 512);
+    finally
+      IcoStream.Free;
+    end;
+  finally
+    PngStream.Free;
+  end;
 end;
 
 end.
