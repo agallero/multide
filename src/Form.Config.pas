@@ -7,7 +7,8 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Mask, Vcl.ExtCtrls,
   Vcl.ComCtrls, Vcl.WinXPanels, Vcl.ControlList, Vcl.VirtualImage,
   Vcl.BaseImageCollection, Vcl.ImageCollection, Model.Entry, System.ImageList,
-  Vcl.ImgList, Vcl.ExtDlgs, JPEG, Vcl.Imaging.pngimage, Vcl.VirtualImageList;
+  Vcl.ImgList, Vcl.ExtDlgs, JPEG, Vcl.Imaging.pngimage, Vcl.VirtualImageList,
+  Model.DelphiVersions, Model.DelphiVersionsReader;
 
 type
   TConfigCard = (Default, General, IDEVersions, SmartSetup);
@@ -39,12 +40,8 @@ type
     AdditionalImageSelect: TButton;
     UIImageList: TVirtualImageList;
     UIImageCollection: TImageCollection;
-    cbDefaultIDEVersion: TComboBox;
+    cbIDEToLaunch: TComboBox;
     LabelDefaultIDEVersions: TLabel;
-    LabelIDESupported: TLabel;
-    lbIDEs: TListBox;
-    Button1: TButton;
-    Button2: TButton;
     edExtraParams: TLabeledEdit;
     btnBDSInfo: TButton;
     Button3: TButton;
@@ -56,19 +53,21 @@ type
     procedure btnOkClick(Sender: TObject);
     procedure ImageContainerClick(Sender: TObject);
     procedure btnBDSInfoClick(Sender: TObject);
+    procedure btnCancelClick(Sender: TObject);
   private
+    FEntryList: TEntryList;
+    FEntryIndex: integer;
     FEntry: TEntry;
+    FDelphiVersions: TDelphiVersionList;
     function ValidateConfName(const ConfName: string): string;
-    { Private declarations }
   public
     procedure SelectCard(const Card: TConfigCard);
-    procedure SetIDE(const aEntry: TEntry);
-    { Public declarations }
+    procedure SetIDE(const aEntryList: TEntryList; const aEntryIndex: integer);
   end;
 
 implementation
 uses Theme.Manager, Global.Config, Character, Form.Message, IOUtils, Util.Screen,
-     ShellAPI;
+     ShellAPI, Model.Persistence, Model.EntryWriter, Model.EntryReader;
 
 {$R *.dfm}
 
@@ -90,16 +89,34 @@ end;
 function TFormConfig.ValidateConfName(const ConfName: string): string;
 begin
   Result := '';
+  if FEntryIndex = 0 then
+  begin
+    if ConfName <> DefaultIDEName then exit('Cannot rename the default ide name.');
+    exit;
+  end;
+
   if ConfName = '' then exit('Cannot be empty.');
+
   //registry accepts 255, but that's the maximum length of the full path.
   //After this registry entry, there will be subentries that will make it longer.
-  if ConfName.Length + RegistryKeys.Embarcadero.Length > 100 then exit('Name is too long.');
-  for var c in ConfName do if (ord(c) < 32) or (c='\') then exit('It has invalid characters');
+  if ConfName.Length + RegistryKeys.EmbarcaderoRoot.Length > 100 then exit('Name is too long.');
+  for var c in ConfName do if (ord(c) < 32) or (c='\') then exit('It has invalid characters.');
+
+  for var i := 0 to FEntryList.Count - 1 do
+  begin
+    if i = FEntryIndex then continue;
+    if SameText(FEntryList[i].Id, ConfName) then exit('This name already exists.');
+  end;
 end;
 
 procedure TFormConfig.btnBDSInfoClick(Sender: TObject);
 begin
   ShellExecute(0, '', 'https://docwiki.embarcadero.com/RADStudio/en/IDE_Command_Line_Switches_and_Options', nil, '', SW_SHOWNORMAL);
+end;
+
+procedure TFormConfig.btnCancelClick(Sender: TObject);
+begin
+  TModelEntryReader.LoadFromRegistry(FEntry);
 end;
 
 procedure TFormConfig.btnOkClick(Sender: TObject);
@@ -108,7 +125,7 @@ begin
   var Error := ValidateConfName(ConfName);
   if Error <> '' then
   begin
-    TFormMessage.Show('Error in the configuration name', 'The configuration name "' + ConfName + '" is not valid.' + Error, false);
+    TFormMessage.Show('Error in the configuration name', 'The configuration name "' + ConfName + '" is not valid. ' + Error, false);
     SelectCard(TConfigCard.General);
     edConfigName.SetFocus;
     ModalResult := mrNone;
@@ -133,6 +150,8 @@ begin
   FEntry.TmsBuildFiles := MemoConfFiles.Lines.ToStringArray;
   FEntry.SmartSetupLocation := edSmartSetupLocation.Text;
   FEntry.ExtraParamters := edExtraParams.Text;
+  if (cbIDEToLaunch.ItemIndex >= 0) and (cbIDEToLaunch.ItemIndex < Length(FDelphiVersions)) then FEntry.DelphiVersion := FDelphiVersions[cbIDEToLaunch.ItemIndex];
+  TModelEntryWriter.Save(FEntry);
 end;
 
 procedure TFormConfig.FormCreate(Sender: TObject);
@@ -143,7 +162,6 @@ begin
   Tabs.ItemCount := CardPanelOptions.CardCount;
   Tabs.ItemIndex := 0;
   CardPanelOptions.ActiveCardIndex := 0;
-
 end;
 
 
@@ -187,9 +205,11 @@ begin
   end;
 end;
 
-procedure TFormConfig.SetIDE(const aEntry: TEntry);
+procedure TFormConfig.SetIDE(const aEntryList: TEntryList; const aEntryIndex: integer);
 begin
-  FEntry := aEntry;
+  FEntryList := aEntryList;
+  FEntryIndex := aEntryIndex;
+  FEntry := aEntryList[aEntryIndex];
   Caption := 'Multide configuration for ' + FEntry.Id;
   edConfigName.Text := FEntry.Id;
   try
@@ -200,12 +220,22 @@ begin
     ShowMessage('Error loading ' + FEntry.Icon);
   end;
 
-  edImageFilename.Text := TPath.GetFullPath(FEntry.Icon);
+  if FEntry.Icon <> '' then edImageFilename.Text := TPath.GetFullPath(FEntry.Icon) else edImageFilename.Text := '';
 
   edSmartSetupLocation.Text := FEntry.SmartSetupLocation;
   MemoConfFiles.Text := '';
   MemoConfFiles.Lines.AddStrings(FEntry.TmsBuildFiles);
   edExtraParams.Text := FEntry.ExtraParamters;
+
+  FDelphiVersions := TModelDelphiVersionsReader.Read;
+  cbIDEToLaunch.Items.Clear;
+  for var DelphiVersion in FDelphiVersions do
+  begin
+    cbIDEToLaunch.Items.Add(DelphiVersion.Name);
+    if DelphiVersion.Version = FEntry.DelphiVersion.Version then cbIDEToLaunch.ItemIndex := cbIDEToLaunch.Items.Count - 1;
+
+  end;
+
 
 end;
 

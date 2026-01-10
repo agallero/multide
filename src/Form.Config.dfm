@@ -44,7 +44,6 @@ object FormConfig: TFormConfig
     SmoothMouseWheelScrolling = True
     OnBeforeDrawItem = TabsBeforeDrawItem
     OnItemClick = TabsItemClick
-    ExplicitHeight = 258
     object TabsText: TLabel
       AlignWithMargins = True
       Left = 36
@@ -90,21 +89,17 @@ object FormConfig: TFormConfig
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 411
-    ExplicitHeight = 258
     object CardPanelOptions: TCardPanel
       Left = 0
       Top = 0
       Width = 421
       Height = 249
       Align = alClient
-      ActiveCard = CardSync
+      ActiveCard = CardIDEVersions
       BevelOuter = bvNone
       Caption = 'CardPanelOptions'
       ParentColor = True
       TabOrder = 0
-      ExplicitWidth = 411
-      ExplicitHeight = 217
       object CardGeneral: TCard
         Left = 0
         Top = 0
@@ -113,8 +108,6 @@ object FormConfig: TFormConfig
         Caption = 'General'
         CardIndex = 0
         TabOrder = 0
-        ExplicitWidth = 411
-        ExplicitHeight = 217
         DesignSize = (
           421
           249)
@@ -143,7 +136,7 @@ object FormConfig: TFormConfig
         object edConfigName: TLabeledEdit
           Left = 16
           Top = 32
-          Width = 375
+          Width = 365
           Height = 23
           Anchors = [akLeft, akTop, akRight]
           EditLabel.Width = 109
@@ -151,12 +144,11 @@ object FormConfig: TFormConfig
           EditLabel.Caption = '&Configuration Name'
           TabOrder = 0
           Text = ''
-          ExplicitWidth = 365
         end
         object edImageFilename: TLabeledEdit
           Left = 84
           Top = 121
-          Width = 275
+          Width = 265
           Height = 23
           Anchors = [akLeft, akTop, akRight]
           EditLabel.Width = 84
@@ -164,10 +156,9 @@ object FormConfig: TFormConfig
           EditLabel.Caption = '&Image Filename'
           TabOrder = 1
           Text = ''
-          ExplicitWidth = 265
         end
         object AdditionalImageSelect: TButton
-          Left = 365
+          Left = 355
           Top = 120
           Width = 26
           Height = 24
@@ -184,29 +175,27 @@ object FormConfig: TFormConfig
           StylusHotImageName = 'open'
           TabOrder = 2
           OnClick = ImageContainerClick
-          ExplicitLeft = 355
         end
         object edExtraParams: TLabeledEdit
           Left = 16
           Top = 176
-          Width = 342
+          Width = 332
           Height = 23
           Hint = 
             'You can specify some extra parameters to pass to BDS.exe here, l' +
             'ike for example /ns for no splash screen. Make sure you correctl' +
             'y quote them if needed.'
           Anchors = [akLeft, akTop, akRight]
-          EditLabel.Width = 187
+          EditLabel.Width = 185
           EditLabel.Height = 15
           EditLabel.Caption = 'E&xtra parameters to pass to BDS.exe'
           ParentShowHint = False
           ShowHint = True
           TabOrder = 3
           Text = ''
-          ExplicitWidth = 332
         end
         object btnBDSInfo: TButton
-          Left = 364
+          Left = 354
           Top = 174
           Width = 27
           Height = 24
@@ -223,7 +212,6 @@ object FormConfig: TFormConfig
           StylusHotImageName = 'open'
           TabOrder = 4
           OnClick = btnBDSInfoClick
-          ExplicitLeft = 354
         end
       end
       object CardIDEVersions: TCard
@@ -234,24 +222,14 @@ object FormConfig: TFormConfig
         Caption = 'IDE Versions'
         CardIndex = 1
         TabOrder = 3
-        DesignSize = (
-          421
-          249)
         object LabelDefaultIDEVersions: TLabel
           Left = 6
           Top = 5
-          Width = 99
+          Width = 70
           Height = 15
-          Caption = 'Default IDE Version'
+          Caption = 'IDE to launch'
         end
-        object LabelIDESupported: TLabel
-          Left = 6
-          Top = 55
-          Width = 79
-          Height = 15
-          Caption = 'IDEs supported'
-        end
-        object cbDefaultIDEVersion: TComboBox
+        object cbIDEToLaunch: TComboBox
           Left = 6
           Top = 26
           Width = 211
@@ -262,43 +240,6 @@ object FormConfig: TFormConfig
           ExtendedUI = True
           TabOrder = 0
           StyleElements = [seFont, seBorder]
-          Items.Strings = (
-            'Delphi 11'
-            'Delphi 12')
-        end
-        object lbIDEs: TListBox
-          Left = 6
-          Top = 76
-          Width = 169
-          Height = 161
-          Anchors = [akLeft, akTop, akBottom]
-          ItemHeight = 15
-          Items.Strings = (
-            'Delphi 1'
-            'Delphi 12')
-          TabOrder = 1
-        end
-        object Button1: TButton
-          Left = 181
-          Top = 76
-          Width = 25
-          Height = 25
-          ImageAlignment = iaCenter
-          ImageIndex = 1
-          ImageName = 'add'
-          Images = UIImageList
-          TabOrder = 2
-        end
-        object Button2: TButton
-          Left = 181
-          Top = 107
-          Width = 25
-          Height = 25
-          ImageAlignment = iaCenter
-          ImageIndex = 2
-          ImageName = 'remove'
-          Images = UIImageList
-          TabOrder = 3
         end
       end
       object CardSync: TCard
@@ -321,7 +262,7 @@ object FormConfig: TFormConfig
           Top = 9
           Width = 193
           Height = 25
-          Caption = 'Copy confiuration from...'
+          Caption = 'Copy configuration from...'
           TabOrder = 0
         end
       end
@@ -346,7 +287,7 @@ object FormConfig: TFormConfig
         object edSmartSetupLocation: TLabeledEdit
           Left = 6
           Top = 24
-          Width = 352
+          Width = 342
           Height = 23
           Anchors = [akLeft, akTop, akRight]
           EditLabel.Width = 110
@@ -358,7 +299,7 @@ object FormConfig: TFormConfig
         object MemoConfFiles: TMemo
           Left = 6
           Top = 81
-          Width = 352
+          Width = 342
           Height = 162
           Anchors = [akLeft, akTop, akRight, akBottom]
           ScrollBars = ssVertical
@@ -375,13 +316,11 @@ object FormConfig: TFormConfig
       BevelOuter = bvNone
       Color = clWhite
       TabOrder = 1
-      ExplicitTop = 217
-      ExplicitWidth = 411
       DesignSize = (
         421
         41)
       object btnOk: TButton
-        Left = 242
+        Left = 232
         Top = 6
         Width = 75
         Height = 25
@@ -391,10 +330,9 @@ object FormConfig: TFormConfig
         ModalResult = 1
         TabOrder = 0
         OnClick = btnOkClick
-        ExplicitLeft = 232
       end
       object btnCancel: TButton
-        Left = 323
+        Left = 313
         Top = 6
         Width = 75
         Height = 25
@@ -403,7 +341,7 @@ object FormConfig: TFormConfig
         Caption = 'Cancel'
         ModalResult = 2
         TabOrder = 1
-        ExplicitLeft = 313
+        OnClick = btnCancelClick
       end
     end
   end

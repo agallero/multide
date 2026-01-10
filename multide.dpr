@@ -5,7 +5,7 @@ uses
   Form.Main in 'src\Form.Main.pas' {FormMain},
   Theme.Colors in 'src\Theme.Colors.pas',
   Model.Entry in 'src\Model.Entry.pas',
-  Model.Reader in 'src\Model.Reader.pas',
+  Model.EntryReader in 'src\Model.EntryReader.pas',
   Global.Config in 'src\Global.Config.pas',
   Form.Config in 'src\Form.Config.pas' {FormConfig},
   Theme.Manager in 'src\Theme.Manager.pas',
@@ -16,7 +16,11 @@ uses
   Util.Screen in 'src\Util.Screen.pas',
   Launcher.BDS in 'src\Launcher.BDS.pas',
   Launcher.Shortcuts in 'src\Launcher.Shortcuts.pas',
-  Form.GlobalConfig in 'src\Form.GlobalConfig.pas' {FormGlobalConfig};
+  Form.GlobalConfig in 'src\Form.GlobalConfig.pas' {FormGlobalConfig},
+  Model.EntryWriter in 'src\Model.EntryWriter.pas',
+  Model.Persistence in 'src\Model.Persistence.pas',
+  Model.DelphiVersions in 'src\Model.DelphiVersions.pas',
+  Model.DelphiVersionsReader in 'src\Model.DelphiVersionsReader.pas';
 
 {$R *.res}
 

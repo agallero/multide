@@ -4,11 +4,6 @@ interface
 type
   TItemSize = (Small, Medium, Big);
 
-  RegistryKeys = record
-    public
-      const Embarcadero = 'Software\Embarcadero';
-  end;
-
 type
   Config = record
   public

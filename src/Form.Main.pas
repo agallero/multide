@@ -24,16 +24,12 @@ type
     ButtonImages: TImageCollection;
     ButtonVirtualImages: TVirtualImageList;
     IDEVersion: TControlListButton;
-    PopupVersions: TPopupMenu;
     AppPopupMenu: TPopupMenu;
     btnSmall: TMenuItem;
     btnMedium: TMenuItem;
     btnBig: TMenuItem;
     N1: TMenuItem;
     GlobalConfigButton: TMenuItem;
-    PopConfig: TPopupMenu;
-    btnConfigurationFor: TMenuItem;
-    btnGlobalConfiguration: TMenuItem;
     PanelFooter: TPanel;
     btnGlobalConfig: TSpeedButton;
     procedure FormCreate(Sender: TObject);
@@ -48,9 +44,6 @@ type
     procedure btnConfigClick(Sender: TObject);
     procedure btnUpdateComponentsClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-    procedure IDEVersionClick(Sender: TObject);
-    procedure DelphiVersionsClick(Sender: TObject);
-    procedure DelphiVersionsEdit(Sender: TObject);
     procedure BtnGlobalConfigClick(Sender: TObject);
     procedure IDEListItemClick(Sender: TObject);
     procedure btnMouseDown(Sender: TObject; Button: TMouseButton;
@@ -62,6 +55,7 @@ type
     procedure btnBigClick(Sender: TObject);
     procedure btnConfigurationForClick(Sender: TObject);
     procedure ButtonGlobalConfigClick(Sender: TObject);
+    procedure IDEVersionClick(Sender: TObject);
   private
     Entries: TEntryList;
     InModalDialog: boolean;
@@ -82,7 +76,6 @@ type
     procedure ShowLocalConfig(const Card: TConfigCard);
     procedure ShowGlobalConfig;
     procedure ShowMessage(const aCaption, aText: string);
-    procedure FillVersionsMenu(const Menu: TPopupMenu);
     procedure ShowCaptions;
     procedure DoBuild;
     procedure DoAllConfig;
@@ -99,8 +92,8 @@ var
   FormMain: TFormMain;
 
 implementation
-uses Theme.Manager, Model.Reader, IOUtils, Generics.Defaults,
-     Generics.Collections, Launcher.Shortcuts;
+uses Theme.Manager, Model.EntryReader, Model.EntryWriter, IOUtils, Generics.Defaults,
+     Generics.Collections, Launcher.Shortcuts, Model.DelphiVersions, Model.DelphiVersionsReader;
 
 {$R *.dfm}
 
@@ -111,7 +104,7 @@ end;
 
 procedure TFormMain.LoadIDEs;
 begin
-  TModelReader.Load(Entries);
+  TModelEntryReader.Load(Entries);
   IDEList.ItemCount := Entries.Count;
 end;
 
@@ -285,7 +278,7 @@ begin
 
   IDECaption.Caption := Id;
   IDEImage.ImageName := TPath.GetFileName(Entries[AIndex].Icon);
-  IDEVersion.Caption := DelphiVersionName[Entries[AIndex].DelphiVersion];
+  IDEVersion.Caption := Entries[AIndex].DelphiVersion.Name;
   IDEVersion.Width := ACanvas.TextWidth(IDEVersion.Caption);
 end;
 
@@ -316,35 +309,9 @@ begin
 
 end;
 
-procedure TFormMain.FillVersionsMenu(const Menu: TPopupMenu);
-begin
-  Menu.Items.Clear;
-  for var i := 1 to Random (12) do
-  begin
-    Menu.Items.Add(TMenuItem.Create(Menu));
-    var MenuItem := Menu.Items[Menu.Items.Count - 1];
-    MenuItem.Caption := 'Delphi ' + IntToStr(i);
-    MenuItem.Tag := i; //delphiversion here.
-    MenuItem.OnClick := DelphiVersionsClick;
-  end;
-
-  Menu.Items.Add(TMenuItem.Create(Menu));
-  var MenuItem := Menu.Items[Menu.Items.Count - 1];
-  MenuItem.Caption := '-';
-  MenuItem.OnClick := DelphiVersionsEdit;
-
-  Menu.Items.Add(TMenuItem.Create(Menu));
-  MenuItem := Menu.Items[Menu.Items.Count - 1];
-  MenuItem.Caption := 'Edit...';
-  MenuItem.OnClick := DelphiVersionsEdit;
-
-end;
-
 procedure TFormMain.IDEVersionClick(Sender: TObject);
 begin
-  var Menu := (Sender as TControlListButton).PopupMenu;
-  FillVersionsMenu(Menu);
-  Menu.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+  ShowLocalConfig(TConfigCard.IDEVersions);
 end;
 
 procedure TFormMain.ShowLocalConfig(const Card: TConfigCard);
@@ -355,7 +322,7 @@ begin
   InModalDialog := true;
   try
     FormConfig.SelectCard(Card);
-    FormConfig.SetIDE(Entries[IDEList.ItemIndex]);
+    FormConfig.SetIDE(Entries, IDEList.ItemIndex);
     var OriginalIcon := Entries[IDEList.ItemIndex].Icon;
     FormConfig.ShowModal;
     if OriginalIcon <> Entries[IDEList.ItemIndex].Icon then LoadIDEIcons;
@@ -502,17 +469,6 @@ procedure TFormMain.btnMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   ControlClicked := false;
-end;
-
-procedure TFormMain.DelphiVersionsClick(Sender: TObject);
-begin
- ShowMessage((Sender as TMenuItem).Caption, '');
-end;
-
-procedure TFormMain.DelphiVersionsEdit(Sender: TObject);
-begin
-  ShowLocalConfig(TConfigCard.IDEVersions);
-
 end;
 
 end.

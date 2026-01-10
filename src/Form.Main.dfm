@@ -159,7 +159,6 @@ object FormMain: TFormMain
       Cursor = crHandPoint
       Anchors = [akLeft, akTop, akRight]
       Caption = 'No version'
-      PopupMenu = PopupVersions
       Style = clbkLink
       OnClick = IDEVersionClick
       OnMouseDown = btnMouseDown
@@ -1309,10 +1308,6 @@ object FormMain: TFormMain
     Left = 352
     Top = 136
   end
-  object PopupVersions: TPopupMenu
-    Left = 88
-    Top = 144
-  end
   object AppPopupMenu: TPopupMenu
     Left = 168
     Top = 112
@@ -1332,18 +1327,6 @@ object FormMain: TFormMain
       Caption = '-'
     end
     object GlobalConfigButton: TMenuItem
-      Caption = 'Global Configuration'
-      OnClick = BtnGlobalConfigClick
-    end
-  end
-  object PopConfig: TPopupMenu
-    Left = 288
-    Top = 104
-    object btnConfigurationFor: TMenuItem
-      Caption = 'Configuration for '
-      OnClick = btnConfigurationForClick
-    end
-    object btnGlobalConfiguration: TMenuItem
       Caption = 'Global Configuration'
       OnClick = BtnGlobalConfigClick
     end

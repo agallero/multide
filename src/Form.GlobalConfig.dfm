@@ -21,13 +21,13 @@ object FormGlobalConfig: TFormGlobalConfig
     BevelOuter = bvNone
     Color = clWhite
     TabOrder = 0
-    ExplicitTop = 249
-    ExplicitWidth = 421
+    ExplicitTop = 368
+    ExplicitWidth = 614
     DesignSize = (
       624
       41)
     object btnOk: TButton
-      Left = 435
+      Left = 425
       Top = 6
       Width = 75
       Height = 25
@@ -36,10 +36,10 @@ object FormGlobalConfig: TFormGlobalConfig
       Default = True
       ModalResult = 1
       TabOrder = 0
-      ExplicitLeft = 232
+      ExplicitLeft = 415
     end
     object btnCancel: TButton
-      Left = 516
+      Left = 506
       Top = 6
       Width = 75
       Height = 25
@@ -48,7 +48,7 @@ object FormGlobalConfig: TFormGlobalConfig
       Caption = 'Cancel'
       ModalResult = 2
       TabOrder = 1
-      ExplicitLeft = 313
+      ExplicitLeft = 496
     end
   end
 end
