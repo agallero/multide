@@ -51,6 +51,41 @@ begin
         continue;
       end;
 
+      if Comp is TEdit then
+      begin
+        TEdit(Comp).Font.Color := TextColor;
+        TEdit(Comp).Color := BackColor;
+        continue;
+      end;
+
+      if Comp is TButton then
+      begin
+        TButton(Comp).Font.Color := TextColor;
+       // TButton(Comp).Color := BackColor;
+        continue;
+      end;
+
+      if Comp is TListBox then
+      begin
+        TListBox(Comp).Font.Color := TextColor;
+        TListBox(Comp).Color := BackColor;
+        continue;
+      end;
+
+      if Comp is TListView then
+      begin
+        TListView(Comp).Font.Color := TextColor;
+        TListView(Comp).Color := BackColor;
+        continue;
+      end;
+
+      if Comp is TPanel then
+      begin
+        TPanel(Comp).Font.Color := TextColor;
+        TPanel(Comp).Color := BackColor;
+        continue;
+      end;
+
       if Comp is TLabeledEdit then
       begin
         TLabeledEdit(Comp).Color := ThemeColors.AltBackColor;
