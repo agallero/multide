@@ -8,12 +8,13 @@ type
    class var ThemeColors: TThemeColors;
  public
    class constructor Create;
+   class procedure SetTheme(const ThemeStyle: TThemeStyle); static;
    class procedure UpdateControl(const Control: TControl); static;
  end;
 
 
 implementation
-uses Vcl.Forms, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.ControlList, UITypes;
+uses Vcl.Forms, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.ControlList, UITypes, UxTheme;
 
 type
   TControlAccess = class(TControl)
@@ -24,7 +25,12 @@ type
 
 class constructor TThemeManager.Create;
 begin
-  ThemeColors := TThemeColors.Create(true);
+  ThemeColors := TThemeColors.Create(TThemeStyle.Automatic);
+end;
+
+class procedure TThemeManager.SetTheme(const ThemeStyle: TThemeStyle);
+begin
+  ThemeColors := TThemeColors.Create(ThemeStyle);
 end;
 
 class procedure TThemeManager.UpdateControl(const Control: TControl);
@@ -36,6 +42,12 @@ begin
     for var i := 0 to Control.ComponentCount - 1 do
     begin
       var Comp := Control.Components[i];
+      if Comp is TWinControl then
+      begin
+        TWinControl(Comp).HandleNeeded;
+        SetWindowTheme(TWinControl(Comp).Handle, PChar(ThemeColors.GetWindowsTheme), nil);
+      end;
+
       var BackColor := ThemeColors.GetBackColor(Comp.Tag <> 0);
       var TextColor := ThemeColors.GetTextColor(Comp.Tag <> 0);
       if Comp is TControlList then
@@ -58,18 +70,18 @@ begin
         continue;
       end;
 
-      if Comp is TButton then
-      begin
-        TButton(Comp).Font.Color := TextColor;
-       // TButton(Comp).Color := BackColor;
-        continue;
-      end;
-
       if Comp is TListBox then
       begin
         TListBox(Comp).Font.Color := TextColor;
         TListBox(Comp).Color := BackColor;
         continue;
+      end;
+
+      if Comp is TRadioGroup then
+      begin
+        TRadioGroup(Comp).Font.Color := TextColor;
+        TRadioGroup(Comp).HeaderFont.Color := TextColor;
+        //do not continue, we will look inside.
       end;
 
       if Comp is TListView then

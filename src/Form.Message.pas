@@ -13,6 +13,7 @@ type
     ButtonOk: TButton;
     MessagePanel: TPanel;
     procedure FormCreate(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -29,6 +30,11 @@ uses Theme.Manager, Util.Screen;
 {$R *.dfm}
 
 { TFormMessage }
+
+procedure TFormMessage.FormActivate(Sender: TObject);
+begin
+  TThemeManager.UpdateControl(Self);
+end;
 
 procedure TFormMessage.FormCreate(Sender: TObject);
 begin

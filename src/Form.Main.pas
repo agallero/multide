@@ -9,7 +9,7 @@ uses
   Vcl.ControlList, Vcl.VirtualImage, Model.Entry, Vcl.BaseImageCollection,
   Vcl.ImageCollection, System.ImageList, Vcl.ImgList, Vcl.VirtualImageList,
   Form.Config, Form.GlobalConfig, Form.Message, Vcl.Menus, Vcl.ExtCtrls, Form.Build, Util.Screen, Global.Config,
-  Vcl.Buttons;
+  Vcl.Buttons, Model.GlobalSettings;
 
 type
   TFormMain = class(TForm)
@@ -63,10 +63,11 @@ type
     FFormGlobalConfig: TFormGlobalConfig;
     FFormBuild: TFormBuild;
     ControlClicked: boolean;
-    ItemSize: TItemSize;
+    GlobalSettings: TGlobalSettings;
     ShowingCaptions: boolean;
 
 
+    procedure ApplyGlobalSettings;
     procedure LoadIDEs;
     procedure LoadIDEIcons;
     procedure RunSelected;
@@ -80,7 +81,7 @@ type
     procedure DoBuild;
     procedure DoLocalConfig;
     procedure DoGlobalConfig;
-    procedure SetItemSize(const ItemSize: TItemSize);
+    procedure SetItemSize(const aItemSize: TItemSize);
     function ItemIndexWrong: boolean;
     { Private declarations }
   public
@@ -92,7 +93,9 @@ var
 
 implementation
 uses Theme.Manager, Model.EntryReader, Model.EntryWriter, IOUtils, Generics.Defaults,
-     Generics.Collections, Launcher.Shortcuts, Model.DelphiVersions, Model.DelphiVersionsReader;
+     Generics.Collections, Launcher.Shortcuts,
+     Model.DelphiVersions, Model.DelphiVersionsReader,
+     Model.GlobalSettingsReader, Model.GlobalSettingsWriter;
 
 {$R *.dfm}
 
@@ -103,8 +106,10 @@ end;
 
 procedure TFormMain.LoadIDEs;
 begin
+  Entries.Clear;
   TModelEntryReader.Load(Entries);
   IDEList.ItemCount := Entries.Count;
+  IDEList.Invalidate;
 end;
 
 procedure TFormMain.LoadIDEIcons;
@@ -153,13 +158,18 @@ end;
 
 function TFormMain.FormGlobalConfig: TFormGlobalConfig;
 begin
-  if FFormGlobalConfig = nil then FFormGlobalConfig := TFormGlobalConfig.Create(Self);
+  if FFormGlobalConfig = nil then
+  begin
+    FFormGlobalConfig := TFormGlobalConfig.Create(Self);
+    FFormGlobalConfig.Initialize(Entries, GlobalSettings, ApplyGlobalSettings);
+  end;
   Result := FFormGlobalConfig;
 end;
 
-procedure TFormMain.SetItemSize(const ItemSize: TItemSize);
+procedure TFormMain.SetItemSize(const aItemSize: TItemSize);
 begin
-  case ItemSize of
+  GlobalSettings.ItemSize := aItemSize;
+  case aItemSize of
     TItemSize.Small:
       begin
         IDEList.ItemHeight := ScaleValue(30);
@@ -206,17 +216,20 @@ begin
       end;
 
   end;
-
+  TScreenUtil.PutInPosition(Self, PanelFooter.Height, IDEList.ItemHeight, IDEList.ItemCount);
 end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
+  GlobalSettings := TGlobalSettings.Create;
+  TModelGlobalSettingsReader.Read(GlobalSettings);
+
   Entries := TEntryList.Create;
   LoadIDEs;
-  ItemSize := TItemSize.Medium;
-  SetItemSize(ItemSize);
+  SetItemSize(GlobalSettings.ItemSize);
 
   TScreenUtil.PutInPosition(Self, PanelFooter.Height, IDEList.ItemHeight, IDEList.ItemCount);
+  TThemeManager.SetTheme(GlobalSettings.ThemeStyle);
   TThemeManager.UpdateControl(Self);
   SetWindowLong(handle, GWL_EXSTYLE,
      GetWindowLong( application.handle, GWL_EXSTYLE )
@@ -233,6 +246,7 @@ end;
 procedure TFormMain.FormDestroy(Sender: TObject);
 begin
   Entries.Free;
+  GlobalSettings.Free;
 end;
 
 procedure TFormMain.ShowCaptions;
@@ -309,7 +323,8 @@ end;
 
 procedure TFormMain.IDEVersionClick(Sender: TObject);
 begin
-  ShowLocalConfig(TConfigCard.IDEVersions);
+  //ShowLocalConfig(TConfigCard.IDEVersions);
+  RunSelected;
 end;
 
 procedure TFormMain.ShowLocalConfig(const Card: TConfigCard);
@@ -336,7 +351,12 @@ begin
 
   InModalDialog := true;
   try
+    FormGlobalConfig.UpdateControls;
     FormGlobalConfig.ShowModal;
+    LoadIDEs;
+    LoadIDEIcons;
+
+    TScreenUtil.PutInPosition(Self, PanelFooter.Height, IDEList.ItemHeight, IDEList.ItemCount);
   finally
     InModalDialog := false;
   end;
@@ -375,7 +395,7 @@ procedure TFormMain.DoBuild;
 begin
   if ItemIndexWrong then exit;
 
-  if (Entries[IDEList.ItemIndex].TmsBuildFiles = nil) or (Entries[IDEList.ItemIndex].SmartSetupLocation.Trim = '') then
+  if (Entries[IDEList.ItemIndex].SmartSetupWorkingFolder.Trim = '') or (Entries[IDEList.ItemIndex].SmartSetupLocation.Trim = '') then
   begin
     ShowMessage('Missing configuration', 'Smart Setup is not configured for this IDE. To compile the components, you need to configure it first');
     ShowLocalConfig(TConfigCard.SmartSetup);
@@ -414,23 +434,27 @@ end;
 
 procedure TFormMain.btnSmallClick(Sender: TObject);
 begin
-  ItemSize := TItemSize.Small;
-  SetItemSize(ItemSize);
-  TScreenUtil.PutInPosition(Self, PanelFooter.Height, IDEList.ItemHeight, IDEList.ItemCount);
+  SetItemSize(TItemSize.Small);
+  TModelGlobalSettingsWriter.Save(GlobalSettings);
 end;
 
 procedure TFormMain.btnMediumClick(Sender: TObject);
 begin
-  ItemSize := TItemSize.Medium;
-  SetItemSize(ItemSize);
-  TScreenUtil.PutInPosition(Self, PanelFooter.Height, IDEList.ItemHeight, IDEList.ItemCount);
+  SetItemSize(TItemSize.Medium);
+  TModelGlobalSettingsWriter.Save(GlobalSettings);
 end;
 
 procedure TFormMain.btnBigClick(Sender: TObject);
 begin
-  ItemSize := TItemSize.Big;
-  SetItemSize(ItemSize);
-  TScreenUtil.PutInPosition(Self, PanelFooter.Height, IDEList.ItemHeight, IDEList.ItemCount);
+  SetItemSize(TItemSize.Big);
+  TModelGlobalSettingsWriter.Save(GlobalSettings);
+end;
+
+procedure TFormMain.ApplyGlobalSettings;
+begin
+  SetItemSize(GlobalSettings.ItemSize);
+  TThemeManager.SetTheme(GlobalSettings.ThemeStyle);
+  TThemeManager.UpdateControl(Self);
 end;
 
 procedure TFormMain.btnMouseDown(Sender: TObject;

@@ -13,6 +13,7 @@ object FormMessage: TFormMessage
   PopupMode = pmAuto
   Position = poScreenCenter
   ShowInTaskBar = True
+  OnActivate = FormActivate
   OnCreate = FormCreate
   TextHeight = 15
   object ButtonPanel: TPanel
@@ -30,7 +31,7 @@ object FormMessage: TFormMessage
       481
       41)
     object ButtonOk: TButton
-      Left = 185
+      Left = 203
       Top = 8
       Width = 75
       Height = 25
@@ -40,7 +41,6 @@ object FormMessage: TFormMessage
       Default = True
       ModalResult = 1
       TabOrder = 0
-      ExplicitLeft = 180
     end
   end
   object MessagePanel: TPanel

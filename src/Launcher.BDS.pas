@@ -29,7 +29,7 @@ begin
     Reg.RootKey := HKEY_CURRENT_USER;
 
     if not Reg.OpenKeyReadOnly(RegistryKeys.EmbarcaderoEntry(ProductId, Version)) then exit('');
-    Result := Reg.GetDataAsString('App');
+    Result := Reg.ReadString('App');
   finally
     Reg.Free;
   end;
@@ -38,9 +38,10 @@ end;
 
 class procedure TBDSLauncher.Launch(const ProductId, Version, ExtraBDSParams: string);
 begin
-  //todo: Update the registry first.
+  //todo: Update the registry first. sync what needs to be synced.
 
   var BDS := FindBDS(ProductId, Version);
+  if BDS = '' then BDS := FindBDS(DefaultIDEName, Version);
   if BDS = '' then
   begin
     ShowError('There is no BDS installed for configuration "' + ProductId + '" , version "' + Version + '"' );
@@ -57,7 +58,7 @@ begin
   if ProductId <> DefaultIDEName then BDSParams := BDSParams + '"/r' + RegistryKeys.IDEEntry(ProductId) + '" ';
   BDSParams := BDSParams + ExtraBDSParams;
 
-  //todo: change path
+  //todo: change windows path
   //SetEnvironment to change path. see https://stackoverflow.com/questions/17100920/whether-shellexecute-will-share-environment-variable-with-launching-process
   //or use shellexecuteex.
   ShellExecute(0, nil, PCHAR(BDS), PCHAR(BDSParams), '', SW_SHOWNORMAL);

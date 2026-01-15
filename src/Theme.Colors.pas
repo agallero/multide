@@ -4,26 +4,35 @@ unit Theme.Colors;
 //See https://gist.github.com/AveYo/80fc6677b9f34939e44364880fbf3768
 interface
 uses Sysutils, Classes, UITypes;
-
+{$SCOPEDENUMS ON}
 type
+  TThemeStyle = (Automatic, Light, Dark);
+
   TThemeColors = record
-    private
-      FSystemUsesLightTheme: boolean;
-      FBackColor: TColor;
-      FTextColor: TColor;
-      FAltBackColor: TColor;
-      FAltTextColor: TColor;
-    public
-      constructor Create(const UseTheme: boolean);
+  private
+    FSystemUsesLightTheme: boolean;
+    FBackColor: TColor;
+    FTextColor: TColor;
+    FAltBackColor: TColor;
+    FAltTextColor: TColor;
 
-      property SystemUsesLightTheme: boolean read FSystemUsesLightTheme;
-      property BackColor: TColor read FBackColor;
-      property TextColor: TColor read FTextColor;
-      property AltBackColor: TColor read FAltBackColor;
-      property AltTextColor: TColor read FAltTextColor;
+    function GlobalSystemUsesLightTheme: boolean;
+    function StartMenuAltTextColor: TColor;
+    function StartMenuBackColor: TColor;
+    function StartMenuTextColor: TColor;
+    function StartMenuAltBackColor: TColor;
+  public
+    constructor Create(const ThemeStyle: TThemeStyle);
 
-      function GetBackColor(const UseAlt: boolean): TColor;
-      function GetTextColor(const UseAlt: boolean): TColor;
+    property SystemUsesLightTheme: boolean read FSystemUsesLightTheme;
+    property BackColor: TColor read FBackColor;
+    property TextColor: TColor read FTextColor;
+    property AltBackColor: TColor read FAltBackColor;
+    property AltTextColor: TColor read FAltTextColor;
+
+    function GetBackColor(const UseAlt: boolean): TColor;
+    function GetTextColor(const UseAlt: boolean): TColor;
+    function GetWindowsTheme: string;
 
   end;
 
@@ -62,14 +71,14 @@ begin
 
 end;
 
-function GlobalSystemUsesLightTheme: boolean;
+function TThemeColors.GlobalSystemUsesLightTheme: boolean;
 begin
   //default to light if key doesn't exist.
   Result := ReadInteger('SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize', 'SystemUsesLightTheme') <> 0;
 
 end;
 
-function StartMenuBackColor: TColor;
+function TThemeColors.StartMenuBackColor: TColor;
 begin
   var UseAccentColorInStartMenuInt := ReadInteger('SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize', 'ColorPrevalence');
   if UseAccentColorInStartMenuInt = -1 then exit(EmptyColor);
@@ -83,11 +92,11 @@ begin
 
 
   //This is in my machine, not sure on how to read those values.
-  if GlobalSystemUsesLightTheme then Result := $F2F2F2 else Result := $242424;
+  if SystemUsesLightTheme then Result := $F2F2F2 else Result := $242424;
 
 end;
 
-function StartMenuTextColor: TColor;
+function TThemeColors.StartMenuTextColor: TColor;
 begin
   var Back := TColors.ColorToRGB(StartMenuBackColor);
   var hsp := 0.299 * GetRValue(Back) * GetRValue(Back) + 0.587 * GetGValue(Back) * GetGValue(Back) + 0.114 * GetBValue(Back) * GetBValue(Back);
@@ -96,37 +105,29 @@ begin
 end;
 
 const LightOffset = 0.1;
-function StartMenuAltBackColor: TColor;
+function TThemeColors.StartMenuAltBackColor: TColor;
 begin
-  if GlobalSystemUsesLightTheme then Result := LightenOrDarken(StartMenuBackColor, LightOffset) else Result := LightenOrDarken(StartMenuBackColor, -LightOffset);
+  if SystemUsesLightTheme then Result := LightenOrDarken(StartMenuBackColor, LightOffset) else Result := LightenOrDarken(StartMenuBackColor, -LightOffset);
 end;
 
-function StartMenuAltTextColor: TColor;
+function TThemeColors.StartMenuAltTextColor: TColor;
 begin
-  if GlobalSystemUsesLightTheme then Result := LightenOrDarken(StartMenuTextColor, -LightOffset) else Result := LightenOrDarken(StartMenuTextColor, LightOffset);
+  if SystemUsesLightTheme then Result := LightenOrDarken(StartMenuTextColor, -LightOffset) else Result := LightenOrDarken(StartMenuTextColor, LightOffset);
 end;
 { TThemeColors }
 
-constructor TThemeColors.Create(const UseTheme: boolean);
+constructor TThemeColors.Create(const ThemeStyle: TThemeStyle);
 begin
-  if UseTheme then
-  begin
-    FSystemUsesLightTheme := GlobalSystemUsesLightTheme;
-    FBackColor := StartMenuBackColor;
-    FTextColor := StartMenuTextColor;
-    FAltBackColor := StartMenuAltBackColor;
-    FAltTextColor := StartMenuAltTextColor;
-  end
-  else
-  begin
-    FSystemUsesLightTheme := true;
-    FBackColor := -1;
-    FTextColor := -1;
-    FAltBackColor := -1;
-    FAltTextColor := -1;
+  case ThemeStyle of
+    TThemeStyle.Automatic: FSystemUsesLightTheme := GlobalSystemUsesLightTheme;
+    TThemeStyle.Light: FSystemUsesLightTheme := true;
+    TThemeStyle.Dark: FSystemUsesLightTheme := false;
   end;
 
-
+  FBackColor := StartMenuBackColor;
+  FTextColor := StartMenuTextColor;
+  FAltBackColor := StartMenuAltBackColor;
+  FAltTextColor := StartMenuAltTextColor;
 end;
 
 function TThemeColors.GetBackColor(const UseAlt: boolean): TColor;
@@ -139,6 +140,13 @@ function TThemeColors.GetTextColor(const UseAlt: boolean): TColor;
 begin
   if UseAlt then exit(AltTextColor);
   Result := TextColor;
+end;
+
+function TThemeColors.GetWindowsTheme: string;
+begin
+  if not SystemUsesLightTheme then exit('DarkMode_Explorer');
+  exit('Explorer');
+
 end;
 
 end.

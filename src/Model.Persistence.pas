@@ -9,7 +9,7 @@ type
       MultideKeyFolder = 'multide';
   public
     const
-      EmbarcaderoRoot = 'Software\Embarcadero';
+      EmbarcaderoRoot = '\Software\Embarcadero';
     class function RootMultide: string; static;
     class function SettingsPath(const Id: string): string; static;
     class function EmbarcaderoEntry(const Id, Version: string): string; static;
@@ -20,11 +20,22 @@ type
   public
     const
       Icon = 'Icon';
+      Position = 'Position';
       DelphiVersionName = 'DelphiVersionName';
       DelphiVersionVersion = 'DelphiVersionVersion';
       SmartSetupLocation = 'SmartSetupLocation';
-      ExtraParamters = 'ExtraParamters';
+      SmartSetupWorkingFolder = 'SmartSetupWorkingFolder';
+      TmsBuildFiles = 'TmsBuildFiles';
+      ExtraParameters = 'ExtraParameters';
   end;
+
+  RegistryGlobalSettings = record
+  public
+    const
+      ThemeStyle = 'ThemeStyle';
+      ItemSize = 'ItemSize';
+  end;
+
 
 const
   DefaultIDEName = 'Default';

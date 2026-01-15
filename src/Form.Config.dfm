@@ -15,6 +15,8 @@ object FormConfig: TFormConfig
   PopupMode = pmAuto
   Position = poScreenCenter
   ShowInTaskBar = True
+  OnActivate = FormActivate
+  OnClose = FormClose
   OnCreate = FormCreate
   TextHeight = 15
   object Splitter1: TSplitter
@@ -44,12 +46,13 @@ object FormConfig: TFormConfig
     SmoothMouseWheelScrolling = True
     OnBeforeDrawItem = TabsBeforeDrawItem
     OnItemClick = TabsItemClick
+    ExplicitHeight = 258
     object TabsText: TLabel
       AlignWithMargins = True
       Left = 36
       Top = 4
-      Width = 158
-      Height = 32
+      Width = 21
+      Height = 15
       Margins.Left = 4
       Margins.Top = 4
       Margins.Right = 4
@@ -60,8 +63,6 @@ object FormConfig: TFormConfig
       Transparent = True
       Layout = tlCenter
       WordWrap = True
-      ExplicitWidth = 21
-      ExplicitHeight = 15
     end
     object TabsImage: TVirtualImage
       AlignWithMargins = True
@@ -89,17 +90,21 @@ object FormConfig: TFormConfig
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitWidth = 411
+    ExplicitHeight = 258
     object CardPanelOptions: TCardPanel
       Left = 0
       Top = 0
       Width = 421
       Height = 249
       Align = alClient
-      ActiveCard = CardIDEVersions
+      ActiveCard = CardSmartSetup
       BevelOuter = bvNone
       Caption = 'CardPanelOptions'
       ParentColor = True
       TabOrder = 0
+      ExplicitWidth = 411
+      ExplicitHeight = 217
       object CardGeneral: TCard
         Left = 0
         Top = 0
@@ -129,14 +134,16 @@ object FormConfig: TFormConfig
           Top = 84
           Width = 58
           Height = 58
+          Center = True
           Proportional = True
           Stretch = True
+          Transparent = True
           OnClick = ImageContainerClick
         end
         object edConfigName: TLabeledEdit
           Left = 16
           Top = 32
-          Width = 365
+          Width = 393
           Height = 23
           Anchors = [akLeft, akTop, akRight]
           EditLabel.Width = 109
@@ -148,7 +155,7 @@ object FormConfig: TFormConfig
         object edImageFilename: TLabeledEdit
           Left = 84
           Top = 121
-          Width = 265
+          Width = 293
           Height = 23
           Anchors = [akLeft, akTop, akRight]
           EditLabel.Width = 84
@@ -158,7 +165,7 @@ object FormConfig: TFormConfig
           Text = ''
         end
         object AdditionalImageSelect: TButton
-          Left = 355
+          Left = 383
           Top = 120
           Width = 26
           Height = 24
@@ -179,7 +186,7 @@ object FormConfig: TFormConfig
         object edExtraParams: TLabeledEdit
           Left = 16
           Top = 176
-          Width = 332
+          Width = 360
           Height = 23
           Hint = 
             'You can specify some extra parameters to pass to BDS.exe here, l' +
@@ -195,21 +202,23 @@ object FormConfig: TFormConfig
           Text = ''
         end
         object btnBDSInfo: TButton
-          Left = 354
+          Left = 382
           Top = 174
           Width = 27
           Height = 24
           Anchors = [akTop, akRight]
+          HotImageIndex = 3
+          HotImageName = 'info'
           ImageAlignment = iaCenter
           ImageIndex = 3
           ImageName = 'info'
           Images = UIImageList
-          PressedImageIndex = 0
-          PressedImageName = 'open'
-          SelectedImageIndex = 0
-          SelectedImageName = 'open'
-          StylusHotImageIndex = 0
-          StylusHotImageName = 'open'
+          PressedImageIndex = 3
+          PressedImageName = 'info'
+          SelectedImageIndex = 3
+          SelectedImageName = 'info'
+          StylusHotImageIndex = 3
+          StylusHotImageName = 'info'
           TabOrder = 4
           OnClick = btnBDSInfoClick
         end
@@ -274,36 +283,94 @@ object FormConfig: TFormConfig
         Caption = 'Smart Setup'
         CardIndex = 3
         TabOrder = 2
+        ExplicitWidth = 411
+        ExplicitHeight = 217
         DesignSize = (
           421
           249)
         object LabelConfFiles: TLabel
           Left = 6
-          Top = 60
-          Width = 171
+          Top = 107
+          Width = 227
           Height = 15
-          Caption = '&Configuration files (one per line)'
+          Caption = '&Additional configuration files (one per line)'
         end
         object edSmartSetupLocation: TLabeledEdit
           Left = 6
           Top = 24
-          Width = 342
+          Width = 371
           Height = 23
           Anchors = [akLeft, akTop, akRight]
-          EditLabel.Width = 110
+          EditLabel.Width = 161
           EditLabel.Height = 15
-          EditLabel.Caption = '&Smart Setup location'
+          EditLabel.Caption = '&Smart Setup (tms.exe) location'
           TabOrder = 0
           Text = ''
+          ExplicitWidth = 361
         end
         object MemoConfFiles: TMemo
           Left = 6
-          Top = 81
-          Width = 342
-          Height = 162
+          Top = 128
+          Width = 403
+          Height = 115
           Anchors = [akLeft, akTop, akRight, akBottom]
           ScrollBars = ssVertical
+          TabOrder = 4
+          ExplicitWidth = 393
+          ExplicitHeight = 83
+        end
+        object btnChooseSmartSetup: TButton
+          Left = 383
+          Top = 22
+          Width = 26
+          Height = 24
+          Anchors = [akTop, akRight]
+          ImageAlignment = iaCenter
+          ImageIndex = 0
+          ImageName = 'open'
+          Images = UIImageList
+          PressedImageIndex = 0
+          PressedImageName = 'open'
+          SelectedImageIndex = 0
+          SelectedImageName = 'open'
+          StylusHotImageIndex = 0
+          StylusHotImageName = 'open'
           TabOrder = 1
+          OnClick = btnChooseSmartSetupClick
+          ExplicitLeft = 373
+        end
+        object edSmartSetupWorkingFolder: TLabeledEdit
+          Left = 6
+          Top = 72
+          Width = 371
+          Height = 23
+          Anchors = [akLeft, akTop, akRight]
+          EditLabel.Width = 79
+          EditLabel.Height = 15
+          EditLabel.Caption = '&Working folder'
+          TabOrder = 2
+          Text = ''
+          ExplicitWidth = 361
+        end
+        object btnWorkingFolder: TButton
+          Left = 383
+          Top = 70
+          Width = 26
+          Height = 24
+          Anchors = [akTop, akRight]
+          ImageAlignment = iaCenter
+          ImageIndex = 0
+          ImageName = 'open'
+          Images = UIImageList
+          PressedImageIndex = 0
+          PressedImageName = 'open'
+          SelectedImageIndex = 0
+          SelectedImageName = 'open'
+          StylusHotImageIndex = 0
+          StylusHotImageName = 'open'
+          TabOrder = 3
+          OnClick = btnWorkingFolderClick
+          ExplicitLeft = 373
         end
       end
     end
@@ -316,11 +383,13 @@ object FormConfig: TFormConfig
       BevelOuter = bvNone
       Color = clWhite
       TabOrder = 1
+      ExplicitTop = 217
+      ExplicitWidth = 411
       DesignSize = (
         421
         41)
       object btnOk: TButton
-        Left = 232
+        Left = 253
         Top = 6
         Width = 75
         Height = 25
@@ -329,10 +398,10 @@ object FormConfig: TFormConfig
         Default = True
         ModalResult = 1
         TabOrder = 0
-        OnClick = btnOkClick
+        ExplicitLeft = 243
       end
       object btnCancel: TButton
-        Left = 313
+        Left = 334
         Top = 6
         Width = 75
         Height = 25
@@ -341,7 +410,7 @@ object FormConfig: TFormConfig
         Caption = 'Cancel'
         ModalResult = 2
         TabOrder = 1
-        OnClick = btnCancelClick
+        ExplicitLeft = 324
       end
     end
   end
@@ -1541,5 +1610,26 @@ object FormConfig: TFormConfig
       end>
     Left = 56
     Top = 184
+  end
+  object OpenSmartSetupDialog: TFileOpenDialog
+    DefaultExtension = '.exe'
+    FavoriteLinks = <>
+    FileTypes = <
+      item
+        DisplayName = 'SmartSetup'
+        FileMask = 'tms.exe'
+      end>
+    Options = [fdoStrictFileTypes, fdoPathMustExist, fdoFileMustExist]
+    Title = 'Choose the location for tms.exe'
+    Left = 144
+    Top = 216
+  end
+  object ChooseWorkingFolderDialog: TFileOpenDialog
+    FavoriteLinks = <>
+    FileTypes = <>
+    Options = [fdoPickFolders, fdoPathMustExist]
+    Title = 'Choose Smart Setup Working Folder'
+    Left = 32
+    Top = 240
   end
 end

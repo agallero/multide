@@ -19,8 +19,7 @@ uses IOUtils, SysUtils;
 
 class function Config.ShortcutsImagePath(const FileName: string): string;
 begin
-  Result := TPath.Combine('ide-shortcuts', FileName);
-  if not TFile.Exists(Result) then Result := '';
+  Result := TPath.GetFullPath(TPath.Combine('ide-shortcuts', FileName));
 end;
 
 class function Config.IDEImagePath(const FileName: string): string;

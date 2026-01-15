@@ -7,15 +7,30 @@ type
   TModelEntryReader = record
   private
     class procedure EnsureDefaults(const Entry: TEntry); static;
+    class function GetPosition(const Reg: TRegistry; const Id: string): integer; static;
   public
     class procedure Load(const Entries: TEntryList); static;
     class procedure LoadFromRegistry(const Entry: TEntry); static;
   end;
 
 implementation
-uses SysUtils, Classes, Windows, Global.Config;
+uses SysUtils, Classes, Windows, Global.Config, Generics.Defaults, Generics.Collections, Math;
+type
+  TSortedEntry = record
+  public
+    Position: integer;
+    Id: string;
+    class function CompareEntries(const a, b: TSortedEntry): Integer; static;
+  end;
 
 { TModelEntryReader }
+
+class function TModelEntryReader.GetPosition(const Reg: TRegistry; const Id: string): integer;
+begin
+  Result := 0;
+  if not Reg.OpenKeyReadOnly(RegistryKeys.SettingsPath(Id)) then exit;
+  Result := Reg.ReadInteger(RegistrySettings.Position);
+end;
 
 class procedure TModelEntryReader.Load(const Entries: TEntryList);
 begin
@@ -30,11 +45,22 @@ begin
     var List := TStringList.Create;
     try
       Reg.GetKeyNames(List);
-      for var Id in List do
+      var SortedEntries: TArray<TSortedEntry> := nil;
+      SetLength(SortedEntries, List.Count);
+      for var i := 0 to List.Count - 1 do
       begin
-        if Id <> DefaultIDEName then
+        SortedEntries[i].Id := List[i];
+        SortedEntries[i].Position := GetPosition(Reg, List[i]);
+      end;
+
+      TArray.Sort<TSortedEntry>(SortedEntries, TComparer<TSortedEntry>.Construct(TSortedEntry.CompareEntries));
+
+
+      for var Sorted in SortedEntries do
+      begin
+        if Sorted.Id <> DefaultIDEName then
         begin
-          Entries.Add(TEntry.Create(Id));
+          Entries.Add(TEntry.Create(Sorted.Id));
           LoadFromRegistry(Entries.Last);
         end;
       end;
@@ -63,17 +89,29 @@ begin
       EnsureDefaults(Entry);
       exit;
     end;
-    Entry.Icon := Reg.GetDataAsString(RegistrySettings.Icon);
+    Entry.Icon := Reg.ReadString(RegistrySettings.Icon);
     Entry.DelphiVersion := TDelphiVersion.Create(
-      Reg.GetDataAsString(RegistrySettings.DelphiVersionName),
-      Reg.GetDataAsString(RegistrySettings.DelphiVersionVersion));
-    Entry.SmartSetupLocation := Reg.GetDataAsString(RegistrySettings.SmartSetupLocation);
-    Entry.ExtraParamters:= Reg.GetDataAsString(RegistrySettings.ExtraParamters);
+      Reg.ReadString(RegistrySettings.DelphiVersionName),
+      Reg.ReadString(RegistrySettings.DelphiVersionVersion));
+    Entry.SmartSetupLocation := Reg.ReadString(RegistrySettings.SmartSetupLocation);
+    Entry.SmartSetupWorkingFolder := Reg.ReadString(RegistrySettings.SmartSetupWorkingFolder);
+    Entry.TmsBuildFiles := Reg.ReadMultiString(RegistrySettings.TmsBuildFiles);
+    Entry.ExtraParameters:= Reg.ReadString(RegistrySettings.ExtraParameters);
 
     EnsureDefaults(Entry);
   finally
     Reg.Free;
   end;
+end;
+
+{ TSortedEntry }
+
+
+{ TSortedEntry }
+
+class function TSortedEntry.CompareEntries(const a, b: TSortedEntry): Integer;
+begin
+  Result := CompareValue(a.Position, b.Position);
 end;
 
 end.

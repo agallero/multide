@@ -22,7 +22,12 @@ uses
   Model.DelphiVersions in 'src\Model.DelphiVersions.pas',
   Model.DelphiVersionsReader in 'src\Model.DelphiVersionsReader.pas',
   Shortcut.Creator in 'src\Shortcut.Creator.pas',
-  Shortcut.Manager in 'src\Shortcut.Manager.pas';
+  Shortcut.Manager in 'src\Shortcut.Manager.pas',
+  Deget.CommandLine in 'src\Deget.CommandLine.pas',
+  Model.GlobalSettings in 'src\Model.GlobalSettings.pas',
+  Model.GlobalSettingsReader in 'src\Model.GlobalSettingsReader.pas',
+  Model.GlobalSettingsWriter in 'src\Model.GlobalSettingsWriter.pas',
+  Form.AddConfig in 'src\Form.AddConfig.pas' {FormAddConfig};
 
 {$R *.res}
 

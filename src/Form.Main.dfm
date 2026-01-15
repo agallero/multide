@@ -205,7 +205,7 @@ object FormMain: TFormMain
   object IDEImages: TImageCollection
     Images = <>
     Left = 256
-    Top = 200
+    Top = 160
   end
   object ButtonImages: TImageCollection
     Images = <
@@ -1276,8 +1276,8 @@ object FormMain: TFormMain
               2B1C8E1F19F9A0050000000049454E44AE426082}
           end>
       end>
-    Left = 352
-    Top = 200
+    Left = 416
+    Top = 96
   end
   object ButtonVirtualImages: TVirtualImageList
     AutoFill = True

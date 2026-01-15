@@ -46,20 +46,28 @@ type
     btnBDSInfo: TButton;
     Button3: TButton;
     Label1: TLabel;
+    btnChooseSmartSetup: TButton;
+    OpenSmartSetupDialog: TFileOpenDialog;
+    edSmartSetupWorkingFolder: TLabeledEdit;
+    btnWorkingFolder: TButton;
+    ChooseWorkingFolderDialog: TFileOpenDialog;
     procedure FormCreate(Sender: TObject);
     procedure TabsBeforeDrawItem(AIndex: Integer; ACanvas: TCanvas;
       ARect: TRect; AState: TOwnerDrawState);
     procedure TabsItemClick(Sender: TObject);
-    procedure btnOkClick(Sender: TObject);
     procedure ImageContainerClick(Sender: TObject);
     procedure btnBDSInfoClick(Sender: TObject);
-    procedure btnCancelClick(Sender: TObject);
+    procedure btnChooseSmartSetupClick(Sender: TObject);
+    procedure btnWorkingFolderClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormActivate(Sender: TObject);
   private
     FEntryList: TEntryList;
     FEntryIndex: integer;
     FEntry: TEntry;
     FDelphiVersions: TDelphiVersionList;
     function ValidateConfName(const ConfName: string): string;
+    procedure Save;
   public
     procedure SelectCard(const Card: TConfigCard);
     procedure SetIDE(const aEntryList: TEntryList; const aEntryIndex: integer);
@@ -88,25 +96,7 @@ end;
 
 function TFormConfig.ValidateConfName(const ConfName: string): string;
 begin
-  Result := '';
-  if FEntryIndex = 0 then
-  begin
-    if ConfName <> DefaultIDEName then exit('Cannot rename the default ide name.');
-    exit;
-  end;
-
-  if ConfName = '' then exit('Cannot be empty.');
-
-  //registry accepts 255, but that's the maximum length of the full path.
-  //After this registry entry, there will be subentries that will make it longer.
-  if ConfName.Length + RegistryKeys.EmbarcaderoRoot.Length > 100 then exit('Name is too long.');
-  for var c in ConfName do if (ord(c) < 32) or (c='\') then exit('It has invalid characters.');
-
-  for var i := 0 to FEntryList.Count - 1 do
-  begin
-    if i = FEntryIndex then continue;
-    if SameText(FEntryList[i].Id, ConfName) then exit('This name already exists.');
-  end;
+  Result := FEntryList.ValidateId(ConfName, FEntryIndex);
 end;
 
 procedure TFormConfig.btnBDSInfoClick(Sender: TObject);
@@ -114,12 +104,41 @@ begin
   ShellExecute(0, '', 'https://docwiki.embarcadero.com/RADStudio/en/IDE_Command_Line_Switches_and_Options', nil, '', SW_SHOWNORMAL);
 end;
 
-procedure TFormConfig.btnCancelClick(Sender: TObject);
+procedure TFormConfig.btnChooseSmartSetupClick(Sender: TObject);
 begin
-  TModelEntryReader.LoadFromRegistry(FEntry);
+  try
+    OpenSmartSetupDialog.FileName := TPath.GetFullPath(edSmartSetupLocation.Text);
+    OpenSmartSetupDialog.DefaultFolder := TPath.GetDirectoryName(TPath.GetFullPath(edSmartSetupLocation.Text));
+  except
+
+  end;
+  if not OpenSmartSetupDialog.Execute(Self.Handle) then
+  begin
+    exit;
+  end;
+  if (OpenSmartSetupDialog.FileName = '') or not TFile.Exists(OpenSmartSetupDialog.FileName) then
+    raise Exception.Create('Cannot find the file "' + OpenSmartSetupDialog.FileName + '"');
+  edSmartSetupLocation.Text := OpenSmartSetupDialog.FileName;
 end;
 
-procedure TFormConfig.btnOkClick(Sender: TObject);
+procedure TFormConfig.btnWorkingFolderClick(Sender: TObject);
+begin
+  try
+    ChooseWorkingFolderDialog.DefaultFolder := TPath.GetFullPath(edSmartSetupWorkingFolder.Text);
+  except
+
+  end;
+  if not ChooseWorkingFolderDialog.Execute(Self.Handle) then
+  begin
+    exit;
+  end;
+  if (ChooseWorkingFolderDialog.FileName = '') or not TDirectory.Exists(ChooseWorkingFolderDialog.FileName) then
+    raise Exception.Create('Cannot find the folder "' + ChooseWorkingFolderDialog.FileName + '"');
+  edSmartSetupWorkingFolder.Text := ChooseWorkingFolderDialog.FileName;
+
+end;
+
+procedure TFormConfig.Save;
 begin
   var ConfName := Trim(edConfigName.Text);
   var Error := ValidateConfName(ConfName);
@@ -132,12 +151,6 @@ begin
     exit;
   end;
 
-  if ConfName <> FEntry.Id then
-  begin
-    FEntry.Id := ConfName;
-    //rename registry key and my docs.
-  end;
-
   var IconFileName := edImageFilename.Text;
   try
     var RelativeFileName := ExtractRelativePath(TPath.GetFullPath(Application.ExeName), edImageFilename.Text);
@@ -147,12 +160,33 @@ begin
 
   FEntry.Icon := IconFileName;
 
-  FEntry.TmsBuildFiles := MemoConfFiles.Lines.ToStringArray;
   FEntry.SmartSetupLocation := edSmartSetupLocation.Text;
-  FEntry.ExtraParamters := edExtraParams.Text;
+  FEntry.SmartSetupWorkingFolder := edSmartSetupWorkingFolder.Text;
+  FEntry.TmsBuildFiles := MemoConfFiles.Lines.ToStringArray;
+  FEntry.ExtraParameters := edExtraParams.Text;
   if (cbIDEToLaunch.ItemIndex >= 0) and (cbIDEToLaunch.ItemIndex < Length(FDelphiVersions)) then FEntry.DelphiVersion := FDelphiVersions[cbIDEToLaunch.ItemIndex];
-  TModelEntryWriter.Save(FEntry);
+
+  if ConfName <> FEntry.Id then
+  begin
+    TModelEntryWriter.RemoveEntry(FEntry.Id);
+    TShortcutManager.Remove(FEntry.Id);
+    FEntry.Id := ConfName;
+  end;
+
+
+  TModelEntryWriter.SaveEntry(FEntry, FEntryIndex);
   TShortcutManager.Create(FEntry);
+end;
+
+procedure TFormConfig.FormActivate(Sender: TObject);
+begin
+  TThemeManager.UpdateControl(Self);
+end;
+
+procedure TFormConfig.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  if ModalResult = mrOk then Save
+  else TModelEntryReader.LoadFromRegistry(FEntry);
 end;
 
 procedure TFormConfig.FormCreate(Sender: TObject);
@@ -224,9 +258,10 @@ begin
   if FEntry.Icon <> '' then edImageFilename.Text := TPath.GetFullPath(FEntry.Icon) else edImageFilename.Text := '';
 
   edSmartSetupLocation.Text := FEntry.SmartSetupLocation;
+  edSmartSetupWorkingFolder.Text := FEntry.SmartSetupWorkingFolder;
   MemoConfFiles.Text := '';
   MemoConfFiles.Lines.AddStrings(FEntry.TmsBuildFiles);
-  edExtraParams.Text := FEntry.ExtraParamters;
+  edExtraParams.Text := FEntry.ExtraParameters;
 
   FDelphiVersions := TModelDelphiVersionsReader.Read;
   cbIDEToLaunch.Items.Clear;
