@@ -44,13 +44,16 @@ type
     LabelDefaultIDEVersions: TLabel;
     edExtraParams: TLabeledEdit;
     btnBDSInfo: TButton;
-    Button3: TButton;
-    Label1: TLabel;
     btnChooseSmartSetup: TButton;
     OpenSmartSetupDialog: TFileOpenDialog;
     edSmartSetupWorkingFolder: TLabeledEdit;
     btnWorkingFolder: TButton;
     ChooseWorkingFolderDialog: TFileOpenDialog;
+    lblPath: TLabel;
+    MemoPath: TMemo;
+    Splitter2: TSplitter;
+    lblRegistry: TLabel;
+    MemoRegistry: TMemo;
     procedure FormCreate(Sender: TObject);
     procedure TabsBeforeDrawItem(AIndex: Integer; ACanvas: TCanvas;
       ARect: TRect; AState: TOwnerDrawState);

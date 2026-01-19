@@ -26,11 +26,13 @@ object FormGlobalConfig: TFormGlobalConfig
     BevelOuter = bvNone
     Color = clWhite
     TabOrder = 4
+    ExplicitTop = 368
+    ExplicitWidth = 454
     DesignSize = (
       464
       41)
     object btnOk: TButton
-      Left = 260
+      Left = 300
       Top = 9
       Width = 75
       Height = 25
@@ -41,7 +43,7 @@ object FormGlobalConfig: TFormGlobalConfig
       TabOrder = 0
     end
     object btnCancel: TButton
-      Left = 341
+      Left = 381
       Top = 9
       Width = 75
       Height = 25
@@ -87,7 +89,7 @@ object FormGlobalConfig: TFormGlobalConfig
   object IDEList: TControlList
     Left = 8
     Top = 160
-    Width = 418
+    Width = 448
     Height = 234
     Anchors = [akLeft, akTop, akRight, akBottom]
     Color = clBtnFace
@@ -109,7 +111,7 @@ object FormGlobalConfig: TFormGlobalConfig
       AlignWithMargins = True
       Left = 16
       Top = 8
-      Width = 194
+      Width = 224
       Height = 32
       Margins.Left = 6
       Margins.Top = 6
@@ -129,7 +131,7 @@ object FormGlobalConfig: TFormGlobalConfig
       ExplicitWidth = 384
     end
     object btnDelete: TControlListButton
-      Left = 340
+      Left = 370
       Top = 0
       Width = 40
       Height = 32
@@ -150,7 +152,7 @@ object FormGlobalConfig: TFormGlobalConfig
       ExplicitHeight = 80
     end
     object btnConfig: TControlListButton
-      Left = 220
+      Left = 250
       Top = 0
       Width = 40
       Height = 32
@@ -172,7 +174,7 @@ object FormGlobalConfig: TFormGlobalConfig
       ExplicitHeight = 80
     end
     object btnDown: TControlListButton
-      Left = 300
+      Left = 330
       Top = 0
       Width = 40
       Height = 32
@@ -193,7 +195,7 @@ object FormGlobalConfig: TFormGlobalConfig
       ExplicitHeight = 80
     end
     object btnUp: TControlListButton
-      Left = 260
+      Left = 290
       Top = 0
       Width = 40
       Height = 32
@@ -228,6 +230,7 @@ object FormGlobalConfig: TFormGlobalConfig
     Top = 16
     Width = 136
     Height = 25
+    Anchors = [akTop, akRight]
     Caption = 'Export Configurations'
     TabOrder = 5
   end
@@ -236,6 +239,7 @@ object FormGlobalConfig: TFormGlobalConfig
     Top = 47
     Width = 136
     Height = 25
+    Anchors = [akTop, akRight]
     Caption = 'Import Configurations'
     TabOrder = 6
   end

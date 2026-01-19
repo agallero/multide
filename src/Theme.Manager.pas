@@ -1,7 +1,7 @@
 unit Theme.Manager;
 
 interface
-uses  Theme.Colors, Vcl.Controls, Vcl.Buttons;
+uses  Classes, Theme.Colors, Vcl.Controls, Vcl.Buttons, Vcl.Menus;
 type
  TThemeManager = record
  private
@@ -9,7 +9,7 @@ type
  public
    class constructor Create;
    class procedure SetTheme(const ThemeStyle: TThemeStyle); static;
-   class procedure UpdateControl(const Control: TControl); static;
+   class procedure UpdateControl(const Control: TComponent); static;
  end;
 
 
@@ -33,11 +33,11 @@ begin
   ThemeColors := TThemeColors.Create(ThemeStyle);
 end;
 
-class procedure TThemeManager.UpdateControl(const Control: TControl);
+class procedure TThemeManager.UpdateControl(const Control: TComponent);
 begin
   if Integer(ThemeColors.BackColor) <> -1 then
   begin
-    TControlAccess(Control).Color := ThemeColors.GetBackColor(Control.Tag <> 0);
+    if Control is TControl then TControlAccess(Control).Color := ThemeColors.GetBackColor(Control.Tag <> 0);
 
     for var i := 0 to Control.ComponentCount - 1 do
     begin
@@ -133,10 +133,17 @@ begin
         continue;
       end;
 
+      if Comp is TMenuItem then
+      begin
+        SetWindowTheme(TMenuItem(Comp).Handle, PChar(ThemeColors.GetWindowsTheme), nil);
+      end;
+
       if Comp is TControl then
       begin
         UpdateControl(TControl(Comp));
       end;
+
+
 
     end;
   end;

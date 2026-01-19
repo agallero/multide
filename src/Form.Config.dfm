@@ -51,8 +51,8 @@ object FormConfig: TFormConfig
       AlignWithMargins = True
       Left = 36
       Top = 4
-      Width = 21
-      Height = 15
+      Width = 158
+      Height = 32
       Margins.Left = 4
       Margins.Top = 4
       Margins.Right = 4
@@ -63,6 +63,8 @@ object FormConfig: TFormConfig
       Transparent = True
       Layout = tlCenter
       WordWrap = True
+      ExplicitWidth = 21
+      ExplicitHeight = 15
     end
     object TabsImage: TVirtualImage
       AlignWithMargins = True
@@ -98,7 +100,7 @@ object FormConfig: TFormConfig
       Width = 421
       Height = 249
       Align = alClient
-      ActiveCard = CardSmartSetup
+      ActiveCard = CardSync
       BevelOuter = bvNone
       Caption = 'CardPanelOptions'
       ParentColor = True
@@ -259,20 +261,61 @@ object FormConfig: TFormConfig
         Caption = 'Sync'
         CardIndex = 2
         TabOrder = 1
-        object Label1: TLabel
-          Left = 176
-          Top = 112
-          Width = 90
+        ExplicitLeft = -1
+        object lblPath: TLabel
+          Left = 0
+          Top = 0
+          Width = 421
           Height = 15
-          Caption = 'Packages to sync'
+          Align = alTop
+          Caption = 'Path entries to copy from default'
+          ExplicitWidth = 174
         end
-        object Button3: TButton
-          Left = 6
-          Top = 9
-          Width = 193
-          Height = 25
-          Caption = 'Copy configuration from...'
+        object Splitter2: TSplitter
+          Left = 0
+          Top = 104
+          Width = 421
+          Height = 9
+          Cursor = crVSplit
+          Align = alTop
+          ResizeStyle = rsUpdate
+        end
+        object lblRegistry: TLabel
+          Left = 0
+          Top = 113
+          Width = 421
+          Height = 15
+          Align = alTop
+          Caption = 'Registry entries to copy from default'
+          ExplicitWidth = 192
+        end
+        object MemoPath: TMemo
+          Left = 0
+          Top = 15
+          Width = 421
+          Height = 89
+          Align = alTop
+          Lines.Strings = (
+            '# lines starting with # are comments'
+            '# Start with + or - to include or exclude the path'
+            '# You can use wildcards to match parts of the paths')
+          ScrollBars = ssBoth
           TabOrder = 0
+          WordWrap = False
+        end
+        object MemoRegistry: TMemo
+          Left = 0
+          Top = 128
+          Width = 421
+          Height = 121
+          Align = alClient
+          Lines.Strings = (
+            '# lines starting with # are comments'
+            '# Start with + or - to include or exclude the registry path'
+            '# +Known Packages\$(BDSBIN)\*')
+          ScrollBars = ssBoth
+          TabOrder = 1
+          WordWrap = False
         end
       end
       object CardSmartSetup: TCard
