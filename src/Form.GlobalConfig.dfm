@@ -3,7 +3,7 @@ object FormGlobalConfig: TFormGlobalConfig
   Top = 0
   Caption = 'Global Configuration'
   ClientHeight = 441
-  ClientWidth = 464
+  ClientWidth = 496
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,13 +14,13 @@ object FormGlobalConfig: TFormGlobalConfig
   OnClose = FormClose
   OnCreate = FormCreate
   DesignSize = (
-    464
+    496
     441)
   TextHeight = 15
   object Panel1: TPanel
     Left = 0
     Top = 400
-    Width = 464
+    Width = 496
     Height = 41
     Align = alBottom
     BevelOuter = bvNone
@@ -29,10 +29,10 @@ object FormGlobalConfig: TFormGlobalConfig
     ExplicitTop = 368
     ExplicitWidth = 454
     DesignSize = (
-      464
+      496
       41)
     object btnOk: TButton
-      Left = 300
+      Left = 322
       Top = 9
       Width = 75
       Height = 25
@@ -41,9 +41,10 @@ object FormGlobalConfig: TFormGlobalConfig
       Default = True
       ModalResult = 1
       TabOrder = 0
+      ExplicitLeft = 280
     end
     object btnCancel: TButton
-      Left = 381
+      Left = 403
       Top = 9
       Width = 75
       Height = 25
@@ -52,6 +53,7 @@ object FormGlobalConfig: TFormGlobalConfig
       Caption = 'Cancel'
       ModalResult = 2
       TabOrder = 1
+      ExplicitLeft = 361
     end
   end
   object rbItemSize: TRadioGroup
@@ -89,7 +91,7 @@ object FormGlobalConfig: TFormGlobalConfig
   object IDEList: TControlList
     Left = 8
     Top = 160
-    Width = 448
+    Width = 470
     Height = 234
     Anchors = [akLeft, akTop, akRight, akBottom]
     Color = clBtnFace
@@ -107,6 +109,8 @@ object FormGlobalConfig: TFormGlobalConfig
     TabOrder = 3
     SmoothMouseWheelScrolling = True
     OnBeforeDrawItem = IDEListBeforeDrawItem
+    ExplicitWidth = 428
+    ExplicitHeight = 202
     object IDECaption: TLabel
       AlignWithMargins = True
       Left = 16
@@ -131,7 +135,7 @@ object FormGlobalConfig: TFormGlobalConfig
       ExplicitWidth = 384
     end
     object btnDelete: TControlListButton
-      Left = 370
+      Left = 392
       Top = 0
       Width = 40
       Height = 32
@@ -152,7 +156,7 @@ object FormGlobalConfig: TFormGlobalConfig
       ExplicitHeight = 80
     end
     object btnConfig: TControlListButton
-      Left = 250
+      Left = 272
       Top = 0
       Width = 40
       Height = 32
@@ -174,7 +178,7 @@ object FormGlobalConfig: TFormGlobalConfig
       ExplicitHeight = 80
     end
     object btnDown: TControlListButton
-      Left = 330
+      Left = 352
       Top = 0
       Width = 40
       Height = 32
@@ -195,7 +199,7 @@ object FormGlobalConfig: TFormGlobalConfig
       ExplicitHeight = 80
     end
     object btnUp: TControlListButton
-      Left = 290
+      Left = 312
       Top = 0
       Width = 40
       Height = 32
@@ -226,22 +230,26 @@ object FormGlobalConfig: TFormGlobalConfig
     OnClick = btnAddConfigurationClick
   end
   object btnExport: TButton
-    Left = 320
+    Left = 342
     Top = 16
     Width = 136
     Height = 25
     Anchors = [akTop, akRight]
     Caption = 'Export Configurations'
     TabOrder = 5
+    OnClick = btnExportClick
+    ExplicitLeft = 300
   end
   object btnImport: TButton
-    Left = 320
+    Left = 342
     Top = 47
     Width = 136
     Height = 25
     Anchors = [akTop, akRight]
     Caption = 'Import Configurations'
     TabOrder = 6
+    OnClick = btnImportClick
+    ExplicitLeft = 300
   end
   object ButtonVirtualImages: TVirtualImageList
     AutoFill = True

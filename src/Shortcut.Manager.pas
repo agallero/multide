@@ -55,7 +55,10 @@ begin
   var Entries := THashSet<string>.Create;
   try
     for var Entry in EntryList do Entries.Add(Entry.Id);
-    var ExistingIcons := TDirectory.GetFiles(TPath.GetFullPath(Config.IDEIconPath('')), '*.ico');
+    var IcoFolder := TPath.GetFullPath(Config.IDEIconPath(''));
+    if not TDirectory.Exists(IcoFolder) then exit;
+    
+    var ExistingIcons := TDirectory.GetFiles(IcoFolder, '*.ico');
     for var Icon in ExistingIcons do
     begin
       if Entries.Contains(TPath.GetFileNameWithoutExtension(Icon)) then continue;

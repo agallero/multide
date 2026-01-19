@@ -29,6 +29,8 @@ class function TModelEntryReader.GetPosition(const Reg: TRegistry; const Id: str
 begin
   Result := 0;
   if not Reg.OpenKeyReadOnly(RegistryKeys.SettingsPath(Id)) then exit;
+  if not Reg.ValueExists(RegistrySettings.Position) then exit;
+
   Result := Reg.ReadInteger(RegistrySettings.Position);
 end;
 

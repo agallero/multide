@@ -8,7 +8,8 @@ uses
   Vcl.StdCtrls, Vcl.ExtCtrls, Model.GlobalSettings, Global.Config,
   Vcl.ControlList, Vcl.VirtualImage, Vcl.BaseImageCollection,
   Vcl.ImageCollection, System.ImageList, Vcl.ImgList,
-  Vcl.VirtualImageList, Model.Entry, Form.AddConfig, Form.Config;
+  Vcl.VirtualImageList, Model.Entry, Form.AddConfig, Form.Config,
+  System.JSON, System.IOUtils;
 
 type
   TApplyGlobalSettings = procedure of object;
@@ -42,16 +43,23 @@ type
     procedure btnDownClick(Sender: TObject);
     procedure btnAddConfigurationClick(Sender: TObject);
     procedure btnConfigClick(Sender: TObject);
+    procedure btnExportClick(Sender: TObject);
+    procedure btnImportClick(Sender: TObject);
   private
     Entries: TEntryList;
     GlobalSettings: TGlobalSettings;
     ApplyGlobalSettings: TApplyGlobalSettings;
     FFormAddConfig: TFormAddConfig;
     FFormConfig: TFormConfig;
+    ConfigOpenDialog: TOpenDialog;
+    ConfigSaveDialog: TSaveDialog;
+
 
     procedure Save;
     function FormAddConfig: TFormAddConfig;
     function FormConfig: TFormConfig;
+    function EntriesToJSON: TJSONObject;
+    procedure JSONToEntries(const JSON: TJSONObject);
 
   public
     procedure Initialize(const aEntries: TEntryList; const aGlobalSettings: TGlobalSettings; const aApplyGlobalSettings: TApplyGlobalSettings);
@@ -60,7 +68,7 @@ type
 
 implementation
 uses Model.GlobalSettingsReader, Model.GlobalSettingsWriter,
-     Model.EntryReader, Model.EntryWriter, Shortcut.Manager;
+     Model.EntryReader, Model.EntryWriter, Shortcut.Manager, Model.DelphiVersions;
 
 {$R *.dfm}
 
@@ -207,6 +215,180 @@ begin
     else rbItemSize.ItemIndex := 1;
   end;
   IDEList.ItemCount := Entries.Count;
+end;
+
+function TFormGlobalConfig.EntriesToJSON: TJSONObject;
+begin
+  Result := TJSONObject.Create;
+
+  // Global settings
+  var SettingsObj := TJSONObject.Create;
+  case GlobalSettings.ThemeStyle of
+    TThemeStyle.Light: SettingsObj.AddPair('themeStyle', 'Light');
+    TThemeStyle.Dark: SettingsObj.AddPair('themeStyle', 'Dark');
+    else SettingsObj.AddPair('themeStyle', 'Automatic');
+  end;
+  case GlobalSettings.ItemSize of
+    TItemSize.Small: SettingsObj.AddPair('itemSize', 'Small');
+    TItemSize.Big: SettingsObj.AddPair('itemSize', 'Big');
+    else SettingsObj.AddPair('itemSize', 'Medium');
+  end;
+  Result.AddPair('globalSettings', SettingsObj);
+
+  // Entries
+  var EntriesArr := TJSONArray.Create;
+  for var Entry in Entries do
+  begin
+    var EntryObj := TJSONObject.Create;
+    EntryObj.AddPair('id', Entry.Id);
+    EntryObj.AddPair('icon', Entry.Icon);
+
+    var DelphiObj := TJSONObject.Create;
+    DelphiObj.AddPair('name', Entry.DelphiVersion.Name);
+    DelphiObj.AddPair('version', Entry.DelphiVersion.Version);
+    EntryObj.AddPair('delphiVersion', DelphiObj);
+
+    var BuildFilesArr := TJSONArray.Create;
+    for var BuildFile in Entry.TmsBuildFiles do
+      BuildFilesArr.Add(BuildFile);
+    EntryObj.AddPair('tmsBuildFiles', BuildFilesArr);
+
+    EntryObj.AddPair('smartSetupLocation', Entry.SmartSetupLocation);
+    EntryObj.AddPair('smartSetupWorkingFolder', Entry.SmartSetupWorkingFolder);
+    EntryObj.AddPair('extraParameters', Entry.ExtraParameters);
+
+    EntriesArr.Add(EntryObj);
+  end;
+  Result.AddPair('entries', EntriesArr);
+end;
+
+procedure TFormGlobalConfig.JSONToEntries(const JSON: TJSONObject);
+begin
+  // Import global settings
+  var SettingsObj := JSON.GetValue<TJSONObject>('globalSettings');
+  if SettingsObj <> nil then
+  begin
+    var ThemeStr := SettingsObj.GetValue<string>('themeStyle', 'Automatic');
+    if SameText(ThemeStr, 'Light') then GlobalSettings.ThemeStyle := TThemeStyle.Light
+    else if SameText(ThemeStr, 'Dark') then GlobalSettings.ThemeStyle := TThemeStyle.Dark
+    else GlobalSettings.ThemeStyle := TThemeStyle.Automatic;
+
+    var SizeStr := SettingsObj.GetValue<string>('itemSize', 'Medium');
+    if SameText(SizeStr, 'Small') then GlobalSettings.ItemSize := TItemSize.Small
+    else if SameText(SizeStr, 'Big') then GlobalSettings.ItemSize := TItemSize.Big
+    else GlobalSettings.ItemSize := TItemSize.Medium;
+  end;
+
+  // Import entries
+  var EntriesArr := JSON.GetValue<TJSONArray>('entries');
+  if EntriesArr = nil then exit;
+
+  // Clear all entries except Default (index 0), then clear Default's settings
+  while Entries.Count > 1 do
+    Entries.Delete(Entries.Count - 1);
+
+  for var i := 0 to EntriesArr.Count - 1 do
+  begin
+    var EntryObj := EntriesArr.Items[i] as TJSONObject;
+    var EntryId := EntryObj.GetValue<string>('id', '');
+    if EntryId = '' then continue;
+
+    var Entry: TEntry;
+    if (i = 0) and (Entries.Count > 0) then
+    begin
+      // Update the Default entry
+      Entry := Entries[0];
+    end
+    else
+    begin
+      Entry := TEntry.Create(EntryId);
+      Entries.Add(Entry);
+    end;
+
+    Entry.Icon := EntryObj.GetValue<string>('icon', '');
+
+    var DelphiObj := EntryObj.GetValue<TJSONObject>('delphiVersion');
+    if DelphiObj <> nil then
+    begin
+      var DelphiVer: TDelphiVersion;
+      DelphiVer.Name := DelphiObj.GetValue<string>('name', '');
+      DelphiVer.Version := DelphiObj.GetValue<string>('version', '');
+      Entry.DelphiVersion := DelphiVer;
+    end;
+
+    var BuildFilesArr := EntryObj.GetValue<TJSONArray>('tmsBuildFiles');
+    if BuildFilesArr <> nil then
+    begin
+      var BuildFiles: TArray<string>;
+      SetLength(BuildFiles, BuildFilesArr.Count);
+      for var j := 0 to BuildFilesArr.Count - 1 do
+        BuildFiles[j] := BuildFilesArr.Items[j].Value;
+      Entry.TmsBuildFiles := BuildFiles;
+    end;
+
+    Entry.SmartSetupLocation := EntryObj.GetValue<string>('smartSetupLocation', '');
+    Entry.SmartSetupWorkingFolder := EntryObj.GetValue<string>('smartSetupWorkingFolder', '');
+    Entry.ExtraParameters := EntryObj.GetValue<string>('extraParameters', '');
+  end;
+end;
+
+procedure TFormGlobalConfig.btnExportClick(Sender: TObject);
+begin
+  if ConfigSaveDialog = nil then
+  begin
+    ConfigSaveDialog := TSaveDialog.Create(Self);
+    ConfigSaveDialog.Title := 'Export Configurations';
+    ConfigSaveDialog.Filter := 'JSON Files (*.json)|*.json|All Files (*.*)|*.*';
+    ConfigSaveDialog.DefaultExt := 'json';
+    ConfigSaveDialog.FileName := 'multide-config.json';
+    ConfigSaveDialog.Options := ConfigSaveDialog.Options + [ofOverwritePrompt];
+  end;
+
+  if ConfigSaveDialog.Execute then
+  begin
+    var JSON := EntriesToJSON;
+    try
+      TFile.WriteAllText(ConfigSaveDialog.FileName, JSON.Format, TEncoding.UTF8);
+    finally
+      JSON.Free;
+    end;
+  end;
+end;
+
+procedure TFormGlobalConfig.btnImportClick(Sender: TObject);
+begin
+  if ConfigOpenDialog = nil then
+  begin
+    ConfigOpenDialog := TOpenDialog.Create(Self);
+    ConfigOpenDialog.Title := 'Import Configurations';
+    ConfigOpenDialog.Filter := 'JSON Files (*.json)|*.json|All Files (*.*)|*.*';
+    ConfigOpenDialog.DefaultExt := 'json';
+  end;
+
+  if ConfigOpenDialog.Execute then
+  begin
+    try
+      var Content := TFile.ReadAllText(ConfigOpenDialog.FileName, TEncoding.UTF8);
+      var JSON := TJSONObject.ParseJSONValue(Content) as TJSONObject;
+      if JSON = nil then
+      begin
+        ShowMessage('Invalid configuration file.');
+        exit;
+      end;
+
+      try
+        JSONToEntries(JSON);
+        UpdateControls;
+        if Assigned(ApplyGlobalSettings) then ApplyGlobalSettings;
+        TThemeManager.UpdateControl(Self);
+      finally
+        JSON.Free;
+      end;
+    except
+      on E: Exception do
+        ShowMessage('Error importing configuration: ' + E.Message);
+    end;
+  end;
 end;
 
 end.
