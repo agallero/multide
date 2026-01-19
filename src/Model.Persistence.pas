@@ -27,6 +27,8 @@ type
       SmartSetupWorkingFolder = 'SmartSetupWorkingFolder';
       TmsBuildFiles = 'TmsBuildFiles';
       ExtraParameters = 'ExtraParameters';
+      RegistryEntriesToSync = 'RegistryEntriesToSync';
+      PathEntriesToSync = 'PathEntriesToSync';
   end;
 
   RegistryGlobalSettings = record

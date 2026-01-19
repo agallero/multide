@@ -167,6 +167,8 @@ begin
   FEntry.SmartSetupWorkingFolder := edSmartSetupWorkingFolder.Text;
   FEntry.TmsBuildFiles := MemoConfFiles.Lines.ToStringArray;
   FEntry.ExtraParameters := edExtraParams.Text;
+  FEntry.PathEntriesToSync := MemoPath.Lines.ToStringArray;
+  FEntry.RegistryEntriesToSync := MemoRegistry.Lines.ToStringArray;
   if (cbIDEToLaunch.ItemIndex >= 0) and (cbIDEToLaunch.ItemIndex < Length(FDelphiVersions)) then FEntry.DelphiVersion := FDelphiVersions[cbIDEToLaunch.ItemIndex];
 
   if ConfName <> FEntry.Id then
@@ -265,6 +267,31 @@ begin
   MemoConfFiles.Text := '';
   MemoConfFiles.Lines.AddStrings(FEntry.TmsBuildFiles);
   edExtraParams.Text := FEntry.ExtraParameters;
+
+  MemoPath.Text := '';
+  if FEntry.PathEntriesToSync = nil then
+  begin
+    MemoPath.Lines.AddStrings([
+      '# lines starting with # are comments',
+      '# Start with + or - to include or exclude the path',
+      '# You can use wildcards to match parts of the paths']);
+  end else
+  begin
+    MemoPath.Lines.AddStrings(FEntry.PathEntriesToSync);
+  end;
+
+  MemoRegistry.Text := '';
+  if FEntry.RegistryEntriesToSync = nil then
+  begin
+    MemoRegistry.Lines.AddStrings([
+      '# lines starting with # are comments',
+      '# Start with + or - to include or exclude the registry path',
+      '# +Known Packages\$(BDSBIN)\*'
+    ]);
+  end else
+  begin
+    MemoRegistry.Lines.AddStrings(FEntry.RegistryEntriesToSync);
+  end;
 
   FDelphiVersions := TModelDelphiVersionsReader.Read;
   cbIDEToLaunch.Items.Clear;

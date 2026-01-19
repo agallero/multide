@@ -100,7 +100,7 @@ object FormConfig: TFormConfig
       Width = 421
       Height = 249
       Align = alClient
-      ActiveCard = CardSync
+      ActiveCard = CardSmartSetup
       BevelOuter = bvNone
       Caption = 'CardPanelOptions'
       ParentColor = True
@@ -145,7 +145,7 @@ object FormConfig: TFormConfig
         object edConfigName: TLabeledEdit
           Left = 16
           Top = 32
-          Width = 393
+          Width = 363
           Height = 23
           Anchors = [akLeft, akTop, akRight]
           EditLabel.Width = 109
@@ -157,7 +157,7 @@ object FormConfig: TFormConfig
         object edImageFilename: TLabeledEdit
           Left = 84
           Top = 121
-          Width = 293
+          Width = 263
           Height = 23
           Anchors = [akLeft, akTop, akRight]
           EditLabel.Width = 84
@@ -167,7 +167,7 @@ object FormConfig: TFormConfig
           Text = ''
         end
         object AdditionalImageSelect: TButton
-          Left = 383
+          Left = 353
           Top = 120
           Width = 26
           Height = 24
@@ -188,7 +188,7 @@ object FormConfig: TFormConfig
         object edExtraParams: TLabeledEdit
           Left = 16
           Top = 176
-          Width = 360
+          Width = 330
           Height = 23
           Hint = 
             'You can specify some extra parameters to pass to BDS.exe here, l' +
@@ -204,7 +204,7 @@ object FormConfig: TFormConfig
           Text = ''
         end
         object btnBDSInfo: TButton
-          Left = 382
+          Left = 352
           Top = 174
           Width = 27
           Height = 24
@@ -261,7 +261,8 @@ object FormConfig: TFormConfig
         Caption = 'Sync'
         CardIndex = 2
         TabOrder = 1
-        ExplicitLeft = -1
+        ExplicitWidth = 411
+        ExplicitHeight = 217
         object lblPath: TLabel
           Left = 0
           Top = 0
@@ -302,6 +303,7 @@ object FormConfig: TFormConfig
           ScrollBars = ssBoth
           TabOrder = 0
           WordWrap = False
+          ExplicitWidth = 411
         end
         object MemoRegistry: TMemo
           Left = 0
@@ -316,6 +318,8 @@ object FormConfig: TFormConfig
           ScrollBars = ssBoth
           TabOrder = 1
           WordWrap = False
+          ExplicitWidth = 411
+          ExplicitHeight = 89
         end
       end
       object CardSmartSetup: TCard
@@ -326,8 +330,6 @@ object FormConfig: TFormConfig
         Caption = 'Smart Setup'
         CardIndex = 3
         TabOrder = 2
-        ExplicitWidth = 411
-        ExplicitHeight = 217
         DesignSize = (
           421
           249)
@@ -341,7 +343,7 @@ object FormConfig: TFormConfig
         object edSmartSetupLocation: TLabeledEdit
           Left = 6
           Top = 24
-          Width = 371
+          Width = 357
           Height = 23
           Anchors = [akLeft, akTop, akRight]
           EditLabel.Width = 161
@@ -349,22 +351,19 @@ object FormConfig: TFormConfig
           EditLabel.Caption = '&Smart Setup (tms.exe) location'
           TabOrder = 0
           Text = ''
-          ExplicitWidth = 361
         end
         object MemoConfFiles: TMemo
           Left = 6
           Top = 128
-          Width = 403
+          Width = 395
           Height = 115
           Anchors = [akLeft, akTop, akRight, akBottom]
           ScrollBars = ssVertical
           TabOrder = 4
-          ExplicitWidth = 393
-          ExplicitHeight = 83
         end
         object btnChooseSmartSetup: TButton
-          Left = 383
-          Top = 22
+          Left = 369
+          Top = 24
           Width = 26
           Height = 24
           Anchors = [akTop, akRight]
@@ -380,12 +379,11 @@ object FormConfig: TFormConfig
           StylusHotImageName = 'open'
           TabOrder = 1
           OnClick = btnChooseSmartSetupClick
-          ExplicitLeft = 373
         end
         object edSmartSetupWorkingFolder: TLabeledEdit
           Left = 6
           Top = 72
-          Width = 371
+          Width = 357
           Height = 23
           Anchors = [akLeft, akTop, akRight]
           EditLabel.Width = 79
@@ -393,11 +391,10 @@ object FormConfig: TFormConfig
           EditLabel.Caption = '&Working folder'
           TabOrder = 2
           Text = ''
-          ExplicitWidth = 361
         end
         object btnWorkingFolder: TButton
-          Left = 383
-          Top = 70
+          Left = 369
+          Top = 72
           Width = 26
           Height = 24
           Anchors = [akTop, akRight]
@@ -413,7 +410,6 @@ object FormConfig: TFormConfig
           StylusHotImageName = 'open'
           TabOrder = 3
           OnClick = btnWorkingFolderClick
-          ExplicitLeft = 373
         end
       end
     end
@@ -432,7 +428,7 @@ object FormConfig: TFormConfig
         421
         41)
       object btnOk: TButton
-        Left = 253
+        Left = 239
         Top = 6
         Width = 75
         Height = 25
@@ -441,10 +437,9 @@ object FormConfig: TFormConfig
         Default = True
         ModalResult = 1
         TabOrder = 0
-        ExplicitLeft = 243
       end
       object btnCancel: TButton
-        Left = 334
+        Left = 320
         Top = 6
         Width = 75
         Height = 25
@@ -453,7 +448,6 @@ object FormConfig: TFormConfig
         Caption = 'Cancel'
         ModalResult = 2
         TabOrder = 1
-        ExplicitLeft = 324
       end
     end
   end

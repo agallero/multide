@@ -83,6 +83,8 @@ begin
     Reg.WriteString(RegistrySettings.SmartSetupWorkingFolder, Entry.SmartSetupWorkingFolder);
     Reg.WriteMultiString(RegistrySettings.TmsBuildFiles, Entry.TmsBuildFiles);
     Reg.WriteString(RegistrySettings.ExtraParameters, Entry.ExtraParameters);
+    Reg.WriteMultiString(RegistrySettings.RegistryEntriesToSync, Entry.RegistryEntriesToSync);
+    Reg.WriteMultiString(RegistrySettings.PathEntriesToSync, Entry.PathEntriesToSync);
 
   finally
     Reg.Free;

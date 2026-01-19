@@ -12,6 +12,8 @@ TEntry = class
     FSmartSetupLocation: string;
     FSmartSetupWorkingFolder: string;
     FExtraParameters: string;
+    FRegistryEntriesToSync: TArray<string>;
+    FPathEntriesToSync: TArray<string>;
   public
     property Id: string read FId write FId;
     property Icon: string read FIcon write FIcon;
@@ -20,6 +22,8 @@ TEntry = class
     property SmartSetupLocation: string read FSmartSetupLocation write FSmartSetupLocation;
     property SmartSetupWorkingFolder: string read FSmartSetupWorkingFolder write FSmartSetupWorkingFolder;
     property ExtraParameters: string read FExtraParameters write FExtraParameters;
+    property RegistryEntriesToSync: TArray<string> read FRegistryEntriesToSync write FRegistryEntriesToSync;
+    property PathEntriesToSync: TArray<string> read FPathEntriesToSync write FPathEntriesToSync;
 
     constructor Create(const aId: string);
     class function Clone(const aId: string; const aCopyFrom: TEntry): TEntry; static;
@@ -46,6 +50,8 @@ begin
   Result.FSmartSetupLocation := aCopyFrom.FSmartSetupLocation;
   Result.FSmartSetupWorkingFolder := aCopyFrom.FSmartSetupWorkingFolder;
   Result.FExtraParameters := aCopyFrom.FExtraParameters;
+  Result.FRegistryEntriesToSync := Copy(aCopyFrom.FRegistryEntriesToSync);
+  Result.FPathEntriesToSync := Copy(aCopyFrom.FPathEntriesToSync);
 end;
 
 constructor TEntry.Create(const aId: string);

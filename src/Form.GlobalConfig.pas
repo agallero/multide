@@ -9,7 +9,7 @@ uses
   Vcl.ControlList, Vcl.VirtualImage, Vcl.BaseImageCollection,
   Vcl.ImageCollection, System.ImageList, Vcl.ImgList,
   Vcl.VirtualImageList, Model.Entry, Form.AddConfig, Form.Config,
-  System.JSON, System.IOUtils;
+  System.JSON, System.IOUtils, Generics.Collections;
 
 type
   TApplyGlobalSettings = procedure of object;
@@ -257,6 +257,16 @@ begin
     EntryObj.AddPair('smartSetupWorkingFolder', Entry.SmartSetupWorkingFolder);
     EntryObj.AddPair('extraParameters', Entry.ExtraParameters);
 
+    var RegistryEntriesToSyncArr := TJSONArray.Create;
+    for var Key in Entry.RegistryEntriesToSync do
+      RegistryEntriesToSyncArr.Add(Key);
+    EntryObj.AddPair('registryEntriesToSync', RegistryEntriesToSyncArr);
+
+    var PathEntriesToSyncArr := TJSONArray.Create;
+    for var Key in Entry.PathEntriesToSync do
+      PathEntriesToSyncArr.Add(Key);
+    EntryObj.AddPair('pathEntriesToSync', PathEntriesToSyncArr);
+
     EntriesArr.Add(EntryObj);
   end;
   Result.AddPair('entries', EntriesArr);
@@ -329,6 +339,26 @@ begin
     Entry.SmartSetupLocation := EntryObj.GetValue<string>('smartSetupLocation', '');
     Entry.SmartSetupWorkingFolder := EntryObj.GetValue<string>('smartSetupWorkingFolder', '');
     Entry.ExtraParameters := EntryObj.GetValue<string>('extraParameters', '');
+
+    var RegistryEntriesToSyncArr := EntryObj.GetValue<TJSONArray>('registryEntriesToSync');
+    if RegistryEntriesToSyncArr <> nil then
+    begin
+      var Keys: TArray<string>;
+      SetLength(Keys, RegistryEntriesToSyncArr.Count);
+      for var j := 0 to RegistryEntriesToSyncArr.Count - 1 do
+        Keys[j] := RegistryEntriesToSyncArr.Items[j].Value;
+      Entry.RegistryEntriesToSync := Keys;
+    end;
+
+    var PathEntriesToSyncArr := EntryObj.GetValue<TJSONArray>('pathEntriesToSync');
+    if PathEntriesToSyncArr <> nil then
+    begin
+      var Keys: TArray<string>;
+      SetLength(Keys, PathEntriesToSyncArr.Count);
+      for var j := 0 to PathEntriesToSyncArr.Count - 1 do
+        Keys[j] := PathEntriesToSyncArr.Items[j].Value;
+      Entry.PathEntriesToSync := Keys;
+    end;
   end;
 end;
 

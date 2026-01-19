@@ -99,6 +99,8 @@ begin
     Entry.SmartSetupWorkingFolder := Reg.ReadString(RegistrySettings.SmartSetupWorkingFolder);
     Entry.TmsBuildFiles := Reg.ReadMultiString(RegistrySettings.TmsBuildFiles);
     Entry.ExtraParameters:= Reg.ReadString(RegistrySettings.ExtraParameters);
+    Entry.RegistryEntriesToSync := Reg.ReadMultiString(RegistrySettings.RegistryEntriesToSync);
+    Entry.PathEntriesToSync := Reg.ReadMultiString(RegistrySettings.PathEntriesToSync);
 
     EnsureDefaults(Entry);
   finally
