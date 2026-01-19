@@ -44,7 +44,9 @@ begin
       Reg.GetKeyNames(List);
       for var Version in List do
       begin
-        Result := Result + [TDelphiVersion.Create(GetName(Version), Version)];
+        var IDEName := GetName(Version);
+        if IDEName = 'unknown' then continue;
+        Result := Result + [TDelphiVersion.Create(IDEName, Version)];
       end;
     finally
       List.Free;
