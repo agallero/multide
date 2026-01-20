@@ -268,29 +268,43 @@ begin
   MemoConfFiles.Lines.AddStrings(FEntry.TmsBuildFiles);
   edExtraParams.Text := FEntry.ExtraParameters;
 
+  var IsDefault := aEntryIndex = 0;
+  MemoPath.Enabled := not IsDefault;
+  MemoRegistry.Enabled := not IsDefault;
+
   MemoPath.Text := '';
-  if FEntry.PathEntriesToSync = nil then
+  if IsDefault then MemoPath.Text := 'Cannot sync the default configuration'
+  else
   begin
-    MemoPath.Lines.AddStrings([
-      '# lines starting with # are comments',
-      '# Start with + or - to include or exclude the path',
-      '# You can use wildcards to match parts of the paths']);
-  end else
-  begin
-    MemoPath.Lines.AddStrings(FEntry.PathEntriesToSync);
+    if (FEntry.PathEntriesToSync = nil) then
+    begin
+      MemoPath.Lines.AddStrings([
+        '# lines starting with # are comments',
+        '# Start with + or - to include or exclude the path',
+        '# You can use wildcards to match parts of the paths',
+        '# use $(SmartSetup) variable to pass the SmartSetup path',
+        '+$(SmartSetup)\*']);
+    end else
+    begin
+      MemoPath.Lines.AddStrings(FEntry.PathEntriesToSync);
+    end;
   end;
 
   MemoRegistry.Text := '';
-  if FEntry.RegistryEntriesToSync = nil then
+  if IsDefault then MemoRegistry.Text := 'Cannot sync the default configuration'
+  else
   begin
-    MemoRegistry.Lines.AddStrings([
-      '# lines starting with # are comments',
-      '# Start with + or - to include or exclude the registry path',
-      '# +Known Packages\$(BDSBIN)\*'
-    ]);
-  end else
-  begin
-    MemoRegistry.Lines.AddStrings(FEntry.RegistryEntriesToSync);
+    if (FEntry.RegistryEntriesToSync = nil) then
+    begin
+      MemoRegistry.Lines.AddStrings([
+        '# lines starting with # are comments',
+        '# Start with + or - to include or exclude the registry path',
+        '# +Known Packages\$(BDSBIN)\*'
+      ]);
+    end else
+    begin
+      MemoRegistry.Lines.AddStrings(FEntry.RegistryEntriesToSync);
+    end;
   end;
 
   FDelphiVersions := TModelDelphiVersionsReader.Read;
