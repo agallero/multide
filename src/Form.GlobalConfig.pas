@@ -18,22 +18,27 @@ type
     Panel1: TPanel;
     btnOk: TButton;
     btnCancel: TButton;
-    rbItemSize: TRadioGroup;
-    rbLightMode: TRadioGroup;
-    IDEList: TControlList;
-    IDECaption: TLabel;
-    btnDelete: TControlListButton;
-    btnConfig: TControlListButton;
     ButtonVirtualImages: TVirtualImageList;
     ButtonImages: TImageCollection;
-    btnDown: TControlListButton;
-    btnUp: TControlListButton;
-    btnAddConfiguration: TButton;
+    Panel2: TPanel;
+    Panel3: TPanel;
     btnExport: TButton;
     btnImport: TButton;
+    cbItemSize: TComboBox;
+    cbLightMode: TComboBox;
+    lblItemSize: TLabel;
+    lblLightMode: TLabel;
+    IDEList: TControlList;
+    IDECaption: TLabel;
+    btnAddConfiguration: TButton;
+    btnDown: TControlListButton;
+    btnUp: TControlListButton;
+    btnDelete: TControlListButton;
+    btnConfig: TControlListButton;
+
     procedure FormCreate(Sender: TObject);
-    procedure rbLightModeClick(Sender: TObject);
-    procedure rbItemSizeClick(Sender: TObject);
+    procedure cbLightModeChange(Sender: TObject);
+    procedure cbItemSizeChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormActivate(Sender: TObject);
     procedure IDEListBeforeDrawItem(AIndex: Integer; ACanvas: TCanvas;
@@ -172,9 +177,9 @@ begin
   TScreenUtil.PutInPosition(Self);
 end;
 
-procedure TFormGlobalConfig.rbItemSizeClick(Sender: TObject);
+procedure TFormGlobalConfig.cbItemSizeChange(Sender: TObject);
 begin
-  case rbItemSize.ItemIndex of
+  case cbItemSize.ItemIndex of
     0: GlobalSettings.ItemSize := TItemSize.Small;
     1: GlobalSettings.ItemSize := TItemSize.Medium;
     2: GlobalSettings.ItemSize := TItemSize.Big;
@@ -182,16 +187,15 @@ begin
   if Assigned(ApplyGlobalSettings) then ApplyGlobalSettings;
 end;
 
-procedure TFormGlobalConfig.rbLightModeClick(Sender: TObject);
+procedure TFormGlobalConfig.cbLightModeChange(Sender: TObject);
 begin
-  case rbLightMode.ItemIndex of
+  case cbLightMode.ItemIndex of
     0: GlobalSettings.ThemeStyle := TThemeStyle.Automatic;
     1: GlobalSettings.ThemeStyle := TThemeStyle.Light;
     2: GlobalSettings.ThemeStyle := TThemeStyle.Dark;
   end;
   if Assigned(ApplyGlobalSettings) then ApplyGlobalSettings;
   TThemeManager.UpdateControl(Self);
-
 end;
 
 procedure TFormGlobalConfig.Save;
@@ -205,15 +209,15 @@ end;
 procedure TFormGlobalConfig.UpdateControls;
 begin
   case GlobalSettings.ThemeStyle of
-    TThemeStyle.Light: rbLightMode.ItemIndex := 1;
-    TThemeStyle.Dark: rbLightMode.ItemIndex := 2;
-    else rbLightMode.ItemIndex := 0;
+    TThemeStyle.Light: cbLightMode.ItemIndex := 1;
+    TThemeStyle.Dark: cbLightMode.ItemIndex := 2;
+    else cbLightMode.ItemIndex := 0;
   end;
 
   case GlobalSettings.ItemSize of
-    TItemSize.Small: rbItemSize.ItemIndex := 0;
-    TItemSize.Big: rbItemSize.ItemIndex := 2;
-    else rbItemSize.ItemIndex := 1;
+    TItemSize.Small: cbItemSize.ItemIndex := 0;
+    TItemSize.Big: cbItemSize.ItemIndex := 2;
+    else cbItemSize.ItemIndex := 1;
   end;
   IDEList.ItemCount := Entries.Count;
 end;

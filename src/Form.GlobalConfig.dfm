@@ -13,9 +13,6 @@ object FormGlobalConfig: TFormGlobalConfig
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
-  DesignSize = (
-    496
-    441)
   TextHeight = 15
   object Panel1: TPanel
     Left = 0
@@ -25,15 +22,15 @@ object FormGlobalConfig: TFormGlobalConfig
     Align = alBottom
     BevelOuter = bvNone
     Color = clWhite
-    TabOrder = 4
+    TabOrder = 0
     ExplicitTop = 368
-    ExplicitWidth = 454
+    ExplicitWidth = 486
     DesignSize = (
       496
       41)
     object btnOk: TButton
       Left = 322
-      Top = 9
+      Top = 6
       Width = 75
       Height = 25
       Anchors = [akTop, akRight]
@@ -41,11 +38,10 @@ object FormGlobalConfig: TFormGlobalConfig
       Default = True
       ModalResult = 1
       TabOrder = 0
-      ExplicitLeft = 280
     end
     object btnCancel: TButton
       Left = 403
-      Top = 9
+      Top = 6
       Width = 75
       Height = 25
       Anchors = [akTop, akRight]
@@ -53,203 +49,233 @@ object FormGlobalConfig: TFormGlobalConfig
       Caption = 'Cancel'
       ModalResult = 2
       TabOrder = 1
-      ExplicitLeft = 361
     end
   end
-  object rbItemSize: TRadioGroup
-    Left = 8
-    Top = 8
-    Width = 150
-    Height = 105
-    Caption = 'Item Size'
-    Items.Strings = (
-      '&Small'
-      '&Medium'
-      '&Big')
-    TabOrder = 0
-    OnClick = rbItemSizeClick
-  end
-  object rbLightMode: TRadioGroup
-    Left = 164
-    Top = 8
-    Width = 150
-    Height = 105
-    Caption = 'Display mode'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -12
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    Items.Strings = (
-      '&Automatic'
-      '&Light'
-      '&Dark')
-    ParentFont = False
+  object Panel2: TPanel
+    Left = 0
+    Top = 0
+    Width = 496
+    Height = 81
+    Align = alTop
+    BevelOuter = bvNone
     TabOrder = 1
-    OnClick = rbLightModeClick
-  end
-  object IDEList: TControlList
-    Left = 8
-    Top = 160
-    Width = 470
-    Height = 234
-    Anchors = [akLeft, akTop, akRight, akBottom]
-    Color = clBtnFace
-    ItemCount = 30
-    ItemHeight = 32
-    ItemIndex = 0
-    ItemMargins.Left = 0
-    ItemMargins.Top = 0
-    ItemMargins.Right = 0
-    ItemMargins.Bottom = 0
-    ItemSelectionOptions.HotColorAlpha = 50
-    ItemSelectionOptions.SelectedColorAlpha = 70
-    ItemSelectionOptions.FocusedColorAlpha = 80
-    ParentColor = False
-    TabOrder = 3
-    SmoothMouseWheelScrolling = True
-    OnBeforeDrawItem = IDEListBeforeDrawItem
-    ExplicitWidth = 428
-    ExplicitHeight = 202
-    object IDECaption: TLabel
-      AlignWithMargins = True
-      Left = 16
+    ExplicitWidth = 486
+    DesignSize = (
+      496
+      81)
+    object lblItemSize: TLabel
+      Left = 8
       Top = 8
-      Width = 224
-      Height = 32
-      Margins.Left = 6
-      Margins.Top = 6
-      Margins.Right = 6
-      Margins.Bottom = 6
-      Anchors = [akLeft, akTop, akRight]
-      AutoSize = False
-      Caption = 'Default'
-      EllipsisPosition = epEndEllipsis
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-      Transparent = True
-      ExplicitWidth = 384
+      Width = 47
+      Height = 15
+      Caption = 'Item Size'
     end
-    object btnDelete: TControlListButton
-      Left = 392
-      Top = 0
-      Width = 40
-      Height = 32
-      Hint = 'Delete Configuration'
-      Margins.Left = 4
-      Margins.Top = 0
-      Margins.Right = 4
-      Margins.Bottom = 0
-      Align = alRight
-      ParentShowHint = False
-      ShowHint = True
-      Images = ButtonVirtualImages
-      ImageIndex = 7
-      ImageName = 'remove'
-      Style = clbkToolButton
-      OnClick = btnDeleteClick
-      ExplicitLeft = 540
-      ExplicitHeight = 80
+    object lblLightMode: TLabel
+      Left = 164
+      Top = 8
+      Width = 72
+      Height = 15
+      Caption = 'Display mode'
     end
-    object btnConfig: TControlListButton
-      Left = 272
-      Top = 0
-      Width = 40
-      Height = 32
-      Hint = 'Settings for this configuration'
-      Margins.Left = 4
-      Margins.Top = 0
-      Margins.Right = 4
-      Margins.Bottom = 0
-      Align = alRight
-      ParentShowHint = False
-      ShowHint = True
-      Images = ButtonVirtualImages
-      ImageIndex = 0
-      ImageName = 'config'
-      Style = clbkToolButton
-      OnClick = btnConfigClick
-      ExplicitLeft = 386
-      ExplicitTop = -8
-      ExplicitHeight = 80
+    object btnExport: TButton
+      Left = 342
+      Top = 4
+      Width = 136
+      Height = 25
+      Anchors = [akTop, akRight]
+      Caption = 'Export Configurations'
+      TabOrder = 0
+      OnClick = btnExportClick
     end
-    object btnDown: TControlListButton
-      Left = 352
-      Top = 0
-      Width = 40
-      Height = 32
-      Hint = 'Move Down'
-      Margins.Left = 4
-      Margins.Top = 0
-      Margins.Right = 4
-      Margins.Bottom = 0
-      Align = alRight
-      ParentShowHint = False
-      ShowHint = True
-      Images = ButtonVirtualImages
-      ImageIndex = 5
-      ImageName = 'down'
-      Style = clbkToolButton
-      OnClick = btnDownClick
-      ExplicitLeft = 506
-      ExplicitHeight = 80
+    object btnImport: TButton
+      Left = 342
+      Top = 35
+      Width = 136
+      Height = 25
+      Anchors = [akTop, akRight]
+      Caption = 'Import Configurations'
+      TabOrder = 1
+      OnClick = btnImportClick
     end
-    object btnUp: TControlListButton
-      Left = 312
-      Top = 0
-      Width = 40
-      Height = 32
-      Hint = 'Delete Configuration'
-      Margins.Left = 4
-      Margins.Top = 0
-      Margins.Right = 4
-      Margins.Bottom = 0
-      Align = alRight
-      ParentShowHint = False
-      ShowHint = True
-      Images = ButtonVirtualImages
-      ImageIndex = 4
-      ImageName = 'up'
-      Style = clbkToolButton
-      OnClick = btnUpClick
-      ExplicitLeft = 367
-      ExplicitHeight = 100
+    object cbItemSize: TComboBox
+      Left = 8
+      Top = 27
+      Width = 150
+      Height = 23
+      Style = csDropDownList
+      TabOrder = 2
+      OnChange = cbItemSizeChange
+      Items.Strings = (
+        'Small'
+        'Medium'
+        'Big')
+    end
+    object cbLightMode: TComboBox
+      Left = 164
+      Top = 27
+      Width = 150
+      Height = 23
+      Style = csDropDownList
+      TabOrder = 3
+      OnChange = cbLightModeChange
+      Items.Strings = (
+        'Automatic'
+        'Light'
+        'Dark')
     end
   end
-  object btnAddConfiguration: TButton
-    Left = 8
-    Top = 129
-    Width = 145
-    Height = 25
-    Caption = 'Add &Configuration'
+  object Panel3: TPanel
+    Left = 0
+    Top = 81
+    Width = 496
+    Height = 319
+    Align = alClient
+    BevelOuter = bvNone
     TabOrder = 2
-    OnClick = btnAddConfigurationClick
-  end
-  object btnExport: TButton
-    Left = 342
-    Top = 16
-    Width = 136
-    Height = 25
-    Anchors = [akTop, akRight]
-    Caption = 'Export Configurations'
-    TabOrder = 5
-    OnClick = btnExportClick
-    ExplicitLeft = 300
-  end
-  object btnImport: TButton
-    Left = 342
-    Top = 47
-    Width = 136
-    Height = 25
-    Anchors = [akTop, akRight]
-    Caption = 'Import Configurations'
-    TabOrder = 6
-    OnClick = btnImportClick
-    ExplicitLeft = 300
+    ExplicitWidth = 486
+    ExplicitHeight = 287
+    DesignSize = (
+      496
+      319)
+    object IDEList: TControlList
+      Left = 8
+      Top = 37
+      Width = 470
+      Height = 282
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      Color = clBtnFace
+      ItemCount = 30
+      ItemHeight = 32
+      ItemIndex = 0
+      ItemMargins.Left = 0
+      ItemMargins.Top = 0
+      ItemMargins.Right = 0
+      ItemMargins.Bottom = 0
+      ItemSelectionOptions.HotColorAlpha = 50
+      ItemSelectionOptions.SelectedColorAlpha = 70
+      ItemSelectionOptions.FocusedColorAlpha = 80
+      ParentColor = False
+      TabOrder = 0
+      SmoothMouseWheelScrolling = True
+      OnBeforeDrawItem = IDEListBeforeDrawItem
+      object IDECaption: TLabel
+        AlignWithMargins = True
+        Left = 16
+        Top = 8
+        Width = 224
+        Height = 32
+        Margins.Left = 6
+        Margins.Top = 6
+        Margins.Right = 6
+        Margins.Bottom = 6
+        Anchors = [akLeft, akTop, akRight]
+        AutoSize = False
+        Caption = 'Default'
+        EllipsisPosition = epEndEllipsis
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+        Transparent = True
+        ExplicitWidth = 384
+      end
+      object btnDelete: TControlListButton
+        Left = 392
+        Top = 0
+        Width = 40
+        Height = 32
+        Hint = 'Delete Configuration'
+        Margins.Left = 4
+        Margins.Top = 0
+        Margins.Right = 4
+        Margins.Bottom = 0
+        Align = alRight
+        ParentShowHint = False
+        ShowHint = True
+        Images = ButtonVirtualImages
+        ImageIndex = 7
+        ImageName = 'remove'
+        Style = clbkToolButton
+        OnClick = btnDeleteClick
+        ExplicitLeft = 540
+        ExplicitHeight = 80
+      end
+      object btnConfig: TControlListButton
+        Left = 272
+        Top = 0
+        Width = 40
+        Height = 32
+        Hint = 'Settings for this configuration'
+        Margins.Left = 4
+        Margins.Top = 0
+        Margins.Right = 4
+        Margins.Bottom = 0
+        Align = alRight
+        ParentShowHint = False
+        ShowHint = True
+        Images = ButtonVirtualImages
+        ImageIndex = 0
+        ImageName = 'config'
+        Style = clbkToolButton
+        OnClick = btnConfigClick
+        ExplicitLeft = 386
+        ExplicitTop = -8
+        ExplicitHeight = 80
+      end
+      object btnDown: TControlListButton
+        Left = 352
+        Top = 0
+        Width = 40
+        Height = 32
+        Hint = 'Move Down'
+        Margins.Left = 4
+        Margins.Top = 0
+        Margins.Right = 4
+        Margins.Bottom = 0
+        Align = alRight
+        ParentShowHint = False
+        ShowHint = True
+        Images = ButtonVirtualImages
+        ImageIndex = 5
+        ImageName = 'down'
+        Style = clbkToolButton
+        OnClick = btnDownClick
+        ExplicitLeft = 506
+        ExplicitHeight = 80
+      end
+      object btnUp: TControlListButton
+        Left = 312
+        Top = 0
+        Width = 40
+        Height = 32
+        Hint = 'Delete Configuration'
+        Margins.Left = 4
+        Margins.Top = 0
+        Margins.Right = 4
+        Margins.Bottom = 0
+        Align = alRight
+        ParentShowHint = False
+        ShowHint = True
+        Images = ButtonVirtualImages
+        ImageIndex = 4
+        ImageName = 'up'
+        Style = clbkToolButton
+        OnClick = btnUpClick
+        ExplicitLeft = 367
+        ExplicitHeight = 100
+      end
+    end
+    object btnAddConfiguration: TButton
+      Left = 8
+      Top = 6
+      Width = 145
+      Height = 25
+      Caption = 'Add &Configuration'
+      TabOrder = 1
+      OnClick = btnAddConfigurationClick
+    end
   end
   object ButtonVirtualImages: TVirtualImageList
     AutoFill = True
@@ -298,8 +324,8 @@ object FormGlobalConfig: TFormGlobalConfig
     ImageCollection = ButtonImages
     Width = 24
     Height = 24
-    Left = 320
-    Top = 72
+    Left = 432
+    Top = 128
   end
   object ButtonImages: TImageCollection
     Images = <
@@ -1606,6 +1632,6 @@ object FormGlobalConfig: TFormGlobalConfig
           end>
       end>
     Left = 320
-    Top = 24
+    Top = 128
   end
 end
