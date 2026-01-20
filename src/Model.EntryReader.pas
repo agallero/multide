@@ -6,9 +6,9 @@ uses Model.Entry, Model.Persistence, Registry, Model.DelphiVersions;
 type
   TModelEntryReader = record
   private
-    class procedure EnsureDefaults(const Entry: TEntry); static;
     class function GetPosition(const Reg: TRegistry; const Id: string): integer; static;
   public
+    class procedure EnsureDefaults(const Entry: TEntry); static;
     class procedure Load(const Entries: TEntryList); static;
     class procedure LoadFromRegistry(const Entry: TEntry); static;
   end;

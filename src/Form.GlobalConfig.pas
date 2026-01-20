@@ -98,6 +98,7 @@ begin
   if FormAddConfig.ShowModal = mrOk then
   begin
     Entries.Add(TEntry.Clone(FormAddConfig.ConfigName, Entries.TryGet(FormAddConfig.CopyFrom - 1)));
+    TModelEntryReader.EnsureDefaults(Entries.Last);
 
     IDEList.ItemCount := Entries.Count;
     IDEList.Invalidate;
