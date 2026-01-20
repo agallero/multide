@@ -41,17 +41,24 @@ begin
 
 end;
 
+const
+  FormMainCaption = 'Select IDE';
 begin
   if ParamCount > 1 then
   begin
     TBDSLauncher.Launch(ParamStr(1), ParamStr(2), ConcatParams(3));
     exit;
   end;
-  if AppIsAlreadyRunning then exit;
+  if AppIsAlreadyRunning then
+  begin
+    FocusExistingInstance(TFormMain.ClassName, FormMainCaption);
+    exit;
+  end;
 
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.Title := 'MultIDE';
   Application.CreateForm(TFormMain, FormMain);
+  FormMain.Caption := FormMainCaption;
   Application.Run;
 end.

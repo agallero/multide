@@ -2,9 +2,28 @@ unit Util.AppInstances;
 
 interface
 function AppIsAlreadyRunning(): boolean;
+procedure FocusExistingInstance(const AppWindowClass, AppWindowTitle: string);
 
 implementation
 uses Windows, SysUtils;
+
+function FindExistingWindow(const AppWindowClass, AppWindowTitle: string): HWND;
+begin
+  Result := FindWindow(PChar(AppWindowClass), PChar(AppWindowTitle));
+end;
+
+procedure FocusExistingInstance(const AppWindowClass, AppWindowTitle: string);
+var
+  Wnd: HWND;
+begin
+  Wnd := FindExistingWindow(AppWindowClass, AppWindowTitle);
+  if Wnd <> 0 then
+  begin
+    if IsIconic(Wnd) then
+      ShowWindow(Wnd, SW_RESTORE);
+    SetForegroundWindow(Wnd);
+  end;
+end;
 
 function AppIsAlreadyRunning(): boolean;
 begin
