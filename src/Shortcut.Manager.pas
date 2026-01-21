@@ -19,6 +19,8 @@ class procedure TShortcutManager.Create(const Entry: TEntry);
 var
   IconPath: string;
 begin
+  if Entry.DelphiVersion.Version = '' then exit;
+
   if SameText(TPath.GetExtension(Entry.Icon), '.ico') then
   begin
     IconPath := TPath.GetFullPath(Entry.Icon);

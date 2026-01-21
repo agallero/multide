@@ -21,8 +21,55 @@ MultIDE is designed to be pinned to either the Start menu or the Taskbar.
 
 
 ## Usage
+### First launch
 
-### Creating a Configuration
+When you first click in the MultIDE icon, it will open a screen with a Default configuration:
+
+![First launch](doc/first-launch.png)
+
+You can click in the ![config settings icon](doc/config-settings-icon.png) icon at the right of the configuration to change its settings. Or you can also press the "C" key to access the settings page.
+
+> [!NOTE]
+> If you press any key, the interface will change to show the available keyboard shortcuts:
+>
+> ![ui with keys](doc/ui-with-keys.png)
+
+### Changing configuration settings
+#### General settings
+
+![settings general](doc/settings-general.png)
+
+In the general section of the settings, you can choose the name of the configuration, an image to identify it, and, if needed, some extra parameters to pass to bds.exe.
+
+> [!NOTE]
+> You can't rename or delete the default configuration
+
+#### IDE settings
+
+![settings ide versions](doc/settings-ide-versions.png)
+Here you can select the Rad Studio version that you want to use. If none is selected, you will get an error when trying to launch the configuration.
+
+#### Sync settings
+
+![settings sync](doc/settings-sync.png)
+In this screen you define what registry entries from the default configuration should be copied to the specific configuration. This is useful for sharing settings like Known Packages, Library Paths, or other IDE preferences.
+
+See Registry Synchronization and Path Synchronization below.
+
+#### SmartSetup Settings
+
+![settings smart setup](doc/settings-smart-setup.png)
+The settings in this screen are optional. You only need to set them if you want to be able to call smartsetup from MultIDE:
+
+1. Set the **SmartSetup Location** to point to where tms.exe is
+2. Set the **SmartSetup Working Folder** to point to where tms.config.yaml is.
+3. The additional configuration files are extra tms.config.yaml files that will override the settings in the original tms.config.yaml. In most cases, this entry will be empty.
+If you configure SmartSetup, then you can automatically update the components by clicking the update button ![update button](doc/update-button.png) in the main screen.
+
+> [!NOTE]
+> The update button will update all components to their latest versions. If you don't want to update them all, make sure to pin the components you don't want to update. You can also skip configuring this screen even if you use SmartSetup, if you prefer to update manually.
+
+### Creating a new Configuration
 
 1. Open MultIDE and press **G** to open Global Configuration
 2. Click **Add Configuration** to create a new IDE profile
@@ -42,13 +89,12 @@ MultIDE is designed to be pinned to either the Start menu or the Taskbar.
 | Key | Action |
 |-----|--------|
 | 1-9 | Launch configuration by position |
-| B | Build TMS components |
+| B | Build SmartSetup components |
 | C | Open configuration settings |
 | G | Open global settings |
 
-## Registry Synchronization
 
-You can synchronize specific registry entries from the default RAD Studio installation to your custom configurations. This is useful for sharing settings like Known Packages, Library Paths, or other IDE preferences.
+## Registry Synchronization
 
 ### Configuration Format
 
@@ -90,25 +136,7 @@ Same syntax as Registry Synchronization:
 -*\RAD Studio\9.0\*
 ```
 
-## SmartSetup Integration
 
-MultIDE integrates with TMS SmartSetup to provide different component sets for each configuration:
-
-1. Set the **SmartSetup Location** to point to your SmartSetup installation
-2. Set the **SmartSetup Working Folder** for component builds
-3. Use the `$(SmartSetup)` variable in your sync patterns to reference the working folder
-
-## Building from Source
-
-Requires RAD Studio (Delphi 12 or later).
-
-```bash
-# Debug build (Win64)
-msbuild multide.dproj /p:Config=Debug /p:Platform=Win64
-
-# Release build (Win64)
-msbuild multide.dproj /p:Config=Release /p:Platform=Win64
-```
 
 ## Export/Import Configurations
 

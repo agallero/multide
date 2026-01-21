@@ -1,7 +1,7 @@
 unit Launcher.Shortcuts;
 
 interface
-uses Global.Config, Model.Entry;
+uses SysUtils, Global.Config, Model.Entry;
 
 type
   TShorcutLauncher = record
@@ -18,8 +18,11 @@ uses Windows, ShellApi, IOUtils;
 
 class procedure TShorcutLauncher.Launch(const Entry: TEntry);
 begin
+  var ShortcutFile := Config.ShortcutsImagePath(Entry.Id + '.lnk');
+  if not TFile.Exists(ShortcutFile) then raise Exception.Create('Cannot launch the configuration. Verify there is a RAD studio version selected.');
 
-  ShellExecute(0, nil, PCHAR(Config.ShortcutsImagePath(Entry.Id + '.lnk')), '', '', SW_SHOWNORMAL);
+
+  ShellExecute(0, nil, PCHAR(ShortcutFile), '', '', SW_SHOWNORMAL);
 end;
 
 end.
