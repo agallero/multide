@@ -19,7 +19,7 @@ uses Windows, ShellApi, IOUtils;
 class procedure TShorcutLauncher.Launch(const Entry: TEntry);
 begin
 
-  ShellExecute(0, nil, PCHAR(TPath.GetFullPath(Config.ShortcutsImagePath(Entry.Id + '.lnk'))), '', '', SW_SHOWNORMAL);
+  ShellExecute(0, nil, PCHAR(Config.ShortcutsImagePath(Entry.Id + '.lnk')), '', '', SW_SHOWNORMAL);
 end;
 
 end.

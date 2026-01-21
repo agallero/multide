@@ -29,7 +29,7 @@ begin
     TIcoCreator.Convert(TPath.GetFullPath(Entry.Icon), IconPath);
   end;
 
-  var ShortcutLocation := TPath.GetFullPath(Config.ShortcutsImagePath(Entry.Id + '.lnk'));
+  var ShortcutLocation := Config.ShortcutsImagePath(Entry.Id + '.lnk');
   TDirectory.CreateDirectory(TPath.GetDirectoryName(ShortcutLocation));
   TShortcutCreator.Create(ShortcutLocation,
      ParamStr(0), '"' + Entry.Id + '" "' + Entry.DelphiVersion.Version + '"', '', Entry.Id, IconPath);
@@ -43,9 +43,9 @@ end;
 
 class procedure TShortcutManager.Remove(const EntryId: string);
 begin
-  var ShortcutLocation := TPath.GetFullPath(Config.ShortcutsImagePath(EntryId + '.lnk'));
+  var ShortcutLocation := Config.ShortcutsImagePath(EntryId + '.lnk');
   DeleteFile(ShortcutLocation);
-  var IcoLocation := TPath.GetFullPath(Config.IDEIconPath(EntryId + '.ico'));
+  var IcoLocation := Config.IDEIconPath(EntryId + '.ico');
   DeleteFile( IcoLocation);
 
 end;
@@ -55,20 +55,26 @@ begin
   var Entries := THashSet<string>.Create;
   try
     for var Entry in EntryList do Entries.Add(Entry.Id);
-    var IcoFolder := TPath.GetFullPath(Config.IDEIconPath(''));
-    if not TDirectory.Exists(IcoFolder) then exit;
-    
-    var ExistingIcons := TDirectory.GetFiles(IcoFolder, '*.ico');
-    for var Icon in ExistingIcons do
+    var IcoFolder := Config.IDEIconPath('');
+    if TDirectory.Exists(IcoFolder) then
     begin
-      if Entries.Contains(TPath.GetFileNameWithoutExtension(Icon)) then continue;
-      DeleteFile(Icon);
+      var ExistingIcons := TDirectory.GetFiles(IcoFolder, '*.ico');
+      for var Icon in ExistingIcons do
+      begin
+        if Entries.Contains(TPath.GetFileNameWithoutExtension(Icon)) then continue;
+        DeleteFile(Icon);
+      end;
     end;
-    var ExistingShortcuts := TDirectory.GetFiles(TPath.GetFullPath(Config.ShortcutsImagePath('')), '*.lnk');
-    for var Shortcut in ExistingShortcuts do
+
+    var ShortcutsPath := Config.ShortcutsImagePath('');
+    if TDirectory.Exists(ShortcutsPath) then
     begin
-      if Entries.Contains(TPath.GetFileNameWithoutExtension(Shortcut)) then continue;
-      DeleteFile(Shortcut);
+      var ExistingShortcuts := TDirectory.GetFiles(ShortcutsPath, '*.lnk');
+      for var Shortcut in ExistingShortcuts do
+      begin
+        if Entries.Contains(TPath.GetFileNameWithoutExtension(Shortcut)) then continue;
+        DeleteFile(Shortcut);
+      end;
     end;
 
 

@@ -99,8 +99,13 @@ end;
 
 class procedure TIcoCreator.Convert(const InFileName, OutFileName: string);
 begin
-  var PngStream := TFileStream.Create(InFileName, fmOpenRead);
+  var PngStream: TStream := nil;
   try
+    try
+      PngStream := TFileStream.Create(InFileName, fmOpenRead);
+    except
+      PngStream := TResourceStream.Create(HInstance, 'MISSING_IMAGE', RT_RCDATA);
+    end;
     var IcoStream := TFileStream.Create(OutFileName, fmCreate);
     try
       SavePngStreamToIcoStream(PngStream, IcoStream, 512, 512);

@@ -1,5 +1,7 @@
 program multide;
 
+{$R 'MultIDE.Resources.res' 'src\MultIDE.Resources.rc'}
+
 uses
   Vcl.Forms,
   Form.Main in 'src\Form.Main.pas' {FormMain},

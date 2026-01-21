@@ -24,8 +24,7 @@ end;
 
 class function Config.IDEImagePath(const FileName: string): string;
 begin
-  Result := TPath.Combine('ide-images', FileName);
-  if not TFile.Exists(Result) then Result := '';
+  Result := TPath.GetFullPath(TPath.Combine('ide-images', FileName));
 end;
 
 class function Config.IDEIconPath(const FileName: string): string;

@@ -132,6 +132,12 @@ begin
         begin
           IDEImages.Delete(IDEImages.Images.Count - 1);
         end;
+        var MissingStream := TResourceStream.Create(HInstance, 'MISSING_IMAGE', RT_RCDATA);
+        try
+          IDEImages.Add(IconName, MissingStream);
+        finally
+          MissingStream.Free;
+        end;
       end;
     end;
   end;

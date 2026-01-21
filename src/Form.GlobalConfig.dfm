@@ -22,7 +22,7 @@ object FormGlobalConfig: TFormGlobalConfig
     Align = alBottom
     BevelOuter = bvNone
     Color = clWhite
-    TabOrder = 0
+    TabOrder = 2
     ExplicitTop = 368
     ExplicitWidth = 486
     DesignSize = (
@@ -58,7 +58,7 @@ object FormGlobalConfig: TFormGlobalConfig
     Height = 81
     Align = alTop
     BevelOuter = bvNone
-    TabOrder = 1
+    TabOrder = 0
     ExplicitWidth = 486
     DesignSize = (
       496
@@ -79,22 +79,22 @@ object FormGlobalConfig: TFormGlobalConfig
     end
     object btnExport: TButton
       Left = 342
-      Top = 4
+      Top = 25
       Width = 136
       Height = 25
       Anchors = [akTop, akRight]
       Caption = 'Export Configurations'
-      TabOrder = 0
+      TabOrder = 2
       OnClick = btnExportClick
     end
     object btnImport: TButton
       Left = 342
-      Top = 35
+      Top = 56
       Width = 136
       Height = 25
       Anchors = [akTop, akRight]
       Caption = 'Import Configurations'
-      TabOrder = 1
+      TabOrder = 3
       OnClick = btnImportClick
     end
     object cbItemSize: TComboBox
@@ -103,7 +103,7 @@ object FormGlobalConfig: TFormGlobalConfig
       Width = 150
       Height = 23
       Style = csDropDownList
-      TabOrder = 2
+      TabOrder = 0
       OnChange = cbItemSizeChange
       Items.Strings = (
         'Small'
@@ -116,7 +116,7 @@ object FormGlobalConfig: TFormGlobalConfig
       Width = 150
       Height = 23
       Style = csDropDownList
-      TabOrder = 3
+      TabOrder = 1
       OnChange = cbLightModeChange
       Items.Strings = (
         'Automatic'
@@ -131,7 +131,7 @@ object FormGlobalConfig: TFormGlobalConfig
     Height = 319
     Align = alClient
     BevelOuter = bvNone
-    TabOrder = 2
+    TabOrder = 1
     ExplicitWidth = 486
     ExplicitHeight = 287
     DesignSize = (
@@ -155,7 +155,7 @@ object FormGlobalConfig: TFormGlobalConfig
       ItemSelectionOptions.SelectedColorAlpha = 70
       ItemSelectionOptions.FocusedColorAlpha = 80
       ParentColor = False
-      TabOrder = 0
+      TabOrder = 1
       SmoothMouseWheelScrolling = True
       OnBeforeDrawItem = IDEListBeforeDrawItem
       object IDECaption: TLabel
@@ -273,7 +273,7 @@ object FormGlobalConfig: TFormGlobalConfig
       Width = 145
       Height = 25
       Caption = 'Add &Configuration'
-      TabOrder = 1
+      TabOrder = 0
       OnClick = btnAddConfigurationClick
     end
   end
