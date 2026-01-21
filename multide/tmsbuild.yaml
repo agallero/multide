@@ -17,7 +17,6 @@ supported frameworks:
   vcl:
     ide since: delphi13
     platforms:
-      - win32intel
       - win64intel
 
 # List of packages in the library. Each package must have a unique name, and must be listed only once.

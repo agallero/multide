@@ -6,7 +6,7 @@ tms build -full
 
 
 &"$PSScriptRoot\multide\multide.exe" --version
-$version = Get-Content "$PSScriptRoot\multide\multide.version.txt"
+$version = Get-Content "$PSScriptRoot\multide.version.txt"
 $targetFolder = "$PSScriptRoot\releases\multide-$($version)"
 
 if (Test-Path $targetFolder) {
@@ -19,7 +19,7 @@ Compress-Archive -Path $PSScriptRoot\multide\multide.exe,$PSScriptRoot\multide\i
 
 
 Set-Location "$targetFolder"
-#gh release create "v$($version)" -n "Release of Multide $($version)" "multide.zip"
+gh release create "v$($version)" -n "Release of Multide $($version)" "multide.zip"
 Write-Host "Release created with version: $($version)"
 
 Set-Location "$PSScriptRoot"
