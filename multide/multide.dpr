@@ -3,6 +3,9 @@ program multide;
 {$R 'MultIDE.Resources.res' 'src\MultIDE.Resources.rc'}
 
 uses
+  Winapi.Windows,
+  System.SysUtils,
+  Classes,
   Vcl.Forms,
   Form.Main in 'src\Form.Main.pas' {FormMain},
   Theme.Colors in 'src\Theme.Colors.pas',
@@ -43,9 +46,47 @@ begin
 
 end;
 
+function GetAppVersion: string;
+var
+  Size, Handle: DWORD;
+  Buffer: TBytes;
+  FixedInfo: PVSFixedFileInfo;
+  InfoSize: UINT;
+begin
+  Result := '';
+  Size := GetFileVersionInfoSize(PChar(ParamStr(0)), Handle);
+  if Size = 0 then exit;
+
+  SetLength(Buffer, Size);
+  if not GetFileVersionInfo(PChar(ParamStr(0)), Handle, Size, Buffer) then exit;
+
+  if VerQueryValue(Buffer, '\', Pointer(FixedInfo), InfoSize) then
+  begin
+    Result := Format('%d.%d.%d', [
+      HiWord(FixedInfo.dwFileVersionMS),
+      LoWord(FixedInfo.dwFileVersionMS),
+      HiWord(FixedInfo.dwFileVersionLS)]);
+  end;
+end;
+
+procedure PrintVersion;
+begin
+  var VersionWriter := TStreamWriter.Create('multide.version.txt');
+  try
+    VersionWriter.WriteLine(PChar(GetAppVersion));
+  finally
+    VersionWriter.Free;
+  end;
+end;
+
 const
   FormMainCaption = 'Select IDE';
 begin
+  if (ParamCount = 1) and ((ParamStr(1) = '--version') or (ParamStr(1) = '-v')) then
+  begin
+    PrintVersion;
+    exit;
+  end;
   if ParamCount > 1 then
   begin
     TBDSLauncher.Launch(ParamStr(1), ParamStr(2), ConcatParams(3));

@@ -112,6 +112,7 @@
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <Icon_MainIcon>res\multide.ico</Icon_MainIcon>
+        <Debugger_RunParams>--version</Debugger_RunParams>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -138,7 +139,6 @@
         </RcCompile>
         <DCCReference Include="src\Form.Main.pas">
             <Form>FormMain</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="src\Theme.Colors.pas"/>
         <DCCReference Include="src\Model.Entry.pas"/>
@@ -146,25 +146,21 @@
         <DCCReference Include="src\Global.Config.pas"/>
         <DCCReference Include="src\Form.Config.pas">
             <Form>FormConfig</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="src\Theme.Manager.pas"/>
         <DCCReference Include="src\Form.Message.pas">
             <Form>FormMessage</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="src\Util.AppInstances.pas"/>
         <DCCReference Include="src\ICO.Creator.pas"/>
         <DCCReference Include="src\Form.Build.pas">
             <Form>FormBuild</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="src\Util.Screen.pas"/>
         <DCCReference Include="src\Launcher.BDS.pas"/>
         <DCCReference Include="src\Launcher.Shortcuts.pas"/>
         <DCCReference Include="src\Form.GlobalConfig.pas">
             <Form>FormGlobalConfig</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="src\Model.EntryWriter.pas"/>
         <DCCReference Include="src\Model.Persistence.pas"/>
@@ -178,7 +174,6 @@
         <DCCReference Include="src\Model.GlobalSettingsWriter.pas"/>
         <DCCReference Include="src\Form.AddConfig.pas">
             <Form>FormAddConfig</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>

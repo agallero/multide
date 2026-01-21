@@ -11,17 +11,10 @@ MultIDE is a Delphi VCL Windows application for managing multiple Embarcadero De
 Build using MSBuild (requires RAD Studio/Delphi installed):
 
 ```bash
-# Debug build (Win64)
-msbuild multide.dproj /p:Config=Debug /p:Platform=Win64
-
-# Release build (Win64)
-msbuild multide.dproj /p:Config=Release /p:Platform=Win64
-
-# Win32 builds
-msbuild multide.dproj /p:Config=Debug /p:Platform=Win32
+tms build multide
 ```
 
-Output: `multide.exe` in project root. DCU files go to `bin\$(Platform)\$(Config)\`.
+Output: `multide.exe` in `project root\multide`. DCU files go to `project root\multide\$(Platform)\$(Config)\`.
 
 ## Architecture
 

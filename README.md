@@ -2,7 +2,7 @@
 
 MultIDE is a Windows application for managing multiple Embarcadero RAD Studio (Delphi) configurations. It allows you to create and launch different IDE instances, each with its own registry settings, component sets, and environment configurations.
 
-![MultIDE Main Screen](doc/multide-main-screen.png)
+![MultIDE Main Screen](multide/doc/multide-main-screen.png)
 
 ## Features
 
@@ -26,20 +26,20 @@ MultIDE is designed to be pinned to the Start menu or Taskbar.
 
 When you first click the MultIDE icon, it opens with a Default configuration:
 
-![First launch](doc/first-launch.png)
+![First launch](multide/doc/first-launch.png)
 
-Click the ![config settings icon](doc/config-settings-icon.png) icon to the right of any configuration to change its settings, or press **C** to access the settings page.
+Click the ![config settings icon](multide/doc/config-settings-icon.png) icon to the right of any configuration to change its settings, or press **C** to access the settings page.
 
 > [!NOTE]
 > Pressing any key changes the interface to show available keyboard shortcuts:
 >
-> ![ui with keys](doc/ui-with-keys.png)
+> ![ui with keys](multide/doc/ui-with-keys.png)
 
 ### Configuration Settings
 
 #### General
 
-![settings general](doc/settings-general.png)
+![settings general](multide/doc/settings-general.png)
 
 In the General section, you can set the configuration name, choose an identifying image, and specify extra parameters to pass to `bds.exe`.
 
@@ -48,13 +48,13 @@ In the General section, you can set the configuration name, choose an identifyin
 
 #### IDE Versions
 
-![settings ide versions](doc/settings-ide-versions.png)
+![settings ide versions](multide/doc/settings-ide-versions.png)
 
 Select the RAD Studio version to use. If no version is selected, launching the configuration will fail with an error.
 
 #### Sync
 
-![settings sync](doc/settings-sync.png)
+![settings sync](multide/doc/settings-sync.png)
 
 Define which registry entries from the Default configuration should be copied to this configuration. This is useful for sharing settings like Known Packages, Library Paths, or other IDE preferences.
 
@@ -62,7 +62,7 @@ See [Registry Synchronization](#registry-synchronization) and [PATH Synchronizat
 
 #### SmartSetup
 
-![settings smart setup](doc/settings-smart-setup.png)
+![settings smart setup](multide/doc/settings-smart-setup.png)
 
 These settings are optional and only needed if you want to invoke SmartSetup from MultIDE:
 
@@ -70,7 +70,7 @@ These settings are optional and only needed if you want to invoke SmartSetup fro
 2. **SmartSetup Working Folder**: Path to `tms.config.yaml`
 3. **Additional configuration files**: Extra `tms.config.yaml` files that override settings in the original. Usually left empty.
 
-Once configured, you can update components by clicking the update button ![update button](doc/update-button.png) on the main screen.
+Once configured, you can update components by clicking the update button ![update button](multide/doc/update-button.png) on the main screen.
 
 > [!NOTE]
 > The update button updates all components to their latest versions. Pin any components you don't want updated. You can skip this configuration entirely if you prefer to run SmartSetup manually.
@@ -144,3 +144,10 @@ Same syntax as Registry Synchronization:
 ## Export/Import Configurations
 
 Use the **Export Configurations** and **Import Configurations** buttons in Global Settings to back up or transfer your MultIDE setup between machines.
+
+## Building MultiDE from source
+
+To build from source, use the command:
+```shell
+tms build multide
+```
