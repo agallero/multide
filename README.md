@@ -135,17 +135,20 @@ Same syntax as Registry Synchronization:
 ```
 # Include Embarcadero paths
 +*\Embarcadero\*
-+C:\Windows\*
++$(SmartSetup)
 
 # Exclude old RAD Studio versions
 -*\RAD Studio\9.0\*
 ```
 
+> [Important]
+> You can use the variable $(SmartSetup) to add the path set for SmartSetup to the paths added. But if you do, remember to set the smart setup working folder to a valid value.
+
 ## Export/Import Configurations
 
 Use the **Export Configurations** and **Import Configurations** buttons in Global Settings to back up or transfer your MultIDE setup between machines.
 
-## Building MultiDE from source
+## Building MultiDE from Source
 
 To build from source, use the command:
 ```shell

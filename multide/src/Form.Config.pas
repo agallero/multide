@@ -11,7 +11,7 @@ uses
   Model.DelphiVersions, Model.DelphiVersionsReader;
 
 type
-  TConfigCard = (Default, General, IDEVersions, SmartSetup);
+  TConfigCard = (Default, General, IDEVersions, SmartSetup, Sync);
   TFormConfig = class(TForm)
     CardPanelOptions: TCardPanel;
     CardSmartSetup: TCard;
@@ -54,7 +54,13 @@ type
     Splitter2: TSplitter;
     lblRegistry: TLabel;
     MemoRegistry: TMemo;
+    PanelErrors: TPanel;
+    lblErrors: TLinkLabel;
+    LabelErrorCaption: TLabel;
+    DummyLabel: TLinkLabel;
     procedure FormCreate(Sender: TObject);
+    procedure lblErrorsLinkClick(Sender: TObject; const Link: string;
+      LinkType: TSysLinkType);
     procedure TabsBeforeDrawItem(AIndex: Integer; ACanvas: TCanvas;
       ARect: TRect; AState: TOwnerDrawState);
     procedure TabsItemClick(Sender: TObject);
@@ -64,12 +70,16 @@ type
     procedure btnWorkingFolderClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormActivate(Sender: TObject);
+    procedure MemoPathChange(Sender: TObject);
+    procedure MemoRegistryChange(Sender: TObject);
+    procedure edSmartSetupWorkingFolderChange(Sender: TObject);
   private
     FEntryList: TEntryList;
     FEntryIndex: integer;
     FEntry: TEntry;
     FDelphiVersions: TDelphiVersionList;
     function ValidateConfName(const ConfName: string): string;
+    procedure ValidateAndShowErrors;
     procedure Save;
   public
     procedure SelectCard(const Card: TConfigCard);
@@ -183,6 +193,154 @@ begin
   TShortcutManager.Create(FEntry);
 end;
 
+type
+  TErrorTarget = (SmartSetupWorkingFolder, SyncPath, SyncRegistry, IdeVersions);
+  TConfigError = record
+    Message: string;
+    Target: TErrorTarget;
+    constructor Create(const AMessage: string; ATarget: TErrorTarget);
+  end;
+
+constructor TConfigError.Create(const AMessage: string; ATarget: TErrorTarget);
+begin
+  Message := AMessage;
+  Target := ATarget;
+end;
+
+  const
+  LinkTarget: array[TErrorTarget] of string = ('SmartSetupWorkingFolder', 'SyncPath', 'SyncRegistry', 'IdeVersions');
+
+function CheckSmartSetupMacro(Memo: TMemo; const SmartSetupFolder: string;
+  SyncTarget: TErrorTarget): TConfigError;
+var
+  i: integer;
+  Line: string;
+begin
+  Result.Message := '';
+  Result.Target := SyncTarget;
+
+  for i := 0 to Memo.Lines.Count - 1 do
+  begin
+    Line := Trim(Memo.Lines[i]);
+    if (Line = '') or Line.StartsWith('#') then
+      Continue;
+
+    if Line.StartsWith('+') or Line.StartsWith('-') then
+    begin
+      if Line.Contains('$(SmartSetup)') and (SmartSetupFolder = '') then
+      begin
+        Result.Message := '$(SmartSetup) variable is used but working folder is not set';
+        Exit;
+      end;
+    end
+  end;
+end;
+
+function CheckStartEntries(Memo: TMemo;
+  SyncTarget: TErrorTarget): TConfigError;
+var
+  i: integer;
+  Line: string;
+begin
+  Result.Message := '';
+  Result.Target := SyncTarget;
+
+  for i := 0 to Memo.Lines.Count - 1 do
+  begin
+    Line := Trim(Memo.Lines[i]);
+    if (Line = '') or Line.StartsWith('#') or Line.StartsWith('+') or Line.StartsWith('-') then
+      Continue;
+
+    Result.Message := 'Entries must start with + or - to include or exclude';
+    Exit;
+  end;
+end;
+
+procedure AddError(const Error: TConfigError; const Msg: string; var LinkText: string; var LineCount: integer);
+begin
+  if Error.Message = '' then exit;
+  LinkText := LinkText + '<a href="' + LinkTarget[Error.Target] + '">' + Msg + ': ' + Error.Message + '</a>' + #10;
+  Inc(LineCount);
+end;
+
+procedure TFormConfig.ValidateAndShowErrors;
+begin
+  var SmartSetupFolder := Trim(edSmartSetupWorkingFolder.Text);
+  var LinkText := '';
+  var LineCount := 0;
+
+  if cbIDEToLaunch.ItemIndex < 0 then
+  begin
+    AddError(TConfigError.Create('There is no IDE selected', TErrorTarget.IdeVersions), 'IDE', LinkText, LineCount);
+  end;
+
+  if MemoPath.Enabled then
+  begin
+    var PathStartError := CheckStartEntries(MemoPath, TErrorTarget.SyncPath);
+    AddError(PathStartError, 'Path', LinkText, LineCount);
+    var PathSmartSetupError := CheckSmartSetupMacro(MemoPath, SmartSetupFolder, TErrorTarget.SmartSetupWorkingFolder);
+    AddError(PathSmartSetupError, 'Path', LinkText, LineCount);
+  end;
+
+  if MemoRegistry.Enabled then
+  begin
+    var RegistryStartError := CheckStartEntries(MemoRegistry, TErrorTarget.SyncRegistry);
+    AddError(RegistryStartError, 'Registry', LinkText, LineCount);
+    var RegistrySmartSetupError := CheckSmartSetupMacro(MemoRegistry, SmartSetupFolder, TErrorTarget.SmartSetupWorkingFolder);
+    AddError(RegistrySmartSetupError, 'Registry', LinkText, LineCount);
+  end;
+
+  if LinkText <> '' then
+  begin
+    lblErrors.Caption := LinkText;
+    PanelErrors.Height :=  LabelErrorCaption.Height + 20 + (LineCount * DummyLabel.Height);
+    PanelErrors.Visible := true;
+  end
+  else
+  begin
+    PanelErrors.Visible := false;
+  end;
+end;
+
+procedure TFormConfig.lblErrorsLinkClick(Sender: TObject; const Link: string;
+  LinkType: TSysLinkType);
+begin
+  if Link = LinkTarget[TErrorTarget.SmartSetupWorkingFolder] then
+  begin
+    SelectCard(TConfigCard.SmartSetup);
+    edSmartSetupWorkingFolder.SetFocus;
+  end
+  else if (Link = LinkTarget[TErrorTarget.SyncPath]) or (Link = LinkTarget[TErrorTarget.SyncRegistry]) then
+  begin
+    SelectCard(TConfigCard.Sync);
+    if Link = LinkTarget[TErrorTarget.SyncPath] then
+      MemoPath.SetFocus
+    else
+      MemoRegistry.SetFocus;
+  end
+  else if Link = LinkTarget[TErrorTarget.IdeVersions] then
+  begin
+    SelectCard(TConfigCard.IDEVersions);
+    cbIDEToLaunch.SetFocus;
+  end
+
+end;
+
+procedure TFormConfig.MemoPathChange(Sender: TObject);
+begin
+  ValidateAndShowErrors;
+end;
+
+procedure TFormConfig.MemoRegistryChange(Sender: TObject);
+begin
+  ValidateAndShowErrors;
+end;
+
+procedure TFormConfig.edSmartSetupWorkingFolderChange(Sender: TObject);
+begin
+  ValidateAndShowErrors;
+end;
+
 procedure TFormConfig.FormActivate(Sender: TObject);
 begin
   TThemeManager.UpdateControl(Self);
@@ -241,6 +399,11 @@ begin
       begin
         CardPanelOptions.ActiveCard := CardSmartSetup;
         Tabs.Selected[CardSmartSetup.CardIndex] := true;
+      end;
+    TConfigCard.Sync:
+      begin
+        CardPanelOptions.ActiveCard := CardSync;
+        Tabs.Selected[CardSync.CardIndex] := true;
       end;
   end;
 end;
@@ -316,7 +479,7 @@ begin
 
   end;
 
-
+  ValidateAndShowErrors;
 end;
 
 end.

@@ -35,14 +35,14 @@ end;
 
 class procedure TThemeManager.UpdateControl(const Control: TComponent);
 begin
-  if Integer(ThemeColors.BackColor) <> -1 then
+  if (Integer(ThemeColors.BackColor) <> -1) and (Control.Tag <> -1) then
   begin
     if Control is TControl then TControlAccess(Control).Color := ThemeColors.GetBackColor(Control.Tag <> 0);
 
     for var i := 0 to Control.ComponentCount - 1 do
     begin
       var Comp := Control.Components[i];
-      if Comp is TWinControl then
+      if (Comp is TWinControl) and (Control.Tag <> -1) then
       begin
         TWinControl(Comp).HandleNeeded;
         SetWindowTheme(TWinControl(Comp).Handle, PChar(ThemeColors.GetWindowsTheme), nil);
