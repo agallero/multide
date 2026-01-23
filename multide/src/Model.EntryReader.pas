@@ -101,6 +101,10 @@ begin
     Entry.ExtraParameters:= Reg.ReadString(RegistrySettings.ExtraParameters);
     Entry.RegistryEntriesToSync := Reg.ReadMultiString(RegistrySettings.RegistryEntriesToSync);
     Entry.PathEntriesToSync := Reg.ReadMultiString(RegistrySettings.PathEntriesToSync);
+    if Reg.ValueExists(RegistrySettings.IDEBitness) then
+      Entry.IDEBitness := TIDEBitness(Reg.ReadInteger(RegistrySettings.IDEBitness))
+    else
+      Entry.IDEBitness := TIDEBitness.Bit32;
 
     EnsureDefaults(Entry);
   finally

@@ -1,7 +1,7 @@
 unit Launcher.BDS;
 
 interface
-uses Classes, SysUtils, Generics.Collections;
+uses Classes, SysUtils, Generics.Collections, Model.Entry;
 
 type
   TBDSVariables = record
@@ -14,7 +14,7 @@ type
   private
     class var BDSVariables: TBDSVariables;
 
-    class function FindBDS(const ProductId, Version: string): string; static;
+    class function FindBDS(const ProductId, Version: string; const Bitness: TIDEBitness): string; static;
     class procedure ShowError(const msg: string); static;
     class procedure SyncRegistry(const ProductId, Version: string); static;
     class function SyncPath(const ProductId: string): string; static;
@@ -39,14 +39,20 @@ begin
   MessageBox(0, PCHAR(msg), 'MultIDE', MB_OK or MB_ICONERROR);
 end;
 
-class function TBDSLauncher.FindBDS(const ProductId, Version: string): string;
+class function TBDSLauncher.FindBDS(const ProductId, Version: string; const Bitness: TIDEBitness): string;
 begin
   var Reg := TRegistry.Create;
   try
     Reg.RootKey := HKEY_CURRENT_USER;
 
     if not Reg.OpenKeyReadOnly(RegistryKeys.EmbarcaderoEntry(ProductId, Version)) then exit('');
-    Result := Reg.ReadString('App');
+    if (Bitness = TIDEBitness.Bit64) then
+    begin
+      Result := Reg.ReadString('App x64');
+    end else
+    begin
+      Result := Reg.ReadString('App');
+    end;
   finally
     Reg.Free;
   end;
@@ -296,8 +302,23 @@ class procedure TBDSLauncher.Launch(const ProductId, Version, ExtraBDSParams: st
 begin
   SyncRegistry(ProductId, Version);
 
-  var BDS := FindBDS(ProductId, Version);
-  if BDS = '' then BDS := FindBDS(DefaultIDEName, Version);
+  // Read IDE bitness from settings
+  var Bitness := TIDEBitness.Bit32;
+  var Reg := TRegistry.Create;
+  try
+    Reg.RootKey := HKEY_CURRENT_USER;
+    if Reg.OpenKeyReadOnly(RegistryKeys.SettingsPath(ProductId)) then
+    begin
+      if Reg.ValueExists(RegistrySettings.IDEBitness) then
+        Bitness := TIDEBitness(Reg.ReadInteger(RegistrySettings.IDEBitness));
+      Reg.CloseKey;
+    end;
+  finally
+    Reg.Free;
+  end;
+
+  var BDS := FindBDS(ProductId, Version, Bitness);
+  if BDS = '' then BDS := FindBDS(DefaultIDEName, Version, Bitness);
   if BDS = '' then
   begin
     ShowError('There is no BDS installed for configuration "' + ProductId + '" , version "' + Version + '"' );

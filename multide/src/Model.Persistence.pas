@@ -29,6 +29,7 @@ type
       ExtraParameters = 'ExtraParameters';
       RegistryEntriesToSync = 'RegistryEntriesToSync';
       PathEntriesToSync = 'PathEntriesToSync';
+      IDEBitness = 'IDEBitness';
   end;
 
   RegistryGlobalSettings = record

@@ -42,6 +42,8 @@ type
     UIImageCollection: TImageCollection;
     cbIDEToLaunch: TComboBox;
     LabelDefaultIDEVersions: TLabel;
+    cbIDEBitness: TComboBox;
+    LabelIDEBitness: TLabel;
     edExtraParams: TLabeledEdit;
     btnBDSInfo: TButton;
     btnChooseSmartSetup: TButton;
@@ -73,6 +75,7 @@ type
     procedure MemoPathChange(Sender: TObject);
     procedure MemoRegistryChange(Sender: TObject);
     procedure edSmartSetupWorkingFolderChange(Sender: TObject);
+    procedure cbIDEToLaunchChange(Sender: TObject);
   private
     FEntryList: TEntryList;
     FEntryIndex: integer;
@@ -81,6 +84,7 @@ type
     function ValidateConfName(const ConfName: string): string;
     procedure ValidateAndShowErrors;
     procedure Save;
+    procedure UpdateBitnessCombobox;
   public
     procedure SelectCard(const Card: TConfigCard);
     procedure SetIDE(const aEntryList: TEntryList; const aEntryIndex: integer);
@@ -180,6 +184,7 @@ begin
   FEntry.PathEntriesToSync := MemoPath.Lines.ToStringArray;
   FEntry.RegistryEntriesToSync := MemoRegistry.Lines.ToStringArray;
   if (cbIDEToLaunch.ItemIndex >= 0) and (cbIDEToLaunch.ItemIndex < Length(FDelphiVersions)) then FEntry.DelphiVersion := FDelphiVersions[cbIDEToLaunch.ItemIndex];
+  if cbIDEBitness.ItemIndex >= 0 then FEntry.IDEBitness := TIDEBitness(cbIDEBitness.ItemIndex);
 
   if ConfName <> FEntry.Id then
   begin
@@ -341,6 +346,27 @@ begin
   ValidateAndShowErrors;
 end;
 
+procedure TFormConfig.cbIDEToLaunchChange(Sender: TObject);
+begin
+  UpdateBitnessCombobox;
+  ValidateAndShowErrors;
+end;
+
+procedure TFormConfig.UpdateBitnessCombobox;
+begin
+  var Supports64Bit := False;
+  if (cbIDEToLaunch.ItemIndex >= 0) and (cbIDEToLaunch.ItemIndex < Length(FDelphiVersions)) then
+  begin
+    var Version := FDelphiVersions[cbIDEToLaunch.ItemIndex].Version;
+    var VersionNum := StrToFloatDef(Version, 0);
+    Supports64Bit := VersionNum >= 23.0; // Delphi 12 Athens = version 23.0
+  end;
+
+  cbIDEBitness.Enabled := Supports64Bit;
+  if not Supports64Bit then
+    cbIDEBitness.ItemIndex := 0; // Force 32-bit if not supported
+end;
+
 procedure TFormConfig.FormActivate(Sender: TObject);
 begin
   TThemeManager.UpdateControl(Self);
@@ -476,8 +502,13 @@ begin
   begin
     cbIDEToLaunch.Items.Add(DelphiVersion.Name);
     if DelphiVersion.Version = FEntry.DelphiVersion.Version then cbIDEToLaunch.ItemIndex := cbIDEToLaunch.Items.Count - 1;
-
   end;
+
+  cbIDEBitness.Items.Clear;
+  cbIDEBitness.Items.Add('32-bit');
+  cbIDEBitness.Items.Add('64-bit');
+  cbIDEBitness.ItemIndex := Ord(FEntry.IDEBitness);
+  UpdateBitnessCombobox;
 
   ValidateAndShowErrors;
 end;

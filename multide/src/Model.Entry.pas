@@ -3,6 +3,8 @@ unit Model.Entry;
 interface
 uses Classes, SysUtils, Generics.Collections, Model.DelphiVersions;
 type
+  TIDEBitness = (Bit32, Bit64);
+
 TEntry = class
   private
     FId: string;
@@ -14,6 +16,7 @@ TEntry = class
     FExtraParameters: string;
     FRegistryEntriesToSync: TArray<string>;
     FPathEntriesToSync: TArray<string>;
+    FIDEBitness: TIDEBitness;
   public
     property Id: string read FId write FId;
     property Icon: string read FIcon write FIcon;
@@ -24,6 +27,7 @@ TEntry = class
     property ExtraParameters: string read FExtraParameters write FExtraParameters;
     property RegistryEntriesToSync: TArray<string> read FRegistryEntriesToSync write FRegistryEntriesToSync;
     property PathEntriesToSync: TArray<string> read FPathEntriesToSync write FPathEntriesToSync;
+    property IDEBitness: TIDEBitness read FIDEBitness write FIDEBitness;
 
     constructor Create(const aId: string);
     class function Clone(const aId: string; const aCopyFrom: TEntry): TEntry; static;
@@ -52,6 +56,7 @@ begin
   Result.FExtraParameters := aCopyFrom.FExtraParameters;
   Result.FRegistryEntriesToSync := Copy(aCopyFrom.FRegistryEntriesToSync);
   Result.FPathEntriesToSync := Copy(aCopyFrom.FPathEntriesToSync);
+  Result.FIDEBitness := aCopyFrom.FIDEBitness;
 end;
 
 constructor TEntry.Create(const aId: string);

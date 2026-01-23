@@ -249,6 +249,24 @@ object FormConfig: TFormConfig
           ExtendedUI = True
           TabOrder = 0
           StyleElements = [seFont, seBorder]
+          OnChange = cbIDEToLaunchChange
+        end
+        object LabelIDEBitness: TLabel
+          Left = 6
+          Top = 60
+          Width = 59
+          Height = 15
+          Caption = 'IDE bitness'
+        end
+        object cbIDEBitness: TComboBox
+          Left = 6
+          Top = 81
+          Width = 145
+          Height = 23
+          Style = csDropDownList
+          Color = clWhite
+          TabOrder = 1
+          StyleElements = [seFont, seBorder]
         end
       end
       object CardSync: TCard
