@@ -6,6 +6,8 @@ tms build -full
 
 
 &"$PSScriptRoot\multide\multide.exe" --version
+#delay to give time to the above command to finish writing to the version file
+Start-Sleep -Seconds 2
 $version = Get-Content "$PSScriptRoot\multide.version.txt"
 $targetFolder = "$PSScriptRoot\releases\multide-$($version)"
 
