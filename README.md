@@ -75,6 +75,24 @@ Once configured, you can update components by clicking the update button ![updat
 > [!NOTE]
 > The update button updates all components to their latest versions. Pin any components you don't want updated. You can skip this configuration entirely if you prefer to run SmartSetup manually.
 
+**The registry used by MultIDE is in the format: `multide\<config_name>` for all configurations except Default**
+Default uses an empty registry entry. The others are all stored under a registry key named `multide`.
+
+So in order to use the configuration `testing` with SmartSetup, you need to set the tmsconfig.yaml in the folder for that configuration as follows:
+```yaml
+# General options that are not 'per product'.
+tms smart setup options:
+
+  # 0 means use the optimum for the cores in the machine (default). 1 means single core. 2 two cores and so on.
+  build cores: 0
+
+  # installs the component in an alternate place so you can have different components installed in the same Delphi.
+  # see https://stackoverflow.com/questions/9290131/starting-delphi-with-an-alternate-registry-key
+  alternate registry key: multide\testing
+
+```
+
+
 ### Creating a New Configuration
 
 1. Press **G** to open Global Configuration
