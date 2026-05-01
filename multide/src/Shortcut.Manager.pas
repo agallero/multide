@@ -33,8 +33,11 @@ begin
 
   var ShortcutLocation := Config.ShortcutsImagePath(Entry.Id + '.lnk');
   TDirectory.CreateDirectory(TPath.GetDirectoryName(ShortcutLocation));
+  var ExtraParameters := '';
+  if Entry.ExtraParameters <> '' then ExtraParameters := ' ' + Entry.ExtraParameters;
+
   TShortcutCreator.Create(ShortcutLocation,
-     ParamStr(0), '"' + Entry.Id + '" "' + Entry.DelphiVersion.Version + '"', '', Entry.Id, IconPath);
+     ParamStr(0), '"' + Entry.Id + '" "' + Entry.DelphiVersion.Version + '"' + ExtraParameters, '', Entry.Id, IconPath);
 end;
 
 class procedure TShortcutManager.CreateAll(const EntryList: TEntryList);

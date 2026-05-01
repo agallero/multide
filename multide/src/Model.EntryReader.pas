@@ -105,6 +105,10 @@ begin
       Entry.IDEBitness := TIDEBitness(Reg.ReadInteger(RegistrySettings.IDEBitness))
     else
       Entry.IDEBitness := TIDEBitness.Bit32;
+    if Reg.ValueExists(RegistrySettings.IDEDpi) then
+      Entry.IDEDpi := TIDEDpi(Reg.ReadInteger(RegistrySettings.IDEDpi))
+    else
+      Entry.IDEDpi := TIDEDpi.DpiDefault;
 
     EnsureDefaults(Entry);
   finally

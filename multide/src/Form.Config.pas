@@ -44,6 +44,8 @@ type
     LabelDefaultIDEVersions: TLabel;
     cbIDEBitness: TComboBox;
     LabelIDEBitness: TLabel;
+    cbIDEDpi: TComboBox;
+    LabelIDEDpi: TLabel;
     edExtraParams: TLabeledEdit;
     btnBDSInfo: TButton;
     btnChooseSmartSetup: TButton;
@@ -185,6 +187,7 @@ begin
   FEntry.RegistryEntriesToSync := MemoRegistry.Lines.ToStringArray;
   if (cbIDEToLaunch.ItemIndex >= 0) and (cbIDEToLaunch.ItemIndex < Length(FDelphiVersions)) then FEntry.DelphiVersion := FDelphiVersions[cbIDEToLaunch.ItemIndex];
   if cbIDEBitness.ItemIndex >= 0 then FEntry.IDEBitness := TIDEBitness(cbIDEBitness.ItemIndex);
+  if cbIDEDpi.ItemIndex >= 0 then FEntry.IDEDpi := TIDEDpi(cbIDEDpi.ItemIndex);
 
   if ConfName <> FEntry.Id then
   begin
@@ -509,6 +512,11 @@ begin
   cbIDEBitness.Items.Add('64-bit');
   cbIDEBitness.ItemIndex := Ord(FEntry.IDEBitness);
   UpdateBitnessCombobox;
+
+  cbIDEDpi.Items.Clear;
+  cbIDEDpi.Items.Add('Default');
+  cbIDEDpi.Items.Add('Unaware');
+  cbIDEDpi.ItemIndex := Ord(FEntry.IDEDpi);
 
   ValidateAndShowErrors;
 end;

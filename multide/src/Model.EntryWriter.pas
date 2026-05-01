@@ -86,6 +86,7 @@ begin
     Reg.WriteMultiString(RegistrySettings.RegistryEntriesToSync, Entry.RegistryEntriesToSync);
     Reg.WriteMultiString(RegistrySettings.PathEntriesToSync, Entry.PathEntriesToSync);
     Reg.WriteInteger(RegistrySettings.IDEBitness, Ord(Entry.IDEBitness));
+    Reg.WriteInteger(RegistrySettings.IDEDpi, Ord(Entry.IDEDpi));
 
   finally
     Reg.Free;

@@ -268,6 +268,23 @@ object FormConfig: TFormConfig
           TabOrder = 1
           StyleElements = [seFont, seBorder]
         end
+        object LabelIDEDpi: TLabel
+          Left = 6
+          Top = 115
+          Width = 19
+          Height = 15
+          Caption = 'Dpi'
+        end
+        object cbIDEDpi: TComboBox
+          Left = 6
+          Top = 136
+          Width = 145
+          Height = 23
+          Style = csDropDownList
+          Color = clWhite
+          TabOrder = 2
+          StyleElements = [seFont, seBorder]
+        end
       end
       object CardSync: TCard
         Left = 0

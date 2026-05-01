@@ -4,6 +4,7 @@ interface
 uses Classes, SysUtils, Generics.Collections, Model.DelphiVersions;
 type
   TIDEBitness = (Bit32, Bit64);
+  TIDEDpi = (DpiDefault, DpiUnaware);
 
 TEntry = class
   private
@@ -17,6 +18,7 @@ TEntry = class
     FRegistryEntriesToSync: TArray<string>;
     FPathEntriesToSync: TArray<string>;
     FIDEBitness: TIDEBitness;
+    FIDEDpi: TIDEDpi;
   public
     property Id: string read FId write FId;
     property Icon: string read FIcon write FIcon;
@@ -28,6 +30,7 @@ TEntry = class
     property RegistryEntriesToSync: TArray<string> read FRegistryEntriesToSync write FRegistryEntriesToSync;
     property PathEntriesToSync: TArray<string> read FPathEntriesToSync write FPathEntriesToSync;
     property IDEBitness: TIDEBitness read FIDEBitness write FIDEBitness;
+    property IDEDpi: TIDEDpi read FIDEDpi write FIDEDpi;
 
     constructor Create(const aId: string);
     class function Clone(const aId: string; const aCopyFrom: TEntry): TEntry; static;
@@ -57,6 +60,7 @@ begin
   Result.FRegistryEntriesToSync := Copy(aCopyFrom.FRegistryEntriesToSync);
   Result.FPathEntriesToSync := Copy(aCopyFrom.FPathEntriesToSync);
   Result.FIDEBitness := aCopyFrom.FIDEBitness;
+  Result.FIDEDpi := aCopyFrom.FIDEDpi;
 end;
 
 constructor TEntry.Create(const aId: string);

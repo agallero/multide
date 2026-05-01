@@ -302,8 +302,9 @@ class procedure TBDSLauncher.Launch(const ProductId, Version, ExtraBDSParams: st
 begin
   SyncRegistry(ProductId, Version);
 
-  // Read IDE bitness from settings
+  // Read IDE bitness and dpi from settings
   var Bitness := TIDEBitness.Bit32;
+  var Dpi := TIDEDpi.DpiDefault;
   var Reg := TRegistry.Create;
   try
     Reg.RootKey := HKEY_CURRENT_USER;
@@ -311,6 +312,8 @@ begin
     begin
       if Reg.ValueExists(RegistrySettings.IDEBitness) then
         Bitness := TIDEBitness(Reg.ReadInteger(RegistrySettings.IDEBitness));
+      if Reg.ValueExists(RegistrySettings.IDEDpi) then
+        Dpi := TIDEDpi(Reg.ReadInteger(RegistrySettings.IDEDpi));
       Reg.CloseKey;
     end;
   finally
@@ -332,6 +335,7 @@ begin
 
   var BDSParams := '';
   if ProductId <> DefaultIDEName then BDSParams := BDSParams + '"/r' + RegistryKeys.IDEEntry(ProductId) + '" ';
+  if Dpi = TIDEDpi.DpiUnaware then BDSParams := BDSParams + '/highdpi:unaware ';
   BDSParams := BDSParams + ExtraBDSParams;
 
   var NewPath := SyncPath(ProductId);

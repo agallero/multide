@@ -30,6 +30,7 @@ type
       RegistryEntriesToSync = 'RegistryEntriesToSync';
       PathEntriesToSync = 'PathEntriesToSync';
       IDEBitness = 'IDEBitness';
+      IDEDpi = 'IDEDpi';
   end;
 
   RegistryGlobalSettings = record
