@@ -19,7 +19,9 @@ type
     class procedure SyncRegistry(const ProductId, Version: string); static;
     class function SyncPath(const ProductId: string): string; static;
   public
-    class procedure Launch(const ProductId, Version, ExtraBDSParams: string); static;
+    class procedure Launch(const ProductId, Version, ExtraBDSParams: string); overload; static;
+    class procedure Launch(const ProductId, Version, ExtraBDSParams: string;
+      const Bitness: TIDEBitness; const Dpi: TIDEDpi); overload; static;
   end;
 
 implementation
@@ -261,6 +263,29 @@ begin
 end;
 
 class procedure TBDSLauncher.Launch(const ProductId, Version, ExtraBDSParams: string);
+begin
+  // Read IDE bitness and dpi from settings, then delegate
+  var Bitness := TIDEBitness.Bit32;
+  var Dpi := TIDEDpi.DpiDefault;
+  var Reg := TRegistry.Create;
+  try
+    Reg.RootKey := HKEY_CURRENT_USER;
+    if Reg.OpenKeyReadOnly(RegistryKeys.SettingsPath(ProductId)) then
+    begin
+      if Reg.ValueExists(RegistrySettings.IDEBitness) then
+        Bitness := TIDEBitness(Reg.ReadInteger(RegistrySettings.IDEBitness));
+      if Reg.ValueExists(RegistrySettings.IDEDpi) then
+        Dpi := TIDEDpi(Reg.ReadInteger(RegistrySettings.IDEDpi));
+      Reg.CloseKey;
+    end;
+  finally
+    Reg.Free;
+  end;
+  Launch(ProductId, Version, ExtraBDSParams, Bitness, Dpi);
+end;
+
+class procedure TBDSLauncher.Launch(const ProductId, Version, ExtraBDSParams: string;
+  const Bitness: TIDEBitness; const Dpi: TIDEDpi);
 
   function BuildEnvironmentBlock(const NewPath: string): TBytes;
   begin
@@ -301,24 +326,6 @@ class procedure TBDSLauncher.Launch(const ProductId, Version, ExtraBDSParams: st
 
 begin
   SyncRegistry(ProductId, Version);
-
-  // Read IDE bitness and dpi from settings
-  var Bitness := TIDEBitness.Bit32;
-  var Dpi := TIDEDpi.DpiDefault;
-  var Reg := TRegistry.Create;
-  try
-    Reg.RootKey := HKEY_CURRENT_USER;
-    if Reg.OpenKeyReadOnly(RegistryKeys.SettingsPath(ProductId)) then
-    begin
-      if Reg.ValueExists(RegistrySettings.IDEBitness) then
-        Bitness := TIDEBitness(Reg.ReadInteger(RegistrySettings.IDEBitness));
-      if Reg.ValueExists(RegistrySettings.IDEDpi) then
-        Dpi := TIDEDpi(Reg.ReadInteger(RegistrySettings.IDEDpi));
-      Reg.CloseKey;
-    end;
-  finally
-    Reg.Free;
-  end;
 
   var BDS := FindBDS(ProductId, Version, Bitness);
   if BDS = '' then BDS := FindBDS(DefaultIDEName, Version, Bitness);

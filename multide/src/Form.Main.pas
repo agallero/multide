@@ -18,8 +18,14 @@ type
     IDEList: TControlList;
     IDEImage: TVirtualImage;
     IDECaption: TLabel;
+    btnIdeOptions: TControlListButton;
     btnUpdateComponents: TControlListButton;
     btnConfig: TControlListButton;
+    IdeOptionsPopupMenu: TPopupMenu;
+    miIdeOption32HighDpi: TMenuItem;
+    miIdeOption64HighDpi: TMenuItem;
+    miIdeOption32Unaware: TMenuItem;
+    miIdeOption64Unaware: TMenuItem;
     IDEImages: TImageCollection;
     ButtonImages: TImageCollection;
     ButtonVirtualImages: TVirtualImageList;
@@ -56,6 +62,8 @@ type
     procedure ButtonGlobalConfigClick(Sender: TObject);
     procedure IDEVersionClick(Sender: TObject);
     procedure btnConfigClick(Sender: TObject);
+    procedure btnIdeOptionsClick(Sender: TObject);
+    procedure IdeOptionMenuClick(Sender: TObject);
   private
     Entries: TEntryList;
     InModalDialog: boolean;
@@ -93,7 +101,7 @@ var
 
 implementation
 uses Theme.Manager, Model.EntryReader, Model.EntryWriter, IOUtils, Generics.Defaults,
-     Generics.Collections, Launcher.Shortcuts,
+     Generics.Collections, Launcher.Shortcuts, Launcher.BDS,
      Model.DelphiVersions, Model.DelphiVersionsReader,
      Model.GlobalSettingsReader, Model.GlobalSettingsWriter;
 
@@ -265,6 +273,9 @@ begin
   IDECaption.Width := IDECaption.Width - 80;
   btnGlobalConfig.Width := 240;
   btnGlobalConfig.Caption := '(&G)lobal Config';
+
+  btnIdeOptions.Caption := '(&I)DE';
+  btnIdeOptions.Width := 140;
   ShowingCaptions := true;
 end;
 
@@ -274,6 +285,12 @@ begin
   if Key = VK_ESCAPE then close;
   ShowCaptions; //if the user is using the keys, we will show them a way to press the buttons.
   if Char(Key) = 'B' then DoBuild;
+  if Char(Key) = 'I' then
+    begin
+      if ItemIndexWrong then exit;
+      var xy:= btnIdeOptions.ClientToScreen(TPoint.Create(0, 0));
+      IdeOptionsPopupMenu.Popup(xy.X, xy.Y + IDEList.ItemHeight * IDEList.ItemIndex);
+    end;
   if Char(Key) = 'C' then DoLocalConfig;
   if Char(Key) = 'G' then DoGlobalConfig;
   if CharInSet(Char(Key), ['1'..'9']) then
@@ -431,6 +448,33 @@ end;
 procedure TFormMain.btnConfigClick(Sender: TObject);
 begin
   DoLocalConfig;
+end;
+
+procedure TFormMain.btnIdeOptionsClick(Sender: TObject);
+begin
+  if ItemIndexWrong then exit;
+  var P := Mouse.CursorPos;
+  IdeOptionsPopupMenu.Popup(P.X, P.Y);
+end;
+
+procedure TFormMain.IdeOptionMenuClick(Sender: TObject);
+begin
+  if ItemIndexWrong then exit;
+
+  var Bitness: TIDEBitness;
+  var Dpi: TIDEDpi;
+  case TMenuItem(Sender).Tag of
+    0: begin Bitness := TIDEBitness.Bit32; Dpi := TIDEDpi.DpiDefault; end;
+    1: begin Bitness := TIDEBitness.Bit64; Dpi := TIDEDpi.DpiDefault; end;
+    2: begin Bitness := TIDEBitness.Bit32; Dpi := TIDEDpi.DpiUnaware; end;
+    3: begin Bitness := TIDEBitness.Bit64; Dpi := TIDEDpi.DpiUnaware; end;
+  else
+    exit;
+  end;
+
+  var Entry := Entries[IDEList.ItemIndex];
+  TBDSLauncher.Launch(Entry.Id, Entry.DelphiVersion.Version, Entry.ExtraParameters, Bitness, Dpi);
+  Close;
 end;
 
 procedure TFormMain.btnConfigurationForClick(Sender: TObject);
