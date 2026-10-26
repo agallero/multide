@@ -5,58 +5,89 @@ uses Classes, SysUtils, Model.Entry, Model.Persistence;
 
 type
   TModelEntryWriter = record
-  private
-    class procedure RemoveExistingEntries; static;
   public
-    class procedure RemoveEntry(const EntryId: string); static;
+    class procedure RenameEntry(const OldEntryId, NewEntryId: string); static;
     class procedure SaveAll(const EntryList: TEntryList); static;
     class procedure SaveEntry(const Entry: TEntry; const Position: integer); static;
+    class procedure RemoveBut(const EntryList: TEntryList); static;
   end;
 
 implementation
-uses Windows, Registry;
+uses Windows, Registry, System.Generics.Collections, System.Generics.Defaults;
+
+function RegRenameKey(hKey: HKEY; lpSubKeyName, lpNewKeyName: LPCWSTR): LONG; stdcall;
+  external 'Advapi32.dll' name 'RegRenameKey';
+
+procedure RenameRegistryKeyAPI(const AHive: HKEY; const AParentKeyPath, AOldKeyName, ANewKeyName: string);
+var
+  ParentKeyHandle: HKEY;
+  ResultCode: LONG;
+begin
+  var ParentKeyPath := AParentKeyPath;
+  if ParentKeyPath.StartsWith('\') then ParentKeyPath := ParentKeyPath.Substring(1);
+
+  // Open the parent key where the subkey resides
+  ResultCode := RegOpenKeyExW(AHive, PWideChar(ParentKeyPath), 0, KEY_WRITE, ParentKeyHandle);
+  if ResultCode <> ERROR_SUCCESS then
+    raise ERegistryException.Create('Failed to open parent registry key ' + ParentKeyPath +'. Error code: ' + IntToStr(ResultCode));
+
+  try
+    // Execute the native rename command
+    ResultCode := RegRenameKey(ParentKeyHandle, PWideChar(AOldKeyName), PWideChar(ANewKeyName));
+    if ResultCode <> ERROR_SUCCESS then
+      raise ERegistryException.Create('Failed to rename registry key ' + AOldKeyName +' into ' + ANewKeyName + '. Error code: ' + IntToStr(ResultCode));
+  finally
+    RegCloseKey(ParentKeyHandle);
+  end;
+end;
 
 { TModelEntryWriter }
 
-class procedure TModelEntryWriter.RemoveEntry(const EntryId: string);
+class procedure TModelEntryWriter.RenameEntry(const OldEntryId, NewEntryId: string);
 begin
-  var Reg := TRegistry.Create;
-  try
-    Reg.RootKey := HKEY_CURRENT_USER;
-
-    if not Reg.DeleteKey(RegistryKeys.SettingsPath(EntryId))
-      then raise Exception.Create('Cannot delete entry ' + RegistryKeys.SettingsPath(EntryId));
-  finally
-    Reg.Free;
+  if SameText(OldEntryId, NewEntryId) then
+  begin
+    // Registry key names are case-insensitive, so a case-only rename goes through a temporary name.
+    var TempId := NewEntryId + '.' + TGUID.NewGuid.ToString;
+    RenameRegistryKeyAPI(HKEY_CURRENT_USER, RegistryKeys.RootMultide, OldEntryId, TempId);
+    RenameRegistryKeyAPI(HKEY_CURRENT_USER, RegistryKeys.RootMultide, TempId, NewEntryId);
+    exit;
   end;
 
+  RenameRegistryKeyAPI(HKEY_CURRENT_USER, RegistryKeys.RootMultide, OldEntryId, NewEntryId);
 end;
 
-class procedure TModelEntryWriter.RemoveExistingEntries;
+class procedure TModelEntryWriter.RemoveBut(const EntryList: TEntryList);
 begin
-  var Reg := TRegistry.Create;
+  var Entries := THashSet<string>.Create(TIStringComparer.Ordinal);
   try
-    Reg.RootKey := HKEY_CURRENT_USER;
+    for var Entry in EntryList do Entries.Add(Entry.Id);
 
-    if not Reg.OpenKeyReadOnly(RegistryKeys.RootMultide) then exit;
-    var List := TStringList.Create;
+    var Reg := TRegistry.Create;
     try
-      Reg.GetKeyNames(List);
-      for var Id in List do
-      begin
-        Reg.DeleteKey(Id);
+      Reg.RootKey := HKEY_CURRENT_USER;
+
+      if not Reg.OpenKeyReadOnly(RegistryKeys.RootMultide) then exit;
+      var List := TStringList.Create;
+      try
+        Reg.GetKeyNames(List);
+        for var Id in List do
+        begin
+          if not Entries.Contains(Id) then Reg.DeleteKey(Id);
+        end;
+      finally
+        List.Free;
       end;
     finally
-      List.Free;
+      Reg.Free;
     end;
   finally
-    Reg.Free;
+    Entries.Free;
   end;
 end;
 
 class procedure TModelEntryWriter.SaveAll(const EntryList: TEntryList);
 begin
-  RemoveExistingEntries;
   var Position := -1;
   for var Entry in EntryList do
   begin

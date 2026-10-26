@@ -40,3 +40,5 @@ multide/ide-icons
 multide/Win32
 multide/Win64
 releases
+.idea
+multide/37.0/Win64

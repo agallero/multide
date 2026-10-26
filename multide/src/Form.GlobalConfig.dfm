@@ -202,30 +202,8 @@ object FormGlobalConfig: TFormGlobalConfig
         ExplicitLeft = 540
         ExplicitHeight = 80
       end
-      object btnConfig: TControlListButton
-        Left = 272
-        Top = 0
-        Width = 40
-        Height = 32
-        Hint = 'Settings for this configuration'
-        Margins.Left = 4
-        Margins.Top = 0
-        Margins.Right = 4
-        Margins.Bottom = 0
-        Align = alRight
-        ParentShowHint = False
-        ShowHint = True
-        Images = ButtonVirtualImages
-        ImageIndex = 0
-        ImageName = 'config'
-        Style = clbkToolButton
-        OnClick = btnConfigClick
-        ExplicitLeft = 386
-        ExplicitTop = -8
-        ExplicitHeight = 80
-      end
       object btnDown: TControlListButton
-        Left = 352
+        Left = 342
         Top = 0
         Width = 40
         Height = 32

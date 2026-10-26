@@ -8,7 +8,7 @@ uses
   Vcl.StdCtrls, Vcl.ExtCtrls, Model.GlobalSettings, Global.Config,
   Vcl.ControlList, Vcl.VirtualImage, Vcl.BaseImageCollection,
   Vcl.ImageCollection, System.ImageList, Vcl.ImgList,
-  Vcl.VirtualImageList, Model.Entry, Form.AddConfig, Form.Config,
+  Vcl.VirtualImageList, Model.Entry, Form.AddConfig,
   System.JSON, System.IOUtils, Generics.Collections;
 
 type
@@ -34,7 +34,6 @@ type
     btnDown: TControlListButton;
     btnUp: TControlListButton;
     btnDelete: TControlListButton;
-    btnConfig: TControlListButton;
 
     procedure FormCreate(Sender: TObject);
     procedure cbLightModeChange(Sender: TObject);
@@ -47,7 +46,6 @@ type
     procedure btnUpClick(Sender: TObject);
     procedure btnDownClick(Sender: TObject);
     procedure btnAddConfigurationClick(Sender: TObject);
-    procedure btnConfigClick(Sender: TObject);
     procedure btnExportClick(Sender: TObject);
     procedure btnImportClick(Sender: TObject);
   private
@@ -55,14 +53,12 @@ type
     GlobalSettings: TGlobalSettings;
     ApplyGlobalSettings: TApplyGlobalSettings;
     FFormAddConfig: TFormAddConfig;
-    FFormConfig: TFormConfig;
     ConfigOpenDialog: TOpenDialog;
     ConfigSaveDialog: TSaveDialog;
 
 
     procedure Save;
     function FormAddConfig: TFormAddConfig;
-    function FormConfig: TFormConfig;
     function EntriesToJSON: TJSONObject;
     procedure JSONToEntries(const JSON: TJSONObject);
 
@@ -108,14 +104,6 @@ begin
     IDEList.ItemCount := Entries.Count;
     IDEList.Invalidate;
   end;
-end;
-
-procedure TFormGlobalConfig.btnConfigClick(Sender: TObject);
-begin
-  if (IDEList.ItemIndex < 0) or (IDEList.ItemIndex >= Entries.Count) then exit;
-  FormConfig.SetIDE(Entries, IDEList.ItemIndex);
-  var OriginalIcon := Entries[IDEList.ItemIndex].Icon;
-  FormConfig.ShowModal;
 end;
 
 procedure TFormGlobalConfig.btnDeleteClick(Sender: TObject);
@@ -165,12 +153,6 @@ begin
   end;
 end;
 
-function TFormGlobalConfig.FormConfig: TFormConfig;
-begin
-  if FFormConfig = nil then FFormConfig := TFormConfig.Create(Self);
-  Result := FFormConfig;
-end;
-
 procedure TFormGlobalConfig.FormCreate(Sender: TObject);
 begin
   TThemeManager.UpdateControl(Self);
@@ -202,6 +184,7 @@ procedure TFormGlobalConfig.Save;
 begin
   TModelGlobalSettingsWriter.Save(GlobalSettings);
   TModelEntryWriter.SaveAll(Entries);
+  TModelEntryWriter.RemoveBut(Entries);
   TShortcutManager.RemoveBut(Entries);
   TShortcutManager.CreateAll(Entries);
 end;

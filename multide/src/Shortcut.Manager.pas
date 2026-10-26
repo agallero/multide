@@ -11,7 +11,7 @@ type
   end;
 
 implementation
-uses Classes, SysUtils, Shortcut.Creator, ICO.Creator, Global.Config, IOUtils;
+uses Classes, SysUtils, Shortcut.Creator, ICO.Creator, Global.Config, IOUtils, Generics.Defaults;
 
 { TShortcutManager }
 
@@ -57,7 +57,7 @@ end;
 
 class procedure TShortcutManager.RemoveBut(const EntryList: TEntryList);
 begin
-  var Entries := THashSet<string>.Create;
+  var Entries := THashSet<string>.Create(TIStringComparer.Ordinal);
   try
     for var Entry in EntryList do Entries.Add(Entry.Id);
     var IcoFolder := Config.IDEIconPath('');

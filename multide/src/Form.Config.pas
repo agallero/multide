@@ -191,7 +191,7 @@ begin
 
   if ConfName <> FEntry.Id then
   begin
-    TModelEntryWriter.RemoveEntry(FEntry.Id);
+    TModelEntryWriter.RenameEntry(FEntry.Id, ConfName);
     TShortcutManager.Remove(FEntry.Id);
     FEntry.Id := ConfName;
   end;
