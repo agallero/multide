@@ -57,8 +57,12 @@ begin
   Result.FSmartSetupLocation := aCopyFrom.FSmartSetupLocation;
   Result.FSmartSetupWorkingFolder := aCopyFrom.FSmartSetupWorkingFolder;
   Result.FExtraParameters := aCopyFrom.FExtraParameters;
-  Result.FRegistryEntriesToSync := Copy(aCopyFrom.FRegistryEntriesToSync);
-  Result.FPathEntriesToSync := Copy(aCopyFrom.FPathEntriesToSync);
+
+  if not SameText(aCopyFrom.Id, DefaultIDEName) then
+  begin
+    Result.FRegistryEntriesToSync := Copy(aCopyFrom.FRegistryEntriesToSync);
+    Result.FPathEntriesToSync := Copy(aCopyFrom.FPathEntriesToSync);
+  end;
   Result.FIDEBitness := aCopyFrom.FIDEBitness;
   Result.FIDEDpi := aCopyFrom.FIDEDpi;
 end;

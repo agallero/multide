@@ -475,7 +475,8 @@ begin
         '# Start with + or - to include or exclude the path',
         '# You can use wildcards to match parts of the paths',
         '# use $(SmartSetup) variable to pass the SmartSetup path',
-        '+$(SmartSetup)\*']);
+        '+$(SmartSetup)\*',
+        '+*']);
     end else
     begin
       MemoPath.Lines.AddStrings(FEntry.PathEntriesToSync);
